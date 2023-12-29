@@ -1,0 +1,16 @@
+name: Docker production build
+
+on:
+  push:
+    tags:
+      - 'v**'
+
+jobs:
+  build-and-push-production:
+    uses: TrustlessComputer-DevOps/tc-github-action-templates/.github/workflows/docker-build-and-push.yaml@main
+    with:
+      DOCKER_IMAGE_NAME: l2aas-interface
+      DOCKERFILE_NAME: Dockerfile
+      CONCURRENCY_GROUP: docker_production
+    secrets:
+      GCLOUD_DEV_SERVICE_ACCOUNT_JSON: ${{ secrets.GCLOUD_DEV_SERVICE_ACCOUNT_JSON }}
