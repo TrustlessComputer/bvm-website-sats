@@ -13,7 +13,7 @@ const CDN_APP_ICON_URL = `${CDN_APP_URL}/icons`;
 
 const GAMEFI_API_URL = ENVS.VITE_GAMEFI_API_URL;
 
-const NEW_BITCOIN_CITY = isProd ? 'https://newbitcoincity.com' : 'https://dev.newbitcoincity.com';
+const NEW_BITCOIN_CITY = isProd ? 'https://bvm.network' : 'https://dev.bvm.network';
 
 const BUY_TC_URL = NEW_BITCOIN_CITY + '/topup';
 const DOCS_TRUSTLESS_URL = 'https://docs.trustless.computer';
