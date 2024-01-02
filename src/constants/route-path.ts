@@ -1,4 +1,4 @@
-export const PREFIX = '/trustless-computers-iframe';
+export const PREFIX = '/bvm-website-sats-iframe';
 
 const ROUTE_PATH = {
   NOT_FOUND: '*',
