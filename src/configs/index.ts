@@ -67,6 +67,6 @@ const configs = {
   DAO_URL,
 };
 
-export const CDN_ICONS_URL = `${CDN_URL}/icons/bvm-icons`;
+export const CDN_ICONS_URL = `${CDN_URL}/nbc/icons/bvm-icons`;
 
 export default configs;

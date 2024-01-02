@@ -146,7 +146,7 @@ const ServiceItem = (props: props) => {
       >
         <S.Header>
           <div className="leftView">
-            <IconSVG maxWidth="41" src={`/assets/storage_ic.svg`} />
+            <SvgInset size={41} svgUrl={`${CDN_ICONS_URL}/ic-storage.svg`} />
             <Text size="24" fontWeight="semibold">
               {mapper.computerIndexer}
             </Text>
