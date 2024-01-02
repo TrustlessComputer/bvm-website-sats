@@ -1,12 +1,12 @@
 {
-  "name": "l2aas-interface",
+  "name": "bvm-blockchains",
   "version": "0.0.1",
   "private": true,
-  "author": "trustless-computer",
+  "author": "bvm-blockchains",
   "scripts": {
     "dev": "vite",
     "dev-clean": "rm -rf ./node_modules/.vite && yarn dev",
-    "build": "vite build --base=/trustless-computers-iframe",
+    "build": "vite build --base=/bvm-blockchains-iframe",
     "serve": "vite preview",
     "serve:dist": "http-server dist",
     "lint": "eslint . --ext .ts,.tsx",

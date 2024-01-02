@@ -9,7 +9,7 @@ jobs:
   build-and-push-develop:
     uses: TrustlessComputer-DevOps/tc-github-action-templates/.github/workflows/docker-build-and-push.yaml@main
     with:
-      DOCKER_IMAGE_NAME: l2aas-interface
+      DOCKER_IMAGE_NAME: bvm-blockchains
       DOCKERFILE_NAME: Dockerfile
       CONCURRENCY_GROUP: docker_develop
     secrets:

@@ -9,6 +9,6 @@ jobs:
   docker-cache:
     uses: TrustlessComputer-DevOps/tc-github-action-templates/.github/workflows/docker-build-cache.yaml@main
     with:
-      DOCKER_IMAGE_NAME: l2aas-interface
+      DOCKER_IMAGE_NAME: bvm-blockchains
       DOCKERFILE_NAME: Dockerfile.cache
 
