@@ -21,6 +21,7 @@ import Living from '@/components/Living';
 import { getTCL1Explorer } from '@/modules/Account/History/History.helper';
 import { AddressZero } from '@ethersproject/constants';
 import px2rem from '@/utils/px2rem';
+import SvgInset from '@/components/SvgInset';
 
 type props = {
   item: OrderItem;
@@ -204,7 +205,8 @@ const ServiceItem = (props: props) => {
           </Text>
           <S.BoxDappContainer>
             <S.BoxDapp>
-              <IconSVG maxWidth="41" src={`/assets/bridge_ic.svg`} />
+              {/* <IconSVG maxWidth="41" src={`/assets/bridge_ic.svg`} /> */}
+              <SvgInset size={41} svgUrl={`/assets/bridge_ic.svg`} />
               <Text size="16" fontWeight="semibold">
                 {'Trustless Bridge'}
               </Text>

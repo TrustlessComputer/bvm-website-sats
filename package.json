@@ -71,6 +71,7 @@
     "react-router-dom": "6.4.3",
     "react-share": "^4.4.1",
     "react-slick": "^0.29.0",
+    "react-svg": "^16.1.32",
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
