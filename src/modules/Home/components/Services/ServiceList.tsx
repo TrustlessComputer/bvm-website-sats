@@ -1,8 +1,8 @@
 import React from 'react';
 import * as S from './ServiceList.styled';
 
-// import ServiceItem from '../ServiceItem/ServiceItem';
-import ServiceItem from '../ServiceItem_BACKUP/ServiceItem';
+import ServiceItem from '../ServiceItem/ServiceItem';
+// import ServiceItem from '../ServiceItem_BACKUP/ServiceItem';
 
 import { useAppSelector } from '@/state/hooks';
 import { allOrdersSelector, getOrderSelector, orderListSelector } from '@/state/order/selector';
@@ -100,7 +100,7 @@ const ServiceList = () => {
   }, []);
 
   return (
-    <S.Container>
+    <S.Container className="maxWidth">
       <S.ContentBox>
         <S.Content>
           <HeaderRow type={type} network={network} onChangeType={onChangeType} onChangeNetwork={onChangeNetwork} />

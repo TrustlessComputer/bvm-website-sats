@@ -10,17 +10,8 @@ const Container = styled.div`
   padding-top: ${px2rem(32)};
   // padding: ${px2rem(42)};
   gap: ${px2rem(42)};
-  background-color: #f3f1e8;
-
-  ${MediaQueryBuilder(
-    'md',
-    css`
-      padding: ${px2rem(0)};
-      padding-top: ${px2rem(32)};
-      padding-bottom: ${px2rem(24)};
-      background-color: #f3f1e8;
-    `,
-  )}
+  /* background-color: #f3f1e8; */
+  padding-bottom: ${px2rem(32)};
 `;
 
 export { Container };

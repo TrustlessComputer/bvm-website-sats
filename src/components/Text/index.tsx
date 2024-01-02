@@ -72,10 +72,10 @@ const Text = ({
       color={color}
       align={align}
       maxWidth={maxWidth}
-      style={{ ...style }}
       fontFamily={fontFamily}
       onClick={onClick}
       wordBreak={wordBreak}
+      style={{ ...style }}
     >
       {children}
     </BaseText>

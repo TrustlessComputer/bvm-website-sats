@@ -42,12 +42,12 @@ const Header = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: ${px2rem(12)};
 
   .leftView {
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: ${px2rem(10)};
 
     .iconWrapper {
     }
@@ -87,14 +87,59 @@ const Divider = styled.div`
 
 const Body = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: ${px2rem(14)};
+  flex-direction: row;
+  gap: ${px2rem(20)};
+
+  .leftColumnView {
+    display: flex;
+    flex-direction: column;
+    gap: ${px2rem(24)};
+    flex: 1;
+  }
+
+  .rightColumnView {
+    display: flex;
+    flex-direction: column;
+    gap: ${px2rem(24)};
+    flex: 1;
+  }
 `;
 
 const Footer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: ${px2rem(14)};
 `;
 
-export { Container, Header, Divider, Body, Footer };
+const RowInfo = styled.div`
+  flex-direction: row;
+  display: flex;
+  align-items: baseline;
+`;
+
+const BoxDappContainer = styled.div`
+  flex-direction: column;
+  display: grid;
+  flex: 1;
+  gap: 2rem;
+  padding: 0.2rem;
+  grid-template-columns: repeat(2, 1fr);
+`;
+
+const BoxDapp = styled.div`
+  position: relative;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  background-color: #f6f6f6;
+  border-radius: ${px2rem(8)};
+  padding: ${px2rem(12)};
+  gap: ${px2rem(20)};
+
+  .logoWapper {
+  }
+  .title {
+  }
+`;
+
+export { Container, Header, Divider, Body, Footer, RowInfo, BoxDapp, BoxDappContainer };

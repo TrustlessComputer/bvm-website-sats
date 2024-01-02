@@ -54,7 +54,8 @@ const ContentBox = styled.div`
   /* background-color: ${({ theme }) => theme.background_secondary}; */
   background-color: #f3f1e8;
   border-radius: ${px2rem(32)};
-  padding: ${px2rem(32)};
+  margin-top: ${px2rem(10)};
+
   ${MediaQueryBuilder(
     'md',
     css`

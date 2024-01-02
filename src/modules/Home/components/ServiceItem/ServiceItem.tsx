@@ -20,6 +20,7 @@ import configs from '@/configs';
 import Living from '@/components/Living';
 import { getTCL1Explorer } from '@/modules/Account/History/History.helper';
 import { AddressZero } from '@ethersproject/constants';
+import px2rem from '@/utils/px2rem';
 
 type props = {
   item: OrderItem;
@@ -107,6 +108,32 @@ const ServiceItem = (props: props) => {
   //   );
   // };
 
+  const renderRowInforDetail = (lable: string, content: string) => {
+    return (
+      <S.RowInfo>
+        <Text
+          size="16"
+          style={{
+            color: '#000',
+            fontWeight: '600',
+            minWidth: px2rem(200),
+          }}
+        >
+          {lable}
+        </Text>
+        <Text
+          size="16"
+          style={{
+            color: '#000',
+            opacity: 0.6,
+          }}
+        >
+          {content}
+        </Text>
+      </S.RowInfo>
+    );
+  };
+
   return (
     <>
       <S.Container
@@ -118,13 +145,13 @@ const ServiceItem = (props: props) => {
       >
         <S.Header>
           <div className="leftView">
-            <IconSVG maxWidth="46" src={`/assets/storage_ic.svg`} className="mr-8" />
-            <Text size="24" fontWeight="semibold" className="mb-8">
+            <IconSVG maxWidth="41" src={`/assets/storage_ic.svg`} />
+            <Text size="24" fontWeight="semibold">
               {mapper.computerIndexer}
             </Text>
           </div>
           <div className="rightView">
-            <IconSVG maxWidth="46" src={`/assets/bridge_ic.svg`} className="mr-8" />
+            {/* <IconSVG maxWidth="41" src={`/assets/bridge_ic.svg`} />
             <div className="groupDapps">
               <Text size="13" fontWeight="regular">
                 {'Pre-Installed Dapps'}
@@ -132,12 +159,58 @@ const ServiceItem = (props: props) => {
               <Text size="16" fontWeight="semibold">
                 {'Trustless Bridge'}
               </Text>
-            </div>
+            </div> */}
+
+            <Row gap={22}>
+              <Living color={mapper.color} />
+              <div>
+                <Text size="20" color={mapper.color as any} fontFamily="Sora-SemiBold">
+                  {mapper.status}
+                </Text>
+              </div>
+            </Row>
           </div>
         </S.Header>
         <S.Divider />
-        <S.Body></S.Body>
-        <S.Footer></S.Footer>
+        <S.Body>
+          <div className="leftColumnView">
+            {renderRowInforDetail('Computer name', `${item.chainName || ''}`)}
+            {renderRowInforDetail('Block time', `${mapper.blockTime || ''}`)}
+            {renderRowInforDetail('Data availability layer', `${mapper.dataAvailabilityLayer || ''}`)}
+          </div>
+          <div className="rightColumnView">
+            {renderRowInforDetail('Network type', `${item.isMainnet ? 'Bitcoin Mainnet' : 'Bitcoin Testnet'}`)}
+            {renderRowInforDetail('Deployer', `${mapper.deployer}`)}
+            {renderRowInforDetail(
+              'Launch date',
+              `${formatUnixDateTime({
+                dateTime: item.createAt,
+                formatPattern: 'MMMM DD, YYYY',
+              })}`,
+            )}
+          </div>
+        </S.Body>
+        <S.Divider />
+        <S.Footer>
+          <Text
+            size="16"
+            style={{
+              color: '#000',
+              fontWeight: '500',
+              opacity: 0.7,
+            }}
+          >
+            Pre-Installed Dapps
+          </Text>
+          <S.BoxDappContainer>
+            <S.BoxDapp>
+              <IconSVG maxWidth="41" src={`/assets/bridge_ic.svg`} />
+              <Text size="16" fontWeight="semibold">
+                {'Trustless Bridge'}
+              </Text>
+            </S.BoxDapp>
+          </S.BoxDappContainer>
+        </S.Footer>
       </S.Container>
       <OrderDetail show={showOrderDetail} onClose={() => setShowOrderDetail(false)} orderId={item.orderId} />
     </>
