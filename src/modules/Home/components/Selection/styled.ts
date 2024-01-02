@@ -7,7 +7,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: center;
   gap: ${px2rem(16)};
   margin-bottom: ${px2rem(8)};
   background-color: #f3f1e8;
@@ -26,6 +25,16 @@ const Container = styled.div`
       }
     `,
   )}
+`;
+
+const LeftView = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const RightView = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 const NetworkTypeHead = styled.div`
@@ -76,13 +85,13 @@ const ButtonNumber = styled.div<{ isActive: boolean }>`
   border: 1px solid transparent;
 
   cursor: pointer;
-  color: ${({ isActive, theme }) => (isActive ? '#006440' : '#B3B3B3')};
+  color: ${({ isActive, theme }) => (isActive ? '#000000' : '#B3B3B3')};
   background-color: #fff;
   ${({ isActive, theme }) =>
     isActive &&
     css`
       font-weight: 600 !important;
-      border: 1px solid #006440;
+      border: 1px solid #000000;
     `};
 
   :hover {
@@ -90,4 +99,19 @@ const ButtonNumber = styled.div<{ isActive: boolean }>`
   }
 `;
 
-export { Container, NetworkTypeHead, NetworkListTypeBox, NetworkTypeBox, TabItem, ButtonNumber };
+const WrapperCheckBox = styled.div`
+  padding: ${px2rem(8)} ${px2rem(12)};
+  border-radius: 100px;
+  background-color: #fff;
+`;
+export {
+  Container,
+  NetworkTypeHead,
+  NetworkListTypeBox,
+  NetworkTypeBox,
+  TabItem,
+  ButtonNumber,
+  WrapperCheckBox,
+  LeftView,
+  RightView,
+};

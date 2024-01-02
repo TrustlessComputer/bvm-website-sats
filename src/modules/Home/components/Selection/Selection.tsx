@@ -1,6 +1,7 @@
 import * as S from './styled';
 import React from 'react';
 import CheckBox from '@/components/Icons/CheckBox';
+import HeaderRow from '@/modules/Home/components/HeaderRow';
 
 export enum ListType {
   My,
@@ -22,19 +23,6 @@ export interface SelectionProps {
 const Selection = ({ type, network, onChangeType, onChangeNetwork }: SelectionProps) => {
   return (
     <S.Container>
-      {/* <S.TabItem
-        size="18"
-        isActive={network.isMainnet}
-        onClick={() => {
-          onChangeNetwork({
-            isMainnet: true,
-            isTestnet: false,
-          });
-        }}
-      >
-        Mainnet
-      </S.TabItem> */}
-
       <S.ButtonNumber
         isActive={network.isMainnet}
         onClick={() => {
@@ -46,20 +34,6 @@ const Selection = ({ type, network, onChangeType, onChangeNetwork }: SelectionPr
       >
         Mainnet
       </S.ButtonNumber>
-      {/* 
-      <S.TabItem
-        size="18"
-        isActive={network.isTestnet}
-        onClick={() => {
-          onChangeNetwork({
-            isMainnet: false,
-            isTestnet: true,
-          });
-        }}
-      >
-        Testnet
-      </S.TabItem> */}
-
       <S.ButtonNumber
         isActive={network.isTestnet}
         onClick={() => {
@@ -72,14 +46,16 @@ const Selection = ({ type, network, onChangeType, onChangeNetwork }: SelectionPr
         Testnet
       </S.ButtonNumber>
 
-      <CheckBox
-        className="checkbox"
-        checked={type === ListType.My}
-        label="Show only my Computers"
-        onChange={checked => {
-          onChangeType(checked ? ListType.My : ListType.All);
-        }}
-      />
+      <S.WrapperCheckBox>
+        <CheckBox
+          className="checkbox"
+          checked={type === ListType.My}
+          label="Show only my Computers"
+          onChange={checked => {
+            onChangeType(checked ? ListType.My : ListType.All);
+          }}
+        />
+      </S.WrapperCheckBox>
     </S.Container>
   );
 };

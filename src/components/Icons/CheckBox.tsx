@@ -43,7 +43,9 @@ const CheckBox = ({ label, checked, onChange, className }: CheckBoxProps) => {
           <IconSVG color="text_primary" type="stroke" src={UnChecked} maxWidth="18" />
         )}
       </Box>
-      <Text size="18">{label}</Text>
+      <Text size="18" fontWeight="medium">
+        {label}
+      </Text>
     </Container>
   );
 };

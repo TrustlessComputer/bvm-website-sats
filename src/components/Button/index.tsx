@@ -22,6 +22,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variantColor?: keyof ColorsTheme;
   gap?: number;
   borderRadius?: number;
+  bgColor?: string;
 }
 
 const Button = ({
@@ -36,6 +37,7 @@ const Button = ({
   variantColor = undefined,
   gap = 16,
   borderRadius = 12,
+  bgColor = undefined,
   ...props
 }: PropsWithChildren<ButtonProps>) => {
   return (
@@ -47,6 +49,9 @@ const Button = ({
       textColor={textColor as string}
       variantColor={variantColor as string}
       borderRadius={borderRadius}
+      style={{
+        backgroundColor: bgColor,
+      }}
       {...props}
     >
       {loading?.isLoading && <Spinner size={loading?.size || 12} color={loading.color || 'white'} />}

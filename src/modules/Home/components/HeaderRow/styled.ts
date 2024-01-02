@@ -7,8 +7,9 @@ import { Settings } from 'react-feather';
 const Container = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: start;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   gap: ${px2rem(32)};
   flex-wrap: wrap;
   background-color: #f3f1e8;
@@ -24,8 +25,9 @@ const Actions = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: flex-end;
+  overflow: hidden;
+  border-radius: 100px;
   gap: ${px2rem(32)};
 `;
 

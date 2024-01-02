@@ -28,19 +28,21 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
   };
   return (
     <S.Container>
+      <Selection type={type} network={network} onChangeType={onChangeType} onChangeNetwork={onChangeNetwork} />
       <S.Actions>
         {isAuthenticated ? (
           <Button
             sizes="normal"
             variants="primary"
+            bgColor="#00C250"
             onClick={() => {
               goBuildPage();
             }}
             disabled={configs.DISABLED_FEATURES.DEPLOY}
           >
-            <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
+            {/* <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" /> */}
             <div>
-              <Text color="text_reverse" fontWeight="semibold">
+              <Text color="white" fontWeight="semibold">
                 Get started for free
               </Text>
             </div>
@@ -53,13 +55,12 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
             disabled={loading}
             onClick={handleConnect}
           >
-            Connect wallet
+            Connect wallet 12345
           </Button>
         )}
         {!!isAuthenticated && <S.MenuBar onClick={onToggleDrawer} />}
         <AccountDrawer open={showDrawer} onClose={onToggleDrawer} />
       </S.Actions>
-      <Selection type={type} network={network} onChangeType={onChangeType} onChangeNetwork={onChangeNetwork} />
     </S.Container>
   );
 };
