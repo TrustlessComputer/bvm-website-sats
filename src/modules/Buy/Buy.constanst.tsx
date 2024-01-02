@@ -16,6 +16,7 @@ export enum DALayerEnum {
   DALayer_BTC = 11,
   DALayer_Goerli = 12,
   DALayer_Celestia = 13,
+  DALayer_Eigen = 14,
 }
 
 export const DALayerEnumMap = {
@@ -23,6 +24,7 @@ export const DALayerEnumMap = {
   [DALayerEnum.DALayer_BTC]: 'Bitcoin Only',
   [DALayerEnum.DALayer_Goerli]: 'Bitcoin + Ethereum (Goerli)',
   [DALayerEnum.DALayer_Celestia]: 'Bitcoin + Celestia',
+  [DALayerEnum.DALayer_Eigen]: 'Bitcoin + Eigen',
 };
 
 // ------------------------------------------------------------------------------------
