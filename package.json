@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev-clean": "rm -rf ./node_modules/.vite && yarn dev",
-    "build": "vite build --base=/bvm-blockchains-iframe",
+    "build": "vite build --base=/bvm-website-sats-iframe",
     "serve": "vite preview",
     "serve:dist": "http-server dist",
     "lint": "eslint . --ext .ts,.tsx",

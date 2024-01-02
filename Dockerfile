@@ -24,8 +24,8 @@ RUN yarn build
 FROM nginx:stable as runner
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-RUN mkdir -p /usr/share/nginx/html/bvm-blockchains-iframe
-COPY --from=builder /app/dist /usr/share/nginx/html/bvm-blockchains-iframe
+RUN mkdir -p /usr/share/nginx/html/bvm-website-sats-iframe
+COPY --from=builder /app/dist /usr/share/nginx/html/bvm-website-sats-iframe
 
 COPY etc/nginx/nginx-docker.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
