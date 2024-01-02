@@ -50,12 +50,16 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
         ) : (
           <Button
             sizes="normal"
-            variants="outline"
+            bgColor="#00C250"
             loading={{ isLoading: loading, color: 'button_primary' }}
             disabled={loading}
             onClick={handleConnect}
           >
-            Connect wallet 12345
+            <div>
+              <Text color="white" fontWeight="semibold">
+                Connect Wallet
+              </Text>
+            </div>
           </Button>
         )}
         {!!isAuthenticated && <S.MenuBar onClick={onToggleDrawer} />}
