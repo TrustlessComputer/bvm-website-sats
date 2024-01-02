@@ -28,7 +28,7 @@ const Redirect = () => {
 
   React.useEffect(() => {
     if (showHeader && !isLocal) {
-      window.location.href = location.pathname.replace(PREFIX, '/tc');
+      window.location.href = location.pathname.replace(PREFIX, '/blockchains');
     }
   }, [isLocal, location.pathname, showHeader]);
   return <></>;
