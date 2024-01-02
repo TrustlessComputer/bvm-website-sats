@@ -16,7 +16,7 @@ import addChain from '@/utils/addChain';
 import { NOS_EXPLORER_URL } from '@/chains';
 import { Row } from '@/components/Row';
 import IconSVG from '@/components/IconSVG';
-import configs from '@/configs';
+import configs, { CDN_ICONS_URL } from '@/configs';
 import Living from '@/components/Living';
 import { getTCL1Explorer } from '@/modules/Account/History/History.helper';
 import { AddressZero } from '@ethersproject/constants';
@@ -206,7 +206,7 @@ const ServiceItem = (props: props) => {
           <S.BoxDappContainer>
             <S.BoxDapp>
               {/* <IconSVG maxWidth="41" src={`/assets/bridge_ic.svg`} /> */}
-              <SvgInset size={41} svgUrl={`/assets/bridge_ic.svg`} />
+              <SvgInset size={41} svgUrl={`${CDN_ICONS_URL}/ic-bridge.svg`} />
               <Text size="16" fontWeight="semibold">
                 {'Trustless Bridge'}
               </Text>
