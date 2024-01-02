@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "author": "bvm-blockchains",
+  "engines": {
+    "node": ">=16.0.0",
+    "yarn": ">=1.22.0",
+    "npm": "please-use-yarn"
+  },
   "scripts": {
     "dev": "vite",
     "dev-clean": "rm -rf ./node_modules/.vite && yarn dev",
