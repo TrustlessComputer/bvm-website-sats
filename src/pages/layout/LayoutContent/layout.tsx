@@ -18,9 +18,9 @@ const Layout = (props: IProps) => {
       <Meta />
       <S.Container isDark={parentDark} isPadding={isShowHeader}>
         {isShowHeader && <Header parentDark={parentDark} />}
-        <S.SubHeaderWrapper>
+        {/* <S.SubHeaderWrapper>
           <SubHeader />
-        </S.SubHeaderWrapper>
+        </S.SubHeaderWrapper> */}
         <S.Body>
           <S.PageWrapper>
             <Outlet />
