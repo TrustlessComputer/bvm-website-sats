@@ -24,11 +24,11 @@ const BaseText = styled.p<{
   // FONT-WEIGHT
   &.weight-bold {
     font-weight: 700;
-    font-family: ${({ fontFamily }) => (fontFamily.toLowerCase().includes('bold') ? fontFamily : 'Sora-Bold')};
+    font-family: ${({ fontFamily }) => (fontFamily.toLowerCase().includes('bold') ? fontFamily : 'Helvetica Neue')};
   }
   &.weight-semibold {
     font-weight: 600;
-    font-family: ${({ fontFamily }) => (fontFamily.toLowerCase().includes('semibold') ? fontFamily : 'Sora-SemiBold')};
+    font-family: ${({ fontFamily }) => (fontFamily.toLowerCase().includes('semibold') ? fontFamily : 'Helvetica Neue')};
   }
   &.weight-medium {
     font-weight: 500;

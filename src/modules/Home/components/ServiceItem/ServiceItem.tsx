@@ -126,7 +126,8 @@ const ServiceItem = (props: props) => {
           size="16"
           style={{
             color: '#000',
-            opacity: 0.6,
+            fontWeight: '400',
+            opacity: 0.7,
           }}
         >
           {content}
@@ -147,7 +148,13 @@ const ServiceItem = (props: props) => {
         <S.Header>
           <div className="leftView">
             <SvgInset size={41} svgUrl={`${CDN_ICONS_URL}/ic-storage.svg`} />
-            <Text size="24" fontWeight="semibold">
+            <Text
+              size="24"
+              style={{
+                fontWeight: 430,
+                color: '#000',
+              }}
+            >
               {mapper.computerIndexer}
             </Text>
           </div>
@@ -165,7 +172,14 @@ const ServiceItem = (props: props) => {
             <Row gap={22}>
               <Living color={mapper.color} />
               <div>
-                <Text size="20" color={mapper.color as any} fontFamily="Sora-SemiBold">
+                <Text
+                  size="20"
+                  color={mapper.color as any}
+                  style={{
+                    fontWeight: 500,
+                  }}
+                  fontFamily="Helvetica Neue"
+                >
                   {mapper.status}
                 </Text>
               </div>

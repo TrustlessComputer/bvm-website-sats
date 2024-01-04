@@ -83,6 +83,7 @@ const ButtonNumber = styled.div<{ isActive: boolean }>`
   padding: ${px2rem(8)} ${px2rem(16)};
   border-radius: 100px;
   border: 1px solid transparent;
+  font-size: 14px;
 
   cursor: pointer;
   color: ${({ isActive, theme }) => (isActive ? '#000000' : '#B3B3B3')};

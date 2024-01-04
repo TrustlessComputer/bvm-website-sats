@@ -13,7 +13,8 @@ export type FontFamily =
   | 'Sora'
   | 'Sora-Medium'
   | 'Sora-SemiBold'
-  | 'Sora-Bold';
+  | 'Sora-Bold'
+  | 'Helvetica Neue';
 
 type TText = {
   fontWeight?: 'bold' | 'semibold' | 'medium' | 'regular' | 'light';
@@ -58,7 +59,7 @@ const Text = ({
   className,
   maxWidth = 'none',
   onClick,
-  fontFamily = 'Sora',
+  fontFamily = 'Helvetica Neue',
   wordBreak = 'normal',
   ...rest
 }: PropsWithChildren<TText>) => {

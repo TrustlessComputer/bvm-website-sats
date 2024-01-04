@@ -76,3 +76,27 @@
     font-weight: 500;
   }
 }
+
+
+
+// New Font 
+@font-face {
+  font-family: 'Helvetica Neue';
+  font-weight: 400;
+  font-style: normal;
+  src: url(/fonts/HelveticaNeueLight.otf);
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  font-weight: 500;
+  font-style: normal;
+  src: url(/fonts/HelveticaNeueMedium.ttf);
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  font-weight: 600;
+  font-style: normal;
+  src: url(/fonts/HelveticaNeueBold.ttf);
+}

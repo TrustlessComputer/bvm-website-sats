@@ -17,7 +17,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: ${px2rem(12)};
+  gap: ${px2rem(8)};
   cursor: pointer;
   :hover {
     opacity: 0.8;
@@ -43,7 +43,7 @@ const CheckBox = ({ label, checked, onChange, className }: CheckBoxProps) => {
           <IconSVG color="text_primary" type="stroke" src={UnChecked} maxWidth="18" />
         )}
       </Box>
-      <Text size="18" fontWeight="medium">
+      <Text size="14" fontWeight="medium">
         {label}
       </Text>
     </Container>
