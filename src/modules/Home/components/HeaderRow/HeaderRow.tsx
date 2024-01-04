@@ -57,7 +57,8 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
           >
             <div>
               <Text color="white" fontWeight="semibold">
-                Connect Wallet
+                {/* Connect Wallet */}
+                Get started for free
               </Text>
             </div>
           </Button>
