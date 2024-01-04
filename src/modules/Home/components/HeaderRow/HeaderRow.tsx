@@ -34,7 +34,7 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
           <Button
             sizes="normal"
             variants="primary"
-            bgColor="#00C250"
+            bgColor="#FF7E21"
             onClick={() => {
               goBuildPage();
             }}
@@ -50,7 +50,7 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
         ) : (
           <Button
             sizes="normal"
-            bgColor="#00C250"
+            bgColor="#FF7E21"
             loading={{ isLoading: loading, color: 'button_primary' }}
             disabled={loading}
             onClick={handleConnect}

@@ -50,7 +50,7 @@ const Selection = ({ type, network, onChangeType, onChangeNetwork }: SelectionPr
         <CheckBox
           className="checkbox"
           checked={type === ListType.My}
-          label="Show only my Computers"
+          label="Show only my Bitcoin L2s"
           onChange={checked => {
             onChangeType(checked ? ListType.My : ListType.All);
           }}
