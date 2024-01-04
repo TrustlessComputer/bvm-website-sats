@@ -225,14 +225,6 @@ const ServiceItem = (props: props) => {
                 {'Trustless Bridge'}
               </Text>
             </S.BoxDapp>
-
-            <S.BoxDapp>
-              {/* <IconSVG maxWidth="41" src={`/assets/bridge_ic.svg`} /> */}
-              <SvgInset size={41} svgUrl={`${CDN_ICONS_URL}/ic-artifacts.svg`} />
-              <Text size="16" fontWeight="semibold">
-                {'Bitcoin Artifacts'}
-              </Text>
-            </S.BoxDapp>
           </S.BoxDappContainer>
         </S.Footer>
       </S.Container>
