@@ -60,7 +60,7 @@ const ServiceList = () => {
       return (
         <S.UnKnowContent>
           <Text size="32" fontWeight="semibold">
-            No computers available
+            No Bitcoin L2s available
           </Text>
           <Empty />
         </S.UnKnowContent>
