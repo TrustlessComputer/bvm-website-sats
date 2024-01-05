@@ -832,7 +832,7 @@ const BuyPage = React.memo((props: Props) => {
             onClick={() => handleSubmit({ bypassEmail: false })}
           >
             <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
-            Build a computer
+            {isMainnet ? 'Contact us' : 'Build a Bitcoin L2'}
           </Button>
         </S.FooterActions>
       </S.FooterView>
