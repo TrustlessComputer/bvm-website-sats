@@ -189,7 +189,7 @@ const ServiceItem = (props: props) => {
         <S.Divider />
         <S.Body>
           <div className="leftColumnView">
-            {renderRowInforDetail('Computer name', `${item.chainName || ''}`)}
+            {renderRowInforDetail('Name', `${item.chainName || ''}`)}
             {renderRowInforDetail('Block time', `${mapper.blockTime || ''}`)}
             {renderRowInforDetail('Data availability layer', `${mapper.dataAvailabilityLayer || ''}`)}
           </div>
