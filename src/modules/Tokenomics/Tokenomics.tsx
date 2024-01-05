@@ -37,6 +37,7 @@ const Tokenomics = () => {
             onClick={() => {
               window.open(configs.BUY_TC_URL, '_blank');
             }}
+            bgColor="#FF7E21"
           >
             Get BVM
           </Button>
