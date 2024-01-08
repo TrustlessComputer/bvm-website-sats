@@ -43,7 +43,7 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
             {/* <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" /> */}
             <div>
               <Text color="white" fontWeight="semibold">
-                Launch your Bitcoin L2
+                Build
               </Text>
             </div>
           </Button>
@@ -53,12 +53,15 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
             bgColor="#FF7E21"
             loading={{ isLoading: loading, color: 'button_primary' }}
             disabled={loading}
-            onClick={handleConnect}
+            onClick={() => {
+              // handleConnect();
+              goBuildPage();
+            }}
           >
             <div>
               <Text color="white" fontWeight="semibold">
                 {/* Connect Wallet */}
-                Launch your Bitcoin L2
+                Build
               </Text>
             </div>
           </Button>

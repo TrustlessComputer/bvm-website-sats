@@ -42,6 +42,7 @@ import configs from '@/configs';
 import { MessageCircle } from 'react-feather';
 import { Row } from '@/components/Row';
 import { EmailVerifier } from '@/components/EmailVerifier';
+import { ModalsContext } from '@/contexts/modals.context';
 
 type Props = {
   onSuccess?: () => void;
@@ -56,7 +57,10 @@ const BuyPage = React.memo((props: Props) => {
   const userGamefi = useAppSelector(userGamefiByAddressSelector)(account);
   const onFetchData = useFetchUserData();
   const { search } = useLocation();
+  const { toggleContact } = useContext(ModalsContext);
+
   const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
+
   const accountInfo = useAppSelector(accountInfoSelector);
 
   const urlParams = new URLSearchParams(search);
@@ -85,6 +89,16 @@ const BuyPage = React.memo((props: Props) => {
   const isMainnet = useMemo(() => {
     return buyBuilderState.network === NetworkEnum.Network_Mainnet;
   }, [buyBuilderState.network]);
+
+  const confirmBtnTitle = useMemo(() => {
+    if (isMainnet) {
+      return 'Contact us';
+    } else if (!isAuthenticated) {
+      return 'Connect Wallet';
+    } else {
+      return 'Build a Bitcoin L2';
+    }
+  }, [isMainnet, accountInfo]);
 
   useEffect(() => {
     const getChainIDRandomFunc = async () => {
@@ -534,8 +548,16 @@ const BuyPage = React.memo((props: Props) => {
 
         if (subdomainErrorMessage || isTyping || !buyBuilderState.chainName) return;
 
-        if (!accountInfo?.emailVerified && !bypassEmail) {
-          return setShowVerifyEmail(true);
+        if (isMainnet) {
+          // return setShowVerifyEmail(true);/
+          //SHOW FORM CONTACT US!
+          // return setShowContacUseForm(true);
+          toggleContact();
+          return;
+        } else {
+          // if (!accountInfo?.emailVerified && !bypassEmail) {
+          //   return setShowVerifyEmail(true);
+          // }
         }
 
         setLoading(true);
@@ -547,7 +569,6 @@ const BuyPage = React.memo((props: Props) => {
         const blockTime = buyBuilderState.blockTime;
         const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
         const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
-        const isMainnet = buyBuilderState.network === NetworkEnum.Network_Mainnet;
 
         const params: IOrderBuyReq = {
           serviceType: ServiceTypeEnum.DEFAULT, //hard code
@@ -832,7 +853,7 @@ const BuyPage = React.memo((props: Props) => {
             onClick={() => handleSubmit({ bypassEmail: false })}
           >
             <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
-            {isMainnet ? 'Contact us' : 'Build a Bitcoin L2'}
+            {confirmBtnTitle}
           </Button>
         </S.FooterActions>
       </S.FooterView>
