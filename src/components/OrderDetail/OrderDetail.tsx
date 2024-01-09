@@ -34,11 +34,17 @@ const OrderDetail = (props: IProps) => {
         )}
         <OrderRow label="Network type" value={order.isMainnet ? 'Bitcoin Mainnet' : 'Bitcoin Testnet'} />
         <S.HorizontalLine />
-        {!!order.rpc && mapper.isShowLink && <OrderRow label="RPC URL" value={order.rpc} link={order.rpc} />}
+        {/* {!!order.rpc && mapper.isShowLink && <OrderRow label="RPC URL" value={order.rpc} link={order.rpc} />} */}
+
+        {<OrderRow label="RPC URL" value={order.rpc} link={order.rpc} />}
+
         <OrderRow label="Chain ID" value={order.chainId} />
-        {!!order.explorer && mapper.isShowLink && (
+        {/* {!!order.explorer && mapper.isShowLink && (
           <OrderRow label="Block explorer URL" value={order.explorer} link={order.explorer} />
-        )}
+        )} */}
+
+        {<OrderRow label="Block explorer URL" value={order.explorer} link={order.explorer} />}
+
         {!!order.monitorLink && mapper.isShowLink && (
           <OrderRow label="Monitor URL" value={order.monitorLink} link={order.monitorLink} />
         )}
@@ -62,13 +68,13 @@ const OrderDetail = (props: IProps) => {
         )}
         {order.isOwner && (
           <>
-            <S.HorizontalLine />
-            <OrderRow label="Setup cost" value={order.setupCostFormatted + ' BVM'} subLabel="(one time)" />
-            <OrderRow label="Operation cost" value={order.serviceFeeFormatted + ' BVM'} subLabel="(monthly)" />
-            {isHasValue(order.rollupCost) && (
+            {/* <S.HorizontalLine /> */}
+            {/* <OrderRow label="Setup cost" value={order.setupCostFormatted + ' BVM'} subLabel="(one time)" />
+            <OrderRow label="Operation cost" value={order.serviceFeeFormatted + ' BVM'} subLabel="(monthly)" /> */}
+            {/* {isHasValue(order.rollupCost) && (
               <OrderRow label="Rollup cost" value={order.rollupCostFormatted + ' BVM'} subLabel="(monthly - est)" />
-            )}
-            <OrderRow label="Order ID" value={order.orderId} />
+            )} */}
+            {/* <OrderRow label="Order ID" value={order.orderId} /> */}
           </>
         )}
         <OrderRow label="Status" color={mapper.color as any} value={mapper.status} />
