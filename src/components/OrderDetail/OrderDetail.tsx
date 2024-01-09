@@ -43,15 +43,17 @@ const OrderDetail = (props: IProps) => {
           <OrderRow label="Monitor URL" value={order.monitorLink} link={order.monitorLink} />
         )}
         {!!isHasValue(order.reward) && <OrderRow label="Collected fees" value={order.rewardFormatted + ' BVM'} />}
-        {!!isHasValue(order.nextBillingAt) && <OrderRow label="Next billing at" value={mapper.nextBillingFormatted} />}
-        {!!order.l2BridgeContract && (
+        {!!isHasValue(order.nextBillingAt) && order.isMainnet && (
+          <OrderRow label="Next billing at" value={mapper.nextBillingFormatted} />
+        )}
+        {!!order.l2BridgeContract && order.isMainnet && (
           <OrderRow
             label="L2 bridge contract"
             value={order.l2BridgeContract}
             link={`${order.explorer}/address/${order.l2BridgeContract}`}
           />
         )}
-        {!!order.l2PortalContract && (
+        {!!order.l2PortalContract && order.isMainnet && (
           <OrderRow
             label="L2 portal contract"
             value={order.l2PortalContract}
