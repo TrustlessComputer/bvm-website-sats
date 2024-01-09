@@ -43,7 +43,7 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
             {/* <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" /> */}
             <div>
               <Text color="white" fontWeight="semibold">
-                Build
+                Build your Bitcoin L2
               </Text>
             </div>
           </Button>
@@ -61,7 +61,7 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
             <div>
               <Text color="white" fontWeight="semibold">
                 {/* Connect Wallet */}
-                Build
+                Build your Bitcoin L2
               </Text>
             </div>
           </Button>
