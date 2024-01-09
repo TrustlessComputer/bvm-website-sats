@@ -33,8 +33,8 @@ const ServiceList = () => {
   const serviceDataList = React.useMemo(() => {
     const filterByNetwork = (orders: OrderItem[]) => {
       if (network.isTestnet && network.isMainnet) return orders;
-      if (network.isTestnet) return orders.filter(order => !order.isMainnet);
-      if (network.isMainnet) return orders.filter(order => order.isMainnet);
+      if (network.isTestnet) return orders.filter(order => !order.isMainnet).sort((a, b) => b.index - a.index);
+      if (network.isMainnet) return orders.filter(order => order.isMainnet).sort((a, b) => b.index - a.index);
       return [];
     };
     if (type === ListType.My) {
