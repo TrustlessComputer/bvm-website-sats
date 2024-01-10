@@ -8,6 +8,7 @@ export type BuyDataBuilder = {
   rollupProtocol: ItemDetail[];
   blockTime: ItemDetail[];
   plugin: ItemDetail[];
+  nativeTokenPayingGas: ItemDetail[];
 };
 
 export type ItemDetail = {

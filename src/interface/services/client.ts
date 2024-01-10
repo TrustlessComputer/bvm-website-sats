@@ -84,6 +84,9 @@ interface OrderItemResp {
   index: number;
   isConstant: boolean;
   plugins: IPlugin[];
+  preMint?: number;
+  preMintAddress?: string;
+  PreMintAmount?: string;
 }
 
 interface HistoryItemResp {
@@ -146,6 +149,10 @@ interface IOrderBuyReq {
   isMainnet: boolean;
   userName: string;
   pluginIds: number[];
+  nativeTokenPayingGas: number;
+  preMintAmount?: string;
+  preMintAddress?: string;
+  ticker?: string;
 }
 
 interface IWithdrawFundReq {

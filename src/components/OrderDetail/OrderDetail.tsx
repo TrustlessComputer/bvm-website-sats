@@ -36,6 +36,7 @@ const OrderDetail = (props: IProps) => {
         <S.HorizontalLine />
         {/* {!!order.rpc && mapper.isShowLink && <OrderRow label="RPC URL" value={order.rpc} link={order.rpc} />} */}
 
+        {<OrderRow label="Native token" value={`${order.preMint === 0 ? 'BVM' : '---'}`} />}
         {<OrderRow label="RPC URL" value={order.rpc} link={order.rpc} />}
 
         <OrderRow label="Chain ID" value={order.chainId} />
@@ -66,17 +67,17 @@ const OrderDetail = (props: IProps) => {
             link={`${order.explorer}/address/${order.l2PortalContract}`}
           />
         )}
-        {order.isOwner && (
+        {/* {order.isOwner && (
           <>
-            {/* <S.HorizontalLine /> */}
-            {/* <OrderRow label="Setup cost" value={order.setupCostFormatted + ' BVM'} subLabel="(one time)" />
-            <OrderRow label="Operation cost" value={order.serviceFeeFormatted + ' BVM'} subLabel="(monthly)" /> */}
-            {/* {isHasValue(order.rollupCost) && (
+            <S.HorizontalLine />
+            <OrderRow label="Setup cost" value={order.setupCostFormatted + ' BVM'} subLabel="(one time)" />
+            <OrderRow label="Operation cost" value={order.serviceFeeFormatted + ' BVM'} subLabel="(monthly)" />
+            {isHasValue(order.rollupCost) && (
               <OrderRow label="Rollup cost" value={order.rollupCostFormatted + ' BVM'} subLabel="(monthly - est)" />
-            )} */}
-            {/* <OrderRow label="Order ID" value={order.orderId} /> */}
+            )}
+            <OrderRow label="Order ID" value={order.orderId} />
           </>
-        )}
+        )} */}
         <OrderRow label="Status" color={mapper.color as any} value={mapper.status} />
       </S.Container>
     </BaseModal>

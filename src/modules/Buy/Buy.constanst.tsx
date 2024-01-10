@@ -88,8 +88,21 @@ export enum Layer1Enum {
   Ethereum = 2001,
 }
 
-// TO DO
 export const Layer1EnumMap = {
   [Layer1Enum.Bitcoin]: 'Bitcoin',
   [Layer1Enum.Ethereum]: 'Ethereum',
+};
+
+//
+//  Native token for paying transaction gas
+//
+
+export enum NativeTokenPayingGasEnum {
+  NativeTokenPayingGas_BVM = 0, //Default
+  NativeTokenPayingGas_PreMint = 1,
+}
+
+export const NativeTokenPayingGasMap = {
+  [NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM]: 'BVM',
+  [NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint]: 'Customized',
 };

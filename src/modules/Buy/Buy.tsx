@@ -10,14 +10,21 @@ import { useFetchUserData, useIsAuthenticated } from '@/state/user/hooks';
 import { getErrorMessage } from '@/utils';
 import formatter from '@/utils/amount';
 import sleep from '@/utils/sleep';
-import { Slider } from 'antd';
+import { Slider, Radio, RadioChangeEvent } from 'antd';
 import BigNumber from 'bignumber.js';
 import { debounce, throttle } from 'lodash';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Spinner } from '@/components/Spinner';
 import toast from 'react-hot-toast';
 import { MIN_GAS_PRICE, ServiceTypeEnum } from '../Account/Order/FormOrder.constants';
-import { DALayerEnum, NetworkEnum, PluginEnum, PluginTypeEnum, RollupEnum } from './Buy.constanst';
+import {
+  DALayerEnum,
+  NativeTokenPayingGasEnum,
+  NetworkEnum,
+  PluginEnum,
+  PluginTypeEnum,
+  RollupEnum,
+} from './Buy.constanst';
 import {
   convertDayToSeconds,
   dayDescribe,
@@ -43,6 +50,8 @@ import { MessageCircle } from 'react-feather';
 import { Row } from '@/components/Row';
 import { EmailVerifier } from '@/components/EmailVerifier';
 import { ModalsContext } from '@/contexts/modals.context';
+import CustomizeTokenModal from './CustomizeTokenModal';
+import CustomizeTokenView from './CustomizeTokenView';
 
 type Props = {
   onSuccess?: () => void;
@@ -59,7 +68,12 @@ const BuyPage = React.memo((props: Props) => {
   const { search } = useLocation();
   const { toggleContact } = useContext(ModalsContext);
 
+  const [paymentTransactionGas, setPaymentTransactionGas] = useState<NativeTokenPayingGasEnum>(
+    NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM,
+  );
+
   const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
+  // const [showCustomizeTokenModal, setShowCustomizeTokenModal] = useState<boolean>(true);
 
   const accountInfo = useAppSelector(accountInfoSelector);
 
@@ -71,6 +85,20 @@ const BuyPage = React.memo((props: Props) => {
   const [isTyping, setTyping] = useState<boolean>(false);
   const [isFetching, setFetching] = useState<boolean>(false);
   const initFirst = React.useRef<boolean>(true);
+
+  const [formDataCustomizeToken, setFormDataCustomizeToken] = useState<{
+    isError: boolean;
+    data:
+      | {
+          totalSupply: string;
+          receivingAddress: string;
+          tickerName: string;
+        }
+      | undefined;
+  }>({
+    isError: true,
+    data: undefined,
+  });
 
   const [subdomainErrorMessage, setSubdomainErrorMessage] = useState<string | undefined>(undefined);
   const [minGasPriceErrorMessage, setMinGasPriceErrorMessage] = useState<string | undefined>(undefined);
@@ -167,6 +195,7 @@ const BuyPage = React.memo((props: Props) => {
           isMainnet: isMainnet,
           userName: ((userGamefi || {}) as any)?.name || '',
           pluginIds: [PluginEnum.Plugin_Bridge],
+          nativeTokenPayingGas: NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM,
         };
         // console.log('CREATE ORDER BUY params ==>> ', params);
 
@@ -418,6 +447,52 @@ const BuyPage = React.memo((props: Props) => {
     );
   };
 
+  const renderTokenPayingGas = (props: SectionProps) => {
+    const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
+    const dataList: ItemDetail[] = isMainnet ? data[NetworkEnum.Network_Mainnet] : data[NetworkEnum.Network_Testnet];
+
+    return (
+      <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
+        <S.Space />
+        <S.Section>
+          <Radio.Group
+            onChange={(e: any) => {
+              setPaymentTransactionGas(e.target.value);
+            }}
+            value={paymentTransactionGas}
+          >
+            {dataList.map(item => {
+              return (
+                <Radio
+                  value={item.value}
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: '600px',
+                  }}
+                >
+                  {item.valueStr}
+                </Radio>
+              );
+            })}
+          </Radio.Group>
+          {paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint && (
+            <>
+              <S.Space />
+              <CustomizeTokenView
+                formDataCallback={(isError, data) => {
+                  setFormDataCustomizeToken({
+                    isError,
+                    data,
+                  });
+                }}
+              ></CustomizeTokenView>
+            </>
+          )}
+        </S.Section>
+      </Section>
+    );
+  };
+
   const onChangeComputerNameHandler = useCallback(
     debounce(async (text: string) => {
       if (!text || text.length < 1) {
@@ -570,7 +645,7 @@ const BuyPage = React.memo((props: Props) => {
         const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
         const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
 
-        const params: IOrderBuyReq = {
+        let params: IOrderBuyReq = {
           serviceType: ServiceTypeEnum.DEFAULT, //hard code
           domain: domain,
           chainId: String(chainID), //random
@@ -583,9 +658,23 @@ const BuyPage = React.memo((props: Props) => {
           isMainnet: isMainnet,
           userName: ((userGamefi || {}) as any)?.name || '',
           pluginIds: [PluginEnum.Plugin_Bridge],
+          nativeTokenPayingGas: paymentTransactionGas,
         };
 
-        // console.log('DEBUG [handleSubmit] params: ', params);
+        if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
+          if (formDataCustomizeToken.isError) return;
+          else
+            params = {
+              ...params,
+              preMintAmount: new BigNumber(formDataCustomizeToken.data?.totalSupply || '0')
+                .multipliedBy(1e18)
+                .toFixed(),
+              preMintAddress: formDataCustomizeToken.data?.receivingAddress,
+              ticker: formDataCustomizeToken.data?.tickerName,
+            };
+        }
+
+        console.log('DEBUG [handleSubmit] params: ', params);
 
         const result = await client.orderBuyAPI(params);
         await sleep(2);
@@ -626,7 +715,7 @@ const BuyPage = React.memo((props: Props) => {
       <S.Container>
         <S.LeftContainer>
           <div className="sticky">
-            <Image src={SectionImage} />
+            {/* <Image src={SectionImage} /> */}
             <Row align="center" justify="center" gap={16}>
               <MessageCircle />
               <div>
@@ -791,6 +880,19 @@ const BuyPage = React.memo((props: Props) => {
                 ),
               },
             })}
+            <div style={{ height: '2px' }}></div>
+            {/* Token for paying Transaction Gas */}
+            {data?.nativeTokenPayingGas &&
+              renderTokenPayingGas({
+                title: 'Native token for paying transaction gas',
+                desc: '',
+                data: data.nativeTokenPayingGas,
+                sectionType: 'nativeTokenPayingGas',
+                descriptionDetail: {
+                  title: '',
+                  content: '',
+                },
+              })}
 
             {/* Plugin */}
             {data?.plugin &&
@@ -871,6 +973,21 @@ const BuyPage = React.memo((props: Props) => {
           }}
         />
       )}
+
+      {/* {showCustomizeTokenModal && (
+        <CustomizeTokenModal
+          show={showCustomizeTokenModal}
+          onClose={() => {
+            setShowCustomizeTokenModal(false);
+          }}
+          onSuccess={async () => {
+            await handleSubmit({
+              bypassEmail: true,
+            });
+            setShowVerifyEmail(false);
+          }}
+        />
+      )} */}
     </>
   );
 });
