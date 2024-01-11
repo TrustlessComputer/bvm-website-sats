@@ -87,6 +87,7 @@ interface OrderItemResp {
   preMint?: number;
   preMintAddress?: string;
   PreMintAmount?: string;
+  ticker?: string;
 }
 
 interface HistoryItemResp {
