@@ -27,7 +27,6 @@ const Actions = styled.div`
   align-items: center;
   justify-content: flex-end;
   overflow: hidden;
-  border-radius: 100px;
   gap: ${px2rem(32)};
 `;
 

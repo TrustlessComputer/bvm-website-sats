@@ -107,8 +107,8 @@ const ButtonStyled = styled.button<{ textColor: string; variantColor: string; ga
   )}
 
   &:hover {
-    opacity: 0.9;
-    animation: mover 0.2s ease-in-out forwards;
+    opacity: 0.8;
+    /* animation: mover 0.2s ease-in-out forwards; */
   }
 
   &:disabled {

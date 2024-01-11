@@ -11,7 +11,6 @@ const Container = styled.div`
   margin-bottom: ${px2rem(8)};
   background-color: #f3f1e8;
   .checkbox {
-    margin-left: ${px2rem(8)};
   }
   ${MediaQueryBuilder(
     'md',
@@ -81,7 +80,7 @@ const TabItem = styled(Text)<{ isActive: boolean }>`
 const ButtonNumber = styled.div<{ isActive: boolean }>`
   margin-top: ${px2rem(1)};
   padding: ${px2rem(8)} ${px2rem(16)};
-  border-radius: 100px;
+  /* border-radius: 100px; */
   border: 1px solid transparent;
   font-size: 14px;
 
@@ -101,8 +100,7 @@ const ButtonNumber = styled.div<{ isActive: boolean }>`
 `;
 
 const WrapperCheckBox = styled.div`
-  padding: ${px2rem(8)} ${px2rem(12)};
-  border-radius: 100px;
+  padding: ${px2rem(8)} ${px2rem(20)};
   background-color: #fff;
 `;
 export {

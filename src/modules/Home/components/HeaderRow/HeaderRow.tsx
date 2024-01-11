@@ -34,23 +34,23 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
           <Button
             sizes="normal"
             variants="primary"
-            bgColor="#FF7E21"
+            borderRadius={0}
+            bgColor="#FA4E0E"
             onClick={() => {
               goBuildPage();
             }}
             disabled={configs.DISABLED_FEATURES.DEPLOY}
           >
             {/* <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" /> */}
-            <div>
-              <Text color="white" fontWeight="semibold">
-                Build your Bitcoin L2
-              </Text>
-            </div>
+            <Text color="white" fontWeight="semibold">
+              Build your Bitcoin L2
+            </Text>
           </Button>
         ) : (
           <Button
             sizes="normal"
-            bgColor="#FF7E21"
+            bgColor="#FA4E0E"
+            borderRadius={0}
             loading={{ isLoading: loading, color: 'button_primary' }}
             disabled={loading}
             onClick={() => {
@@ -58,12 +58,10 @@ const HeaderRow = ({ type, network, onChangeNetwork, onChangeType }: IProps) => 
               goBuildPage();
             }}
           >
-            <div>
-              <Text color="white" fontWeight="semibold">
-                {/* Connect Wallet */}
-                Build your Bitcoin L2
-              </Text>
-            </div>
+            <Text color="white" fontWeight="semibold">
+              {/* Connect Wallet */}
+              Build your Bitcoin L2
+            </Text>
           </Button>
         )}
         {!!isAuthenticated && <S.MenuBar onClick={onToggleDrawer} />}

@@ -9,7 +9,7 @@ const Container = styled.div`
   /* justify-content: space-between; */
   padding: ${px2rem(24)};
   min-height: ${px2rem(250)};
-  border-radius: ${px2rem(24)};
+  /* border-radius: ${px2rem(24)}; */
   /* background-image: url(${CardBg}); */
   background-repeat: no-repeat;
   background-size: cover;
@@ -18,8 +18,8 @@ const Container = styled.div`
   cursor: pointer;
 
   background-color: ${({ theme }) => theme.background};
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  border: 2px solid transparent;
+  /* box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); */
+  /* border: 2px solid transparent; */
 
   .hover-show {
     opacity: 0;
@@ -29,11 +29,11 @@ const Container = styled.div`
   }
   transition: all 0.2s ease-in-out;
   :hover {
-    .hover-show {
+    /* .hover-show {
       opacity: 1;
     }
     border-color: ${({ theme }) => theme.yellow['C']};
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); */
   }
 `;
 
