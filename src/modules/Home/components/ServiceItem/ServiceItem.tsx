@@ -218,7 +218,15 @@ const ServiceItem = (props: props) => {
             Pre-Installed Dapps
           </Text>
           <S.BoxDappContainer>
-            <S.BoxDapp>
+            <S.BoxDapp
+              onClick={(event: any) => {
+                const link = item.isConstant
+                  ? item.plugins?.[0].link
+                  : `${item.plugins?.[0].link}/?from=tc&to=${item.chainName}`;
+                event.stopPropagation();
+                window.open(link, '_blank');
+              }}
+            >
               {/* <IconSVG maxWidth="41" src={`/assets/bridge_ic.svg`} /> */}
               <SvgInset size={41} svgUrl={`${CDN_ICONS_URL}/ic-bridge.svg`} />
               <Text size="16" fontWeight="semibold">

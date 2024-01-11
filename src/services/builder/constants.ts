@@ -11,7 +11,9 @@ const getPlugins = ({ isProduction }: { isProduction: boolean }): Array<IPlugin>
       name: 'Trustless Bridge',
       description: '',
       image: 'https://cdn.trustless.domains/icons/ic-bridge.svg',
-      link: (isProduction ? 'https://trustlessbridge.io/' : 'https://dev.trustlessbridge.io/') + `?from=tc&to=nos`,
+      link:
+        (isProduction ? 'https://trustlessbridge.io/' : 'https://testnet.trustlessbridge.io/') +
+        `?tab=transfer&from=tc&to=nos`,
     },
   ];
 
