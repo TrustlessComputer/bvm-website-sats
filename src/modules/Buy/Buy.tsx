@@ -715,7 +715,7 @@ const BuyPage = React.memo((props: Props) => {
       <S.Container>
         <S.LeftContainer>
           <div className="sticky">
-            {/* <Image src={SectionImage} /> */}
+            <Image src={SectionImage} />
             <Row align="center" justify="center" gap={16}>
               <MessageCircle />
               <div>
