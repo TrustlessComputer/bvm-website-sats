@@ -24,7 +24,13 @@ const OrderDetail = (props: IProps) => {
   const mapper = useOrderMapper(order);
 
   return (
-    <BaseModal show={show} handleClose={onClose} title={mapper.computerIndexer} width={700}>
+    <BaseModal
+      show={show}
+      handleClose={onClose}
+      title={mapper.computerIndexer}
+      width={700}
+      handleDevMode={() => prompt(`Instance ID:`, order.instanceId)}
+    >
       <S.Container>
         <OrderRow label="Computer name" value={order.chainName} />
         {!mapper.isLayer1 && <OrderRow label="Rollup protocol" value="Optimistic rollups" />}

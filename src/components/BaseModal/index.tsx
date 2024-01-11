@@ -13,10 +13,21 @@ type Props = {
   width?: 500 | 600 | 700 | 750 | 800 | 900 | 1100 | 1200 | 1300 | 1500;
   onScrollBody?: (event: React.UIEvent<HTMLDivElement>) => void;
   titleAlign?: 'center' | 'left' | 'right' | 'unset';
+  handleDevMode?: () => void;
 };
 
 const BaseModal = (props: Props) => {
-  const { title, subTitle, children, show = false, handleClose, width, onScrollBody, titleAlign } = props;
+  const {
+    title,
+    subTitle,
+    children,
+    show = false,
+    handleClose,
+    width,
+    onScrollBody,
+    titleAlign,
+    handleDevMode,
+  } = props;
 
   return (
     <S.Container show={show} onHide={handleClose} centered width={width}>
@@ -24,6 +35,18 @@ const BaseModal = (props: Props) => {
         <S.CloseWrapper onClick={handleClose}>
           <XCircle size={32} strokeWidth={1} />
         </S.CloseWrapper>
+        {handleDevMode && (
+          <S.CloseWrapper
+            onClick={handleDevMode}
+            style={{
+              position: 'absolute',
+              left: 0,
+              opacity: 0,
+            }}
+          >
+            <XCircle size={32} strokeWidth={1} />
+          </S.CloseWrapper>
+        )}
       </Modal.Header>
       <Modal.Body onScroll={onScrollBody}>
         {title && (

@@ -98,7 +98,7 @@ const useOrderMapper = (order: OrderItem) => {
     if (order.isConstant) {
       computerIndexer = `${configs.APP_NAME} #${order.index}`;
     } else if (order.index !== 0) {
-      computerIndexer = `${configs.APP_NAME} #${order.index + 2}`;
+      computerIndexer = `${configs.APP_NAME} #${order.index}`;
     }
 
     const deployer = order.userName || (order.tcAddress ? order.tcAddress.slice(0, 6) : '');
