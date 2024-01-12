@@ -5,7 +5,7 @@ import { DALayerEnum } from '@/modules/Buy/Buy.constanst';
 
 const FinalizationPeriod = 604800 + ''; // 7 days
 
-const getPlugins = ({ isProduction }: { isProduction: boolean }): Array<IPlugin> => {
+const getPlugins = ({ isProduction, fromNetwork = "bitcoin", toNetwork = "trustless-computer" }: { isProduction: boolean, fromNetwork?: string, toNetwork?: string}): Array<IPlugin> => {
   const plugins = [
     {
       name: 'Trustless Bridge',
@@ -13,7 +13,7 @@ const getPlugins = ({ isProduction }: { isProduction: boolean }): Array<IPlugin>
       image: 'https://cdn.trustless.domains/icons/ic-bridge.svg',
       link:
         (isProduction ? 'https://trustlessbridge.io/' : 'https://testnet.trustlessbridge.io/') +
-        `?tab=transfer&from=tc&to=nos`,
+        `?tab=transfer&from=${fromNetwork}&to=${toNetwork}`,
     },
   ];
 
@@ -54,7 +54,7 @@ const COMPUTERS: Array<OrderItemResp> = [
     rpc: 'https://tc-node.trustless.computer/',
     rollupCost: '0',
     userName: 'NBC team',
-    plugins: getPlugins({ isProduction: true }),
+    plugins: getPlugins({ isProduction: true, fromNetwork: "bitcoin", toNetwork: "trustless-computer"}),
   },
   {
     // NOS mainnet
@@ -89,7 +89,7 @@ const COMPUTERS: Array<OrderItemResp> = [
     rpc: 'https://node.l2.trustless.computer/',
     rollupCost: '0',
     userName: 'NBC team',
-    plugins: getPlugins({ isProduction: true }),
+    plugins: getPlugins({ isProduction: true, fromNetwork: "bitcoin", toNetwork: "alpha"}),
   },
   {
     // Trustless layer 1 (Testnet)
@@ -124,7 +124,7 @@ const COMPUTERS: Array<OrderItemResp> = [
     rpc: 'https://tc-node-manual.regtest.trustless.computer',
     rollupCost: '0',
     userName: 'NBC team',
-    plugins: getPlugins({ isProduction: false }),
+    plugins: getPlugins({ isProduction: false, fromNetwork: "bitcoin", toNetwork: "trustless-computer"}),
   },
   {
     createAt: '1685240226',
@@ -158,7 +158,7 @@ const COMPUTERS: Array<OrderItemResp> = [
     rpc: 'https://l2-node.regtest.trustless.computer/',
     rollupCost: '0',
     userName: 'NBC team',
-    plugins: getPlugins({ isProduction: false }),
+    plugins: getPlugins({ isProduction: false, fromNetwork: "bitcoin", toNetwork: "alpha"}),
   },
   {
     createAt: '1704067200',
@@ -192,7 +192,7 @@ const COMPUTERS: Array<OrderItemResp> = [
     rpc: 'https://l2-node.regtest.trustless.computer/',
     rollupCost: '0',
     userName: 'Naka team',
-    plugins: getPlugins({ isProduction: false }),
+    plugins: getPlugins({ isProduction: false, fromNetwork: "bitcoin", toNetwork: "trustless-computer"}),
   },
   {
     // Naka mainnet
@@ -227,7 +227,7 @@ const COMPUTERS: Array<OrderItemResp> = [
     rpc: 'https://node.nakachain.xyz/',
     rollupCost: '0',
     userName: 'Naka team',
-    plugins: getPlugins({ isProduction: true }),
+    plugins: getPlugins({ isProduction: true, fromNetwork: "bitcoin", toNetwork: "trustless-computer"}),
   },
 ];
 
