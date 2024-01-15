@@ -460,6 +460,11 @@ const BuyPage = React.memo((props: Props) => {
               setPaymentTransactionGas(e.target.value);
             }}
             value={paymentTransactionGas}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '15px',
+            }}
           >
             {dataList.map(item => {
               return (
@@ -477,7 +482,6 @@ const BuyPage = React.memo((props: Props) => {
           </Radio.Group>
           {paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint && (
             <>
-              <S.Space />
               <CustomizeTokenView
                 formDataCallback={(isError, data) => {
                   setFormDataCustomizeToken({
@@ -489,6 +493,7 @@ const BuyPage = React.memo((props: Props) => {
             </>
           )}
         </S.Section>
+        <S.Space />
       </Section>
     );
   };

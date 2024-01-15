@@ -6,7 +6,8 @@ const Container_2 = styled.div`
   display: flex;
   flex-direction: row;
   gap: ${px2rem(32)};
-  margin-bottom: ${px2rem(24)};
+  margin-top: ${px2rem(15)};
+  margin-bottom: ${px2rem(10)};
   ${MediaQueryBuilder(
     'lg',
     css`

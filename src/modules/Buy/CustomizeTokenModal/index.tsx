@@ -52,7 +52,7 @@ const CustomizeTokenModal = (props: IProps) => {
   });
 
   return (
-    <BaseModal show={show} handleClose={onClose} title="Customized Token">
+    <BaseModal show={show} handleClose={onClose} title="Custom Native Token">
       <form id="contact" onSubmit={formik.handleSubmit}>
         <S.Container>
           <S.InputBox>

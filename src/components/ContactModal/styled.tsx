@@ -18,7 +18,7 @@ const Container = styled.div`
 const InputBox = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${px2rem(24)};
+  gap: ${px2rem(20)};
   flex: 1;
 `;
 
