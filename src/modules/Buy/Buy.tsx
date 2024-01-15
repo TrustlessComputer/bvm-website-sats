@@ -882,7 +882,7 @@ const BuyPage = React.memo((props: Props) => {
             })}
             <div style={{ height: '2px' }}></div>
             {/* Token for paying Transaction Gas */}
-            {/* {data?.nativeTokenPayingGas &&
+            {data?.nativeTokenPayingGas &&
               renderTokenPayingGas({
                 title: 'Native token for paying transaction gas',
                 desc: '',
@@ -892,7 +892,7 @@ const BuyPage = React.memo((props: Props) => {
                   title: '',
                   content: '',
                 },
-              })} */}
+              })}
 
             {/* Plugin */}
             {data?.plugin &&
