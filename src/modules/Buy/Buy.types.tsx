@@ -9,6 +9,7 @@ export type BuyDataBuilder = {
   blockTime: ItemDetail[];
   plugin: ItemDetail[];
   nativeTokenPayingGas: ItemDetail[];
+  gasLimit: ItemDetail[];
 };
 
 export type ItemDetail = {
@@ -31,6 +32,7 @@ export type BuyBuilderSelectState = {
   pluginIds: number[];
   withdrawPeriod: number;
   minGasPrice: string;
+  gasLimit: string;
   // layer1: Layer1Enum;
 };
 

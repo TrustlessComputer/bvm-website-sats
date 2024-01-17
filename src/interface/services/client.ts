@@ -154,6 +154,7 @@ interface IOrderBuyReq {
   preMintAmount?: string;
   preMintAddress?: string;
   ticker?: string;
+  gasLimit: number;
 }
 
 interface IWithdrawFundReq {

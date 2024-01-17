@@ -16,7 +16,7 @@ import { debounce, throttle } from 'lodash';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Spinner } from '@/components/Spinner';
 import toast from 'react-hot-toast';
-import { MIN_GAS_PRICE, ServiceTypeEnum } from '../Account/Order/FormOrder.constants';
+import { GAS_LITMIT, MIN_GAS_PRICE, ServiceTypeEnum } from '../Account/Order/FormOrder.constants';
 import {
   DALayerEnum,
   NativeTokenPayingGasEnum,
@@ -102,6 +102,7 @@ const BuyPage = React.memo((props: Props) => {
 
   const [subdomainErrorMessage, setSubdomainErrorMessage] = useState<string | undefined>(undefined);
   const [minGasPriceErrorMessage, setMinGasPriceErrorMessage] = useState<string | undefined>(undefined);
+  const [gasLimitErrorMessage, setGasLimitErrorMessage] = useState<string | undefined>(undefined);
 
   const [totalCost, setTotalCost] = useState<any>('0');
   const [isTotalCostFetching, setTotalCostFetching] = useState<boolean>(false);
@@ -196,6 +197,7 @@ const BuyPage = React.memo((props: Props) => {
           userName: ((userGamefi || {}) as any)?.name || '',
           pluginIds: [PluginEnum.Plugin_Bridge],
           nativeTokenPayingGas: NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM,
+          gasLimit: GAS_LITMIT,
         };
         // console.log('CREATE ORDER BUY params ==>> ', params);
 
@@ -221,7 +223,7 @@ const BuyPage = React.memo((props: Props) => {
   }, [buyBuilderState, isMainnet]);
 
   const isDisabledSubmit = useMemo(() => {
-    return loading || isTyping || !!subdomainErrorMessage || !!minGasPriceErrorMessage;
+    return loading || isTyping || !!subdomainErrorMessage || !!minGasPriceErrorMessage || !!gasLimitErrorMessage;
   }, [loading, isTyping, subdomainErrorMessage]);
 
   const totalCostStr = useMemo(() => {
@@ -498,6 +500,44 @@ const BuyPage = React.memo((props: Props) => {
     );
   };
 
+  const renderGasLimitSection = (props: SectionProps) => {
+    const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
+    return (
+      <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
+        <S.Space />
+        <S.Section>
+          <TextInput2
+            placeholder=""
+            id={'MinGasPrice-ID'}
+            value={buyBuilderState.gasLimit}
+            onBlur={e => {
+              onChangeGasLimitPriceHandler(e.target.value);
+            }}
+            onChange={e => {
+              const value = e.target.value;
+              setBuyBuilderState({
+                ...buyBuilderState,
+                gasLimit: value,
+              });
+              onChangeGasLimitPriceHandler(value);
+            }}
+            type="number"
+            step={'any'}
+            autoComplete="off"
+            spellCheck={false}
+            onWheel={(e: any) => e?.target?.blur()}
+          />
+          {gasLimitErrorMessage && !isTyping && (
+            <Text size="14" fontWeight="regular" color="negative">
+              {gasLimitErrorMessage}
+            </Text>
+          )}
+        </S.Section>
+        <S.Space />
+      </Section>
+    );
+  };
+
   const onChangeComputerNameHandler = useCallback(
     debounce(async (text: string) => {
       if (!text || text.length < 1) {
@@ -532,6 +572,14 @@ const BuyPage = React.memo((props: Props) => {
       setMinGasPriceErrorMessage(`Min gas price must be at least ${MIN_GAS_PRICE} Gwei.`);
     } else {
       setMinGasPriceErrorMessage(undefined);
+    }
+  };
+
+  const onChangeGasLimitPriceHandler = (text: string) => {
+    if (!text || text.length < 1) {
+      setGasLimitErrorMessage('Min gas litmit is required.');
+    } else {
+      setGasLimitErrorMessage(undefined);
     }
   };
 
@@ -626,7 +674,7 @@ const BuyPage = React.memo((props: Props) => {
           }
         }
 
-        if (subdomainErrorMessage || isTyping || !buyBuilderState.chainName) return;
+        if (subdomainErrorMessage || gasLimitErrorMessage || isTyping || !buyBuilderState.chainName) return;
 
         if (isMainnet) {
           // return setShowVerifyEmail(true);/
@@ -649,6 +697,7 @@ const BuyPage = React.memo((props: Props) => {
         const blockTime = buyBuilderState.blockTime;
         const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
         const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
+        const gasLimit = buyBuilderState.gasLimit;
 
         let params: IOrderBuyReq = {
           serviceType: ServiceTypeEnum.DEFAULT, //hard code
@@ -664,6 +713,7 @@ const BuyPage = React.memo((props: Props) => {
           userName: ((userGamefi || {}) as any)?.name || '',
           pluginIds: [PluginEnum.Plugin_Bridge],
           nativeTokenPayingGas: paymentTransactionGas,
+          gasLimit: Number(gasLimit || GAS_LITMIT),
         };
 
         if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
@@ -861,6 +911,15 @@ const BuyPage = React.memo((props: Props) => {
               },
             })}
 
+            {/* Gas Limit */}
+            {renderGasLimitSection({
+              title: 'Block gas limit',
+              desc: 'Which block gas limit is right for you?',
+              data: data.gasLimit,
+              sectionType: 'gasLimit',
+              descriptionDetail: undefined,
+            })}
+
             {/* Withdrawal Period (SLIDER)*/}
             {renderWithdrawalPeriod({
               title: 'Withdrawal Period',
@@ -890,13 +949,10 @@ const BuyPage = React.memo((props: Props) => {
             {data?.nativeTokenPayingGas &&
               renderTokenPayingGas({
                 title: 'Native token for paying transaction gas',
-                desc: '',
+                desc: 'Which native token is right for you?',
                 data: data.nativeTokenPayingGas,
                 sectionType: 'nativeTokenPayingGas',
-                descriptionDetail: {
-                  title: '',
-                  content: '',
-                },
+                descriptionDetail: undefined,
               })}
 
             {/* Plugin */}

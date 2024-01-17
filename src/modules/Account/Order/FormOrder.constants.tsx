@@ -13,6 +13,7 @@ export const CHAIN_NAME_MAX_LENGTH = 30;
 export const MIN_BLOCK_TIME = 2; //2 seconds (x)
 
 export const MIN_GAS_PRICE = 1; // 1 gweis
+export const GAS_LITMIT = 30000000; //
 
 export const EVNS_LIST = [EnvironmentsEnum.Mainnet, EnvironmentsEnum.Testnet];
 

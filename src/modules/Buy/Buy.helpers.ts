@@ -1,7 +1,7 @@
 import client from '@/services/client';
 import { BuyBuilderSelectState } from './Buy.types';
 import { DALayerEnum, NetworkEnum, PluginEnum, RollupEnum } from './Buy.constanst';
-import { MIN_GAS_PRICE } from '../Account/Order/FormOrder.constants';
+import { GAS_LITMIT, MIN_GAS_PRICE } from '../Account/Order/FormOrder.constants';
 import { PriceType, PriceTypeList } from '../Price/constants';
 
 export const getChainIDRandom = async () => {
@@ -69,6 +69,7 @@ export const getBuyBuilderStateInit = (type?: string | null): BuyBuilderSelectSt
     withdrawPeriod: 7,
     chainName: '',
     minGasPrice: `${MIN_GAS_PRICE}`,
+    gasLimit: `${GAS_LITMIT}`,
   };
 
   if (type === undefined || type === null) return dataInit;
