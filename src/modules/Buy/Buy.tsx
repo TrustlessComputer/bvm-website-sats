@@ -1,4 +1,4 @@
-import SectionImage from '@/assets/images/image_section_1.png';
+import SectionImage from '@/assets/images/robot_build.png';
 import Button from '@/components/Button';
 import Text from '@/components/Text';
 import { TextInput2 } from '@/components/TextInput/TextInput2';
