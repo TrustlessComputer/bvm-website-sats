@@ -155,6 +155,7 @@ interface IOrderBuyReq {
   preMintAddress?: string;
   ticker?: string;
   gasLimit: number;
+  twitter_id?: string | null;
 }
 
 interface IWithdrawFundReq {

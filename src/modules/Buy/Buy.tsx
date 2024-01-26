@@ -683,9 +683,9 @@ const BuyPage = React.memo((props: Props) => {
           toggleContact();
           return;
         } else {
-          // if (!accountInfo?.emailVerified && !bypassEmail) {
-          //   return setShowVerifyEmail(true);
-          // }
+          if (!accountInfo?.emailVerified && !bypassEmail) {
+            return setShowVerifyEmail(true);
+          }
         }
 
         setLoading(true);
@@ -714,6 +714,7 @@ const BuyPage = React.memo((props: Props) => {
           pluginIds: [PluginEnum.Plugin_Bridge],
           nativeTokenPayingGas: paymentTransactionGas,
           gasLimit: Number(gasLimit || GAS_LITMIT),
+          twitter_id: parent.localStorage.getItem('TWITTER_TOKEN'),
         };
 
         if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
