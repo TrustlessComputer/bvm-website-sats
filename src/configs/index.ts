@@ -45,6 +45,9 @@ const DISABLED_FEATURES = {
   DEPLOY: false,
 };
 
+const PERP_API_URL = ENVS.VITE_PUBLIC_PERP_API;
+// const PERP_API_URL = 'https://api.bvm.network';
+
 const configs = {
   isDev,
   isProd,
@@ -66,6 +69,7 @@ const configs = {
   ISSUE_TOKEN_URL,
   CROWD_URL,
   DAO_URL,
+  PERP_API_URL,
 };
 
 export const CDN_ICONS_URL = `${CDN_URL}/nbc/icons/bvm-icons`;

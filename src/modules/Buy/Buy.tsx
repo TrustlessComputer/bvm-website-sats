@@ -52,6 +52,7 @@ import { EmailVerifier } from '@/components/EmailVerifier';
 import { ModalsContext } from '@/contexts/modals.context';
 import CustomizeTokenModal from './CustomizeTokenModal';
 import CustomizeTokenView from './CustomizeTokenView';
+import { getUser } from './Buy.TwitterUtil';
 
 type Props = {
   onSuccess?: () => void;
@@ -699,6 +700,16 @@ const BuyPage = React.memo((props: Props) => {
         const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
         const gasLimit = buyBuilderState.gasLimit;
 
+        const twitterAccessToken = parent.localStorage.getItem('TWITTER_TOKEN');
+
+        let twitterID;
+        let userTwitterInfor;
+
+        if (twitterAccessToken && twitterAccessToken.length > 0) {
+          userTwitterInfor = await getUser(twitterAccessToken);
+          twitterID = userTwitterInfor?.twitter_id;
+        }
+
         let params: IOrderBuyReq = {
           serviceType: ServiceTypeEnum.DEFAULT, //hard code
           domain: domain,
@@ -714,7 +725,7 @@ const BuyPage = React.memo((props: Props) => {
           pluginIds: [PluginEnum.Plugin_Bridge],
           nativeTokenPayingGas: paymentTransactionGas,
           gasLimit: Number(gasLimit || GAS_LITMIT),
-          twitter_id: parent.localStorage.getItem('TWITTER_TOKEN'),
+          twitter_id: twitterID,
         };
 
         if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
