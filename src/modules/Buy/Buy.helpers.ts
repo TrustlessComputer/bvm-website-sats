@@ -103,6 +103,6 @@ export const getBuyBuilderStateInit = (type?: string | null): BuyBuilderSelectSt
 export const getRandonComputerName = (isMainnet: boolean) => {
   const prefix = 'Bitcoin Virtual Machine';
   const suffix = isMainnet ? '' : '(Testnet)';
-  const randomNumber = Math.floor(Math.random() * 900) + 100; //random from 100 -> 999
+  const randomNumber = Math.floor(Math.random() * 9000) + 1000; //random from 100 -> 999
   return `${prefix}-${randomNumber}${suffix ? `-${suffix}` : ''}`;
 };
