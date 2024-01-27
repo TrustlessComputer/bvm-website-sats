@@ -169,7 +169,9 @@ const EmailVerifier = (props: IProps) => {
                 id="verifyCode"
                 placeholder="Enter your verification code"
                 autoFocus={true}
-                onChange={formik.handleChange}
+                onChange={e => {
+                  formik.setFieldValue('verifyCode', e.target.value);
+                }}
                 value={formik.values.verifyCode}
                 error={formik.touched.verifyCode && formik.errors.verifyCode}
                 autoComplete="off"
