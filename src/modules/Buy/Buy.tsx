@@ -684,9 +684,9 @@ const BuyPage = React.memo((props: Props) => {
           toggleContact();
           return;
         } else {
-          if (!accountInfo?.emailVerified && !bypassEmail) {
-            return setShowVerifyEmail(true);
-          }
+          // if (!accountInfo?.emailVerified && !bypassEmail) {
+          //   return setShowVerifyEmail(true);
+          // }
         }
 
         setLoading(true);
