@@ -700,8 +700,7 @@ const BuyPage = React.memo((props: Props) => {
         const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
         const gasLimit = buyBuilderState.gasLimit;
 
-        const twitterAccessToken = parent.localStorage.getItem('TWITTER_TOKEN');
-
+        const twitterAccessToken = parent?.localStorage?.getItem('TWITTER_TOKEN');
         let twitterID;
         let userTwitterInfor;
 

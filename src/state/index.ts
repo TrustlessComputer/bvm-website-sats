@@ -14,7 +14,7 @@ const persistConfig = {
   key: 'root',
   storage,
   whitelist: ['application'],
-  blacklist: ['user'],
+  blacklist: ['useL2Service'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
