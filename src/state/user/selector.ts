@@ -3,7 +3,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { UserState } from '@/state/user/reducer';
 import { AccountInfo } from '@/interface/services/client';
 
-export const userSelector = (state: RootState): UserState => state.useL2Service;
+export const userSelector = (state: RootState): UserState => state.userL2Service;
 
 const isAuthenticatedSelector = createSelector(userSelector, user => (tcAddress?: string) => {
   return tcAddress && (user.authen || {})[tcAddress.toLowerCase()];
