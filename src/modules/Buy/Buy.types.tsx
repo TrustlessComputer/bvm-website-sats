@@ -1,7 +1,10 @@
 import { DALayerEnum, IntervalChargeTimeEnum, NetworkEnum, PluginEnum, RollupEnum } from './Buy.constanst';
 import React from 'react';
 
-//Data Strcuture API
+// Buy Context
+export type IBuyContext = {};
+
+// Data Strcuture API
 export type BuyDataBuilder = {
   network: ItemDetail[];
   dataAvaibilityChain: ItemDetail[];
