@@ -786,7 +786,7 @@ const BuyPage = React.memo((props: Props) => {
               <MessageCircle />
               <div>
                 <Text size="14" align="center">
-                  Have questions about Bitcoin Virtual Machine?
+                  Have questions about Bitcoin L2?
                 </Text>
                 <Text size="12" align="center" className="discord">
                   <a href={configs.DISCORD_TRUSTLESS_URL} target="_blank">
@@ -799,11 +799,11 @@ const BuyPage = React.memo((props: Props) => {
         </S.LeftContainer>
         <S.RightContainer>
           <Text size="32" fontWeight="semibold" align="left" className="header">
-            Customize your Bitcoin Virtual Machine
+            Customize your Bitcoin L2
           </Text>
           <Text size="20" fontWeight="regular" align="left" className="header">
-            Bitcoin Virtual Machines are secure, low-cost, and lightning-fast L2 blockchains — fully loaded with DEX,
-            DAO, NFT marketplace, and the whole shebang!
+            Bitcoin L2s are secure, low-cost, and lightning-fast L2 blockchains — fully loaded with DEX, DAO, NFT
+            marketplace, and the whole shebang!
           </Text>
           <div className="sectionList">
             {/* Computer Name */}
@@ -880,7 +880,7 @@ const BuyPage = React.memo((props: Props) => {
             {data?.blockTime &&
               renderBlockTimeSection({
                 title: 'Block Time',
-                desc: 'How fast do you want your Bitcoin Virtual Machine to go?',
+                desc: 'How fast do you want your Bitcoin L2 to go?',
                 data: data?.blockTime,
                 sectionType: 'blockTime',
                 descriptionDetail: {
@@ -915,8 +915,7 @@ const BuyPage = React.memo((props: Props) => {
                 content: (
                   <p>
                     Similar to the minimum gas price on other EVM-based blockchains, the gas price for transactions
-                    within your Bitcoin Virtual Machine must be set to a value higher than or equal to the one you
-                    choose.
+                    within your Bitcoin L2 must be set to a value higher than or equal to the one you choose.
                   </p>
                 ),
               },
@@ -981,7 +980,7 @@ const BuyPage = React.memo((props: Props) => {
           <Row align="center">
             <IconSVG maxWidth="28" src={`${configs.CDN_APP_ICON_URL}/ic-computer.svg`} className="mr-8" />
             <Text size="18" fontWeight="semibold">
-              Bitcoin Virtual Machine
+              Bitcoin L2
             </Text>
           </Row>
           {!!data && (

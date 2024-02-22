@@ -155,7 +155,7 @@ const ServiceItem = (props: props) => {
                 color: '#000',
               }}
             >
-              {mapper.computerIndexer || `Bitcoin Virtual Machine #${item.index}`}
+              {mapper.computerIndexer || `Bitcoin L2 #${item.index}`}
             </Text>
           </div>
           <div className="rightView">

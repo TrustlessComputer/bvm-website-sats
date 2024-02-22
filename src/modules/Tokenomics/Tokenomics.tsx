@@ -28,8 +28,8 @@ const Tokenomics = () => {
             What is BVM?
           </Text>
           <Text size="18" fontFamily="Sora" maxWidth="800px">
-            BVM is the native cryptocurrency of Bitcoin Virtual Machine. When you use a Bitcoin dapp powered by Bitcoin
-            Virtual Machine, you’ll pay a transaction fee in BVM.
+            BVM is the native cryptocurrency of Bitcoin L2. When you use a Bitcoin dapp powered by Bitcoin Virtual
+            Machine, you’ll pay a transaction fee in BVM.
           </Text>
           <Button
             sizes="large"

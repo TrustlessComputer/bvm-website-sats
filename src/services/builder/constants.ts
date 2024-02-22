@@ -241,7 +241,7 @@ const COMPUTERS: Array<OrderItemResp> = [
 
 const QUICK_START: Array<IQuickStart> = [
   {
-    title: 'Build your Bitcoin Virtual Machine',
+    title: 'Build your Bitcoin L2',
     completed: true,
     type: QuickStartTypeEnum.CREATE,
   },

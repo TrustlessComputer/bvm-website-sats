@@ -39,7 +39,7 @@ const CHAIN_ID = {
   NAKA_CHAIN_MAINNET: 42223,
 };
 
-const APP_NAME = 'Bitcoin Virtual Machine';
+const APP_NAME = 'Bitcoin L2';
 
 const DISABLED_FEATURES = {
   DEPLOY: false,

@@ -9,7 +9,7 @@ import { Row } from '@/components/Row';
 import { ModalsContext } from '@/contexts/modals.context';
 
 const DESCRIPTION = [
-  'Bitcoin Virtual Machines are low-cost and lightning-fast Bitcoin L2 blockchains — fully loaded with DEX, DAO, NFT marketplace, and the whole shebang!',
+  'Bitcoin L2s are low-cost and lightning-fast Bitcoin L2 blockchains — fully loaded with DEX, DAO, NFT marketplace, and the whole shebang!',
 ];
 
 const Introduce = () => {

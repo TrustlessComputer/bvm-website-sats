@@ -1,5 +1,4 @@
-# Bitcoin Virtual Machine website - Blockchains
-
+# Bitcoin L2 website - Blockchains
 
 ## Requirements
 
