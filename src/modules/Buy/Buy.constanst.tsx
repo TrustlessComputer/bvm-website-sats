@@ -18,6 +18,10 @@ export enum DALayerEnum {
   DALayer_Celestia = 13,
   DALayer_Eigen = 14,
   DALayer_NearDa = 15,
+  DALayer_IPFS = 16,
+  DALayer_ARWEAVE = 17,
+  DALayer_AVAIL = 18,
+  DALayer_JACKAL = 19,
 }
 
 export const DALayerEnumMap = {
@@ -27,6 +31,10 @@ export const DALayerEnumMap = {
   [DALayerEnum.DALayer_Celestia]: 'Bitcoin + Celestia',
   [DALayerEnum.DALayer_Eigen]: 'Bitcoin + Eigen',
   [DALayerEnum.DALayer_NearDa]: 'Near',
+  [DALayerEnum.DALayer_IPFS]: 'Bitcoin + IPFS',
+  [DALayerEnum.DALayer_ARWEAVE]: 'Bitcoin + Arweave',
+  [DALayerEnum.DALayer_AVAIL]: 'Bitcoin + Avail',
+  [DALayerEnum.DALayer_JACKAL]: 'Bitcoin + Jackal',
 };
 
 // ------------------------------------------------------------------------------------
