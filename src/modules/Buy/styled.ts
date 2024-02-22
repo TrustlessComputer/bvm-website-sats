@@ -44,6 +44,9 @@ const Container = styled.div`
 `;
 
 const LeftContainer = styled.div`
+  display: flex;
+  flex: 1;
+
   .sticky {
     position: sticky;
     top: ${px2rem(0)};
