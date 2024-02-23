@@ -32,7 +32,7 @@ const OrderDetail = (props: IProps) => {
       handleDevMode={() => prompt(`Instance ID:`, order.instanceId)}
     >
       <S.Container>
-        <OrderRow label="Computer name" value={order.chainName} />
+        <OrderRow label="Bitcoin L2 Name" value={order.chainName} />
         {!mapper.isLayer1 && <OrderRow label="Rollup protocol" value="Optimistic rollups" />}
         {!!isHasValue(order.blockTime) && <OrderRow label="Block time" value={mapper.blockTime} />}
         {!!isHasValue(order.finalizationPeriod) && (

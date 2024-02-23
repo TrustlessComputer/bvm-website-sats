@@ -1,6 +1,6 @@
 export const HEADER_COLUMNS = [
   {
-    title: 'Computer name',
+    title: 'Bitcoin L2 Name',
     dataIndex: 'networkName',
     key: 'networkname',
     flex: 1.5,

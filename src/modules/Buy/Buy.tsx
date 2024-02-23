@@ -261,7 +261,7 @@ const BuyPage = React.memo((props: Props) => {
       <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
         <S.ListItemContainer>
           {dataList?.map((item, index) => {
-            const contentValue = item.value === NetworkEnum.Network_Mainnet ? item.price : '7-day free trial';
+            const contentValue = item.value === NetworkEnum.Network_Mainnet ? item.price : 'Free Trial';
             return (
               <React.Fragment key={`${item.valueStr} ${index}`}>
                 <Item
@@ -542,7 +542,7 @@ const BuyPage = React.memo((props: Props) => {
   const onChangeComputerNameHandler = useCallback(
     debounce(async (text: string) => {
       if (!text || text.length < 1) {
-        setSubdomainErrorMessage('Computer name is required.');
+        setSubdomainErrorMessage('Bitcoin L2 Name is required.');
         setTyping(false);
       }
 
@@ -587,7 +587,7 @@ const BuyPage = React.memo((props: Props) => {
   const renderComputerName = () => {
     return (
       <S.Section>
-        <Title text={'Computer Name'} />
+        <Title text={'Bitcoin L2 Name'} />
         <S.Space />
         <TextInput2
           placeholder=""
@@ -681,7 +681,10 @@ const BuyPage = React.memo((props: Props) => {
           // return setShowVerifyEmail(true);/
           //SHOW FORM CONTACT US!
           // return setShowContacUseForm(true);
-          toggleContact();
+          // toggleContact();
+
+          //Google Form
+          window.open('https://forms.gle/eUbL7nHuTPA3HLRz8', '_blank');
           return;
         } else {
           // if (!accountInfo?.emailVerified && !bypassEmail) {
@@ -789,8 +792,8 @@ const BuyPage = React.memo((props: Props) => {
                   Have questions about Bitcoin L2?
                 </Text>
                 <Text size="12" align="center" className="discord">
-                  <a href={configs.DISCORD_TRUSTLESS_URL} target="_blank">
-                    Chat with us via Discord
+                  <a href={configs.TELEGRAM_TRUSTLESS_URL} target="_blank">
+                    Chat with us via Telegram
                   </a>
                 </Text>
               </div>
