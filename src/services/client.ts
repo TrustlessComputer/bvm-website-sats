@@ -19,7 +19,7 @@ import {
   QuickStartTypeEnum,
 } from '@/interface/services/client';
 import configs from '@/configs';
-import { builderAccountInfo, builderBuyAdapterInfo, builderOrderList } from '@/services/builder/client';
+import { builderAccountInfo, builderOrderList } from '@/services/builder/client';
 import storageAuthen from '@/storage/storage.authen';
 import { COMPUTERS, QUICK_START } from '@/services/builder/constants';
 import { BuyDataBuilder } from '@/modules/Buy/Buy.types';
@@ -173,7 +173,6 @@ const getAllOrders = async (): Promise<OrderItem[]> => {
 const fetchBuyBuilderInfo = async (): Promise<BuyDataBuilder> => {
   try {
     const data = (await axios.get(`/order/available-list`)) as BuyDataBuilder;
-    // return builderBuyAdapterInfo(data);
     return data;
   } catch (error) {
     console.log('[fetchBuyBuilderInfo] ERROR: ', error);

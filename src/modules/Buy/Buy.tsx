@@ -1,22 +1,35 @@
 import SectionImage from '@/assets/images/robot_build.png';
+import { SupportedChainId } from '@/chains';
 import Button from '@/components/Button';
+import { EmailVerifier } from '@/components/EmailVerifier';
+import IconSVG from '@/components/IconSVG';
+import { Row } from '@/components/Row';
+import { Spinner } from '@/components/Spinner';
 import Text from '@/components/Text';
 import { TextInput2 } from '@/components/TextInput/TextInput2';
+import configs from '@/configs';
+import { ModalsContext } from '@/contexts/modals.context';
+import { WalletContext } from '@/contexts/wallet.context';
+import useRouteHelper from '@/hooks/useRouterHelper';
 import { IOrderBuyReq } from '@/interface/services/client';
 import { Image } from '@/modules/Wellcome/styled';
 import client from '@/services/client';
 import { useAppSelector } from '@/state/hooks';
 import { useFetchUserData, useIsAuthenticated } from '@/state/user/hooks';
+import { accountInfoSelector, userGamefiByAddressSelector } from '@/state/user/selector';
 import { getErrorMessage } from '@/utils';
 import formatter from '@/utils/amount';
 import sleep from '@/utils/sleep';
-import { Slider, Radio, RadioChangeEvent } from 'antd';
+import { useWeb3React } from '@web3-react/core';
+import { Radio, Slider } from 'antd';
 import BigNumber from 'bignumber.js';
 import { debounce, throttle } from 'lodash';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Spinner } from '@/components/Spinner';
+import { MessageCircle } from 'react-feather';
 import toast from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 import { GAS_LITMIT, MIN_GAS_PRICE, ServiceTypeEnum } from '../Account/Order/FormOrder.constants';
+import { getUser } from './Buy.TwitterUtil';
 import {
   DALayerEnum,
   NativeTokenPayingGasEnum,
@@ -32,27 +45,13 @@ import {
   getChainIDRandom,
   getRandonComputerName,
 } from './Buy.helpers';
-import { BuyDataBuilder, BuyBuilderSelectState, SectionProps, ItemDetail } from './Buy.types';
+import { BuyBuilderSelectState, BuyDataBuilder, ItemDetail, SectionProps } from './Buy.types';
+import CustomizeTokenView from './CustomizeTokenView';
 import Item from './components/Item';
+import Section from './components/Section';
 import Segment from './components/Segment';
 import Title from './components/Title';
 import * as S from './styled';
-import Section from './components/Section';
-import useRouteHelper from '@/hooks/useRouterHelper';
-import { WalletContext } from '@/contexts/wallet.context';
-import { SupportedChainId } from '@/chains';
-import { useLocation } from 'react-router-dom';
-import { useWeb3React } from '@web3-react/core';
-import { accountInfoSelector, userGamefiByAddressSelector } from '@/state/user/selector';
-import IconSVG from '@/components/IconSVG';
-import configs from '@/configs';
-import { MessageCircle } from 'react-feather';
-import { Row } from '@/components/Row';
-import { EmailVerifier } from '@/components/EmailVerifier';
-import { ModalsContext } from '@/contexts/modals.context';
-import CustomizeTokenModal from './CustomizeTokenModal';
-import CustomizeTokenView from './CustomizeTokenView';
-import { getUser } from './Buy.TwitterUtil';
 
 type Props = {
   onSuccess?: () => void;
@@ -111,14 +110,47 @@ const BuyPage = React.memo((props: Props) => {
 
   const [data, setData] = useState<BuyDataBuilder | undefined>(undefined);
   const [buyBuilderState, setBuyBuilderState] = useState<BuyBuilderSelectState>(builderStateInit);
+
+  const [dataAvaibilitySelected, setDataAvaibilitySelected] = useState<ItemDetail | undefined>(undefined);
+  const [blockTimeSelected, setBlockTimeSelected] = useState<ItemDetail | undefined>(undefined);
+
   console.log('SALE rollupProtocol: ', typeof data?.rollupProtocol);
   console.log('SALE buyBuilderState: ', buyBuilderState.rollupProtocol);
 
-  // console.log('DEBUG buyBuilderState: ', buyBuilderState);
+  console.log('DEBUG : ', {
+    buyBuilderState,
+    data,
+  });
 
   const isMainnet = useMemo(() => {
     return buyBuilderState.network === NetworkEnum.Network_Mainnet;
   }, [buyBuilderState.network]);
+
+  useEffect(() => {
+    // dataAvaibilityChain
+    if (data && buyBuilderState) {
+      const dataList = isMainnet
+        ? (data.dataAvaibilityChain[NetworkEnum.Network_Mainnet] as any[])
+        : (data.dataAvaibilityChain[NetworkEnum.Network_Testnet] as any[]);
+      const dataAvaiSelected = dataList.filter(item => item.value === buyBuilderState?.dataAvaibilityChain)[0];
+      setDataAvaibilitySelected(dataAvaiSelected);
+    } else {
+      setDataAvaibilitySelected(undefined);
+    }
+
+    // blockTime
+    if (data && buyBuilderState) {
+      const DAList: any[] = isMainnet
+        ? (data.blockTime[NetworkEnum.Network_Mainnet] as any[])
+        : (data.blockTime[NetworkEnum.Network_Testnet] as any[]);
+
+      const blockTimeList: any[] = DAList[buyBuilderState?.dataAvaibilityChain];
+      const selected = blockTimeList.filter(item => item.value === buyBuilderState?.blockTime)[0];
+      setBlockTimeSelected(selected);
+    } else {
+      setBlockTimeSelected(undefined);
+    }
+  }, [data, isMainnet, buyBuilderState.dataAvaibilityChain, buyBuilderState.blockTime]);
 
   const confirmBtnTitle = useMemo(() => {
     if (isMainnet) {
@@ -129,6 +161,17 @@ const BuyPage = React.memo((props: Props) => {
       return 'Build a Bitcoin L2';
     }
   }, [isMainnet, accountInfo]);
+
+  const networkObjectSelected = useMemo(() => {
+    return data?.network.filter(item => item.value === buyBuilderState.network)[0] || data?.network[0];
+  }, [isMainnet, buyBuilderState, data]);
+
+  const setupCostStr = useMemo(() => {
+    let str = networkObjectSelected?.priceNote || '';
+    str = str.replace('Setup cost:', '');
+    str = str.replace('per month', '');
+    return str || '';
+  }, [networkObjectSelected]);
 
   useEffect(() => {
     const getChainIDRandomFunc = async () => {
@@ -346,6 +389,7 @@ const BuyPage = React.memo((props: Props) => {
                       ...buyBuilderState,
                       [sectionType]: value,
                     });
+                    setDataAvaibilitySelected(item);
                   }}
                 />
               </React.Fragment>
@@ -1014,24 +1058,72 @@ const BuyPage = React.memo((props: Props) => {
             {isMainnet ? 'This process can take up to 12 hours' : 'This process can take up to 20 minutes'}
           </Text>
         </S.FooterInfo>
-        <S.FooterActions>
-          {isTotalCostFetching ? (
-            <Spinner size={24} />
-          ) : (
+        {!isMainnet ? (
+          <S.FooterActions>
             <Text size="26" fontWeight="semibold" align="left" className="cost">
               {totalCostStr}
             </Text>
-          )}
-          <Button
-            sizes="normal"
-            loading={{ isLoading: loading }}
-            disabled={isDisabledSubmit}
-            onClick={() => handleSubmit({ bypassEmail: false })}
-          >
-            <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
-            {confirmBtnTitle}
-          </Button>
-        </S.FooterActions>
+            <Button
+              sizes="normal"
+              loading={{ isLoading: loading }}
+              disabled={isDisabledSubmit}
+              onClick={() => handleSubmit({ bypassEmail: false })}
+            >
+              <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
+              {confirmBtnTitle}
+            </Button>
+          </S.FooterActions>
+        ) : (
+          <S.FooterActions2>
+            <Row align="center">
+              <IconSVG maxWidth="28" src={`${configs.CDN_APP_ICON_URL}/ic-computer.svg`} className="mr-8" />
+              <Text size="18" fontWeight="semibold">
+                Service costs
+              </Text>
+            </Row>
+            <Row gap={42}>
+              <div className="grid-content">
+                <Text size="16">
+                  <span>• Setup: </span>
+                  {setupCostStr}
+                </Text>
+                <Text size="16">
+                  <span>• Operation: </span>
+                  {networkObjectSelected?.price || ''}
+                </Text>
+              </div>
+              <div className="grid-content">
+                <Text size="16">
+                  <span>• Data Availability: </span>
+                  {`${dataAvaibilitySelected?.price || ''}`}
+                </Text>
+                <Text size="16">
+                  <span>• Block Time: </span>
+                  {`${blockTimeSelected?.price || ''}`}
+                </Text>
+              </div>
+            </Row>
+
+            <S.RowActionInfor>
+              {isTotalCostFetching ? (
+                <Spinner size={24} />
+              ) : (
+                <Text size="26" fontWeight="semibold" align="left" className="cost">
+                  {totalCostStr}
+                </Text>
+              )}
+              <Button
+                sizes="normal"
+                loading={{ isLoading: loading }}
+                disabled={isDisabledSubmit}
+                onClick={() => handleSubmit({ bypassEmail: false })}
+              >
+                <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
+                {confirmBtnTitle}
+              </Button>
+            </S.RowActionInfor>
+          </S.FooterActions2>
+        )}
       </S.FooterView>
       {showVerifyEmail && (
         <EmailVerifier

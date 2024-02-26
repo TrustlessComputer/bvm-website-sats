@@ -89,23 +89,4 @@ const builderAccountInfo = async (account: AccountInfoResp): Promise<AccountInfo
   };
 };
 
-const builderBuyAdapterInfo = async (data: BuyDataBuilder): Promise<BuyDataBuilder> => {
-  let result = {} as any;
-  for (const [key, value] of Object.entries(data)) {
-    const newList = value.map(v => ({
-      ...v,
-      priceStr: v.price
-        ? formatter.formatAmount({
-            originalAmount: new BigNumber(v.price || 0).toNumber(),
-            decimals: 18,
-            isCeil: false,
-            maxDigits: 6,
-          })
-        : undefined,
-    }));
-    result[key] = [...newList];
-  }
-  return result;
-};
-
-export { builderOrderList, builderAccountInfo, builderBuyAdapterInfo };
+export { builderOrderList, builderAccountInfo };

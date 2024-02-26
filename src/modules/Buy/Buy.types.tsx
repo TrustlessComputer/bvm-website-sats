@@ -4,9 +4,9 @@ import React from 'react';
 //Data Strcuture API
 export type BuyDataBuilder = {
   network: ItemDetail[];
-  dataAvaibilityChain: ItemDetail[];
+  dataAvaibilityChain: ItemDetail[] | any;
   rollupProtocol: ItemDetail[];
-  blockTime: ItemDetail[];
+  blockTime: ItemDetail[] | any;
   plugin: ItemDetail[];
   nativeTokenPayingGas: ItemDetail[];
   gasLimit: ItemDetail[];
