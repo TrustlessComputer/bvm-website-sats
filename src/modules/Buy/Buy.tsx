@@ -11,9 +11,9 @@ import configs from '@/configs';
 import { ModalsContext } from '@/contexts/modals.context';
 import { WalletContext } from '@/contexts/wallet.context';
 import useRouteHelper from '@/hooks/useRouterHelper';
-import { IOrderBuyReq } from '@/interface/services/client';
+import { IOrderBuyEstimateRespone, IOrderBuyReq } from '@/interface/services/client';
 import { Image } from '@/modules/Wellcome/styled';
-import client from '@/services/client';
+import client, { SubmitFormParams } from '@/services/client';
 import { useAppSelector } from '@/state/hooks';
 import { useFetchUserData, useIsAuthenticated } from '@/state/user/hooks';
 import { accountInfoSelector, userGamefiByAddressSelector } from '@/state/user/selector';
@@ -32,11 +32,16 @@ import { GAS_LITMIT, MIN_GAS_PRICE, ServiceTypeEnum } from '../Account/Order/For
 import { getUser } from './Buy.TwitterUtil';
 import {
   DALayerEnum,
+  FormErrorMessage,
   NativeTokenPayingGasEnum,
   NetworkEnum,
   PluginEnum,
   PluginTypeEnum,
   RollupEnum,
+  BitcoinValidityEnum,
+  NetworkEnumMap,
+  RollupEnumMap,
+  DALayerEnumMap,
 } from './Buy.constanst';
 import {
   convertDayToSeconds,
@@ -52,6 +57,10 @@ import Section from './components/Section';
 import Segment from './components/Segment';
 import Title from './components/Title';
 import * as S from './styled';
+import SubmitFormModal from './SubmitFormModal';
+import SubmitResultFormModal from './SubmitResultFormModal';
+import { ErrorMessage } from 'formik';
+import { TextArea } from '@/components/TextInput/TextArea';
 
 type Props = {
   onSuccess?: () => void;
@@ -73,7 +82,9 @@ const BuyPage = React.memo((props: Props) => {
   );
 
   const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
-  // const [showCustomizeTokenModal, setShowCustomizeTokenModal] = useState<boolean>(true);
+
+  const [showSubmitForm, setShowSubmitForm] = useState<boolean>(false);
+  const [showSubmitFormResult, setShowSubmitFormResult] = useState<boolean>(false);
 
   const accountInfo = useAppSelector(accountInfoSelector);
 
@@ -100,16 +111,32 @@ const BuyPage = React.memo((props: Props) => {
     data: undefined,
   });
 
+  const [networkErrorMessage, setNetworkErrorMessage] = useState<string | undefined>(undefined);
+  const [networkFocused, setNetworkFocused] = useState<boolean>(false);
+
   const [subdomainErrorMessage, setSubdomainErrorMessage] = useState<string | undefined>(undefined);
+  const [subdomainFocused, setSubdomainFocused] = useState<boolean>(false);
+
+  const [descriptionErrorMessage, setDescriptionErrorMessage] = useState<string | undefined>(undefined);
+  const [descriptionFocused, setDescriptionFocused] = useState<boolean>(false);
+
+  const [projectXAccountErrorMessage, setProjectXAccountErrorMessage] = useState<string | undefined>(undefined);
+  const [projectXAccountFocused, setProjectXAccountFocused] = useState<boolean>(false);
+
+  const [yourXAccountErrorMessage, setYourXAccountErrorMessage] = useState<string | undefined>(undefined);
+  const [yourXAccountFocused, settYourXAccountFocused] = useState<boolean>(false);
+  // const [yourTelegramErrorMessage, setYourTelegramErrorMessage] = useState<string | undefined>(undefined);
+
   const [minGasPriceErrorMessage, setMinGasPriceErrorMessage] = useState<string | undefined>(undefined);
   const [gasLimitErrorMessage, setGasLimitErrorMessage] = useState<string | undefined>(undefined);
 
-  const [totalCost, setTotalCost] = useState<any>('0');
   const [isTotalCostFetching, setTotalCostFetching] = useState<boolean>(false);
   const [chainIDRandom, setChainIDRandom] = useState<number | undefined>(undefined);
 
   const [data, setData] = useState<BuyDataBuilder | undefined>(undefined);
   const [buyBuilderState, setBuyBuilderState] = useState<BuyBuilderSelectState>(builderStateInit);
+
+  const [estimateData, setEstimateData] = useState<IOrderBuyEstimateRespone | undefined>(undefined);
 
   console.log('SALE rollupProtocol: ', typeof data?.rollupProtocol);
   console.log('SALE buyBuilderState: ', buyBuilderState.rollupProtocol);
@@ -125,37 +152,13 @@ const BuyPage = React.memo((props: Props) => {
 
   const confirmBtnTitle = useMemo(() => {
     if (isMainnet) {
-      return 'Contact us';
+      return 'Submit';
     } else if (!isAuthenticated) {
       return 'Connect Wallet';
     } else {
-      return 'Build a Bitcoin L2';
+      return 'Submit';
     }
   }, [isMainnet, accountInfo]);
-
-  const networkObjectSelected = useMemo(() => {
-    return data?.network.filter(item => item.value === buyBuilderState.network)[0] || data?.network[0];
-  }, [isMainnet, buyBuilderState, data]);
-
-  const setupCostStr = useMemo(() => {
-    let str = networkObjectSelected?.priceNote || '';
-    str = str.replace('Setup cost:', '');
-    str = str.replace('per month', '');
-    str = str.replace('BVM', '');
-    str = str.replace(' ', '');
-    str = trim(str);
-    return str || '';
-  }, [networkObjectSelected]);
-
-  const operationCostStr = useMemo(() => {
-    let str = networkObjectSelected?.price || '';
-    str = str.replace('Setup cost:', '');
-    str = str.replace('per month', '');
-    str = str.replace('BVM', '');
-    str = str.replace(' ', '');
-    str = trim(str);
-    return str || '';
-  }, [networkObjectSelected]);
 
   useEffect(() => {
     const getChainIDRandomFunc = async () => {
@@ -178,10 +181,10 @@ const BuyPage = React.memo((props: Props) => {
   }, [isMainnet]);
 
   useEffect(() => {
-    setBuyBuilderState({
-      ...buyBuilderState,
-      chainName: getRandonComputerName(isMainnet),
-    });
+    // setBuyBuilderState({
+    //   ...buyBuilderState,
+    //   chainName: getRandonComputerName(isMainnet),
+    // });
   }, [isMainnet]);
 
   const fetchData = async () => {
@@ -210,6 +213,7 @@ const BuyPage = React.memo((props: Props) => {
         const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
         const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
         const isMainnet = buyBuilderState.network === NetworkEnum.Network_Mainnet;
+        const bitcoinValidity = buyBuilderState.bitcoinValidity || BitcoinValidityEnum.BitcoinValidity_Ordinals;
 
         const params: IOrderBuyReq = {
           serviceType: ServiceTypeEnum.DEFAULT, //hard code
@@ -226,15 +230,15 @@ const BuyPage = React.memo((props: Props) => {
           pluginIds: [PluginEnum.Plugin_Bridge],
           nativeTokenPayingGas: NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM,
           gasLimit: GAS_LITMIT,
+          bitcoinValidity: bitcoinValidity,
         };
         // console.log('CREATE ORDER BUY params ==>> ', params);
 
         const result = await client.orderBuyEstimateAPI(params);
-        setTotalCost(result || '0');
+        setEstimateData(result);
       } catch (error) {
         const { message } = getErrorMessage(error);
         toast.error(message);
-        setTotalCost('0');
       } finally {
         setTotalCostFetching(false);
       }
@@ -246,42 +250,66 @@ const BuyPage = React.memo((props: Props) => {
     if (isMainnet) {
       getEstimateOrderBuy(buyBuilderState);
     } else {
-      setTotalCost('0');
     }
   }, [buyBuilderState, isMainnet]);
 
   const isDisabledSubmit = useMemo(() => {
-    return loading || isTyping || !!subdomainErrorMessage || !!minGasPriceErrorMessage || !!gasLimitErrorMessage;
-  }, [loading, isTyping, subdomainErrorMessage]);
+    return (
+      loading ||
+      isTyping ||
+      !!subdomainErrorMessage ||
+      !!descriptionErrorMessage ||
+      !!projectXAccountErrorMessage ||
+      !!minGasPriceErrorMessage ||
+      !!gasLimitErrorMessage
+    );
+  }, [loading, isTyping, buyBuilderState]);
 
-  const totalCostStr = useMemo(() => {
-    if (Number(totalCost) == 0 || Number(totalCost) === 0) {
-      return 0;
+  const estimateDataFormatted = useMemo(() => {
+    let result = {
+      SetupCode: '0',
+      OperationCost: '0',
+      RollupCost: '0',
+      TotalCost: '0',
+    };
+    if (!estimateData) {
+      return result;
     } else {
-      return `${formatter.formatAmount({
-        originalAmount: Number(totalCost),
+      let setupCodeFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.SetupCode || '0'),
         decimals: 18,
         maxDigits: 2,
         isCeil: true,
       })}`;
+
+      let operationCostFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.OperationCost || '0'),
+        decimals: 18,
+        maxDigits: 2,
+        isCeil: true,
+      })}`;
+
+      let rollupCostFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.RollupCost || '0'),
+        decimals: 18,
+        maxDigits: 2,
+        isCeil: true,
+      })}`;
+
+      let totalCostFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.TotalCost || '0'),
+        decimals: 18,
+        maxDigits: 2,
+        isCeil: true,
+      })}`;
+
+      result.SetupCode = setupCodeFomatted;
+      result.OperationCost = operationCostFomatted;
+      result.RollupCost = rollupCostFomatted;
+      result.TotalCost = totalCostFomatted;
+      return result;
     }
-  }, [totalCost]);
-
-  const rollupCostStr = useMemo(() => {
-    let str = new BigNumber(totalCost || '0')
-      .dividedBy(1e18)
-      .minus(new BigNumber(operationCostStr || '0'))
-      .minus(new BigNumber(setupCostStr || '0'))
-      .abs()
-      .toFixed();
-
-    return formatter.formatAmount({
-      originalAmount: Number(str),
-      decimals: 1,
-      maxDigits: 2,
-      isCeil: true,
-    });
-  }, [isMainnet, setupCostStr, operationCostStr, totalCost]);
+  }, [estimateData]);
 
   useEffect(() => {
     fetchData();
@@ -317,6 +345,8 @@ const BuyPage = React.memo((props: Props) => {
                   content={contentValue}
                   priceNote={item.priceNote}
                   onClickCallback={value => {
+                    setNetworkErrorMessage(undefined);
+                    setNetworkFocused(true);
                     setBuyBuilderState({
                       ...buyBuilderState,
                       [sectionType]: value,
@@ -327,6 +357,11 @@ const BuyPage = React.memo((props: Props) => {
             );
           })}
         </S.ListItemContainer>
+        {networkErrorMessage && networkFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {networkErrorMessage}
+          </Text>
+        )}
       </Section>
     );
   };
@@ -387,7 +422,7 @@ const BuyPage = React.memo((props: Props) => {
                   onClickCallback={value => {
                     setBuyBuilderState({
                       ...buyBuilderState,
-                      [sectionType]: value,
+                      bitcoinValidity: value,
                     });
                   }}
                 />
@@ -439,8 +474,8 @@ const BuyPage = React.memo((props: Props) => {
       ? data[NetworkEnum.Network_Mainnet]
       : data[NetworkEnum.Network_Testnet];
 
-    const dataList: ItemDetail[] = dataListBasedNetwork[buyBuilderState.dataAvaibilityChain] || [];
-
+    const dataList: ItemDetail[] =
+      dataListBasedNetwork[buyBuilderState.dataAvaibilityChain] || dataListBasedNetwork[DALayerEnum.DALayer_BTC];
     return (
       <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
         <S.ListItemContainer>
@@ -602,6 +637,7 @@ const BuyPage = React.memo((props: Props) => {
             type="number"
             step={'any'}
             autoComplete="off"
+            autoFocus={false}
             spellCheck={false}
             onWheel={(e: any) => e?.target?.blur()}
           />
@@ -618,16 +654,9 @@ const BuyPage = React.memo((props: Props) => {
 
   const onChangeComputerNameHandler = useCallback(
     debounce(async (text: string) => {
-      if (!text || text.length < 1) {
-        setSubdomainErrorMessage('Bitcoin L2 Name is required.');
+      if (!validateComputerName(text)) {
         setTyping(false);
-      }
-
-      // else if (text.length > CHAIN_NAME_MAX_LENGTH) {
-      //   setSubdomainErrorMessage(`Computer name must be at least ${CHAIN_NAME_MAX_LENGTH} characters.`);
-      //   setTyping(false);
-      // }
-      else {
+      } else {
         try {
           const isValid = await client.validateSubDomainAPI(text);
           setSubdomainErrorMessage(isValid ? undefined : 'Something went wrong');
@@ -642,6 +671,51 @@ const BuyPage = React.memo((props: Props) => {
     }, 500),
     [],
   );
+
+  const onChangeDescriptionHandler = useCallback(
+    debounce(async (text: string) => {
+      if (!validateDescription(text)) {
+        setTyping(false);
+      } else {
+        setDescriptionErrorMessage(undefined);
+      }
+    }, 100),
+    [],
+  );
+
+  const onChangeProjectXHandler = useCallback(
+    debounce(async (text: string) => {
+      if (!validateProjectX(text)) {
+        setTyping(false);
+      } else {
+        setProjectXAccountErrorMessage(undefined);
+      }
+    }, 100),
+    [],
+  );
+
+  const onChangeYourXAccountHandler = useCallback(
+    debounce(async (text: string) => {
+      if (!validateYourXAccount(text)) {
+        setTyping(false);
+      } else {
+        setYourXAccountErrorMessage(undefined);
+      }
+    }, 100),
+    [],
+  );
+
+  // const onChangeYourTelegramHandler = useCallback(
+  //   debounce(async (text: string) => {
+  //     if (!text || text.length < 1) {
+  //       setYourTelegramErrorMessage('Your telegram is required.');
+  //       setTyping(false);
+  //     } else {
+  //       setYourTelegramErrorMessage(undefined);
+  //     }
+  //   }, 100),
+  //   [],
+  // );
 
   const onChangeGasPriceHandler = (text: string) => {
     if (!text || text.length < 1) {
@@ -674,6 +748,9 @@ const BuyPage = React.memo((props: Props) => {
           onBlur={e => {
             onChangeComputerNameHandler(e.target.value);
           }}
+          onFocus={e => {
+            setSubdomainFocused(true);
+          }}
           onChange={e => {
             const chainName = e.target.value;
             setBuyBuilderState({
@@ -693,14 +770,180 @@ const BuyPage = React.memo((props: Props) => {
           step={'any'}
           autoComplete="off"
           spellCheck={false}
-          autoFocus={true}
+          autoFocus={false}
           onWheel={(e: any) => e?.target?.blur()}
         />
-        {subdomainErrorMessage && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative">
+        {subdomainErrorMessage && subdomainFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
             {subdomainErrorMessage}
           </Text>
         )}
+      </S.Section>
+    );
+  };
+
+  const renderDescription = () => {
+    return (
+      <S.Section>
+        <Title text={'Bitcoin L2 description'} />
+        <S.Space />
+        <TextArea
+          placeholder="Tell us more about your plan with your Bitcoin L2"
+          id={'ComputerDescription-ID'}
+          name={'FormFields.computerDescription'}
+          value={buyBuilderState.description}
+          onBlur={e => {
+            onChangeDescriptionHandler(e.target.value);
+          }}
+          onFocus={e => {
+            setDescriptionFocused(true);
+          }}
+          onChange={e => {
+            const description = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              description: description,
+            });
+            onChangeDescriptionHandler(description);
+          }}
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {descriptionErrorMessage && descriptionFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {descriptionErrorMessage}
+          </Text>
+        )}
+      </S.Section>
+    );
+  };
+
+  const renderProjectInformation = () => {
+    return (
+      <S.Section>
+        <Title text={'Project information'} />
+        <S.Space />
+        <TextInput2
+          placeholder="Project X account link/handle"
+          id={'ProjectInformation-ID'}
+          name={'FormFields.projectInformation'}
+          value={buyBuilderState.projectXAccount}
+          onBlur={e => {
+            onChangeProjectXHandler(e.target.value);
+          }}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              projectXAccount: text,
+            });
+            onChangeProjectXHandler(text);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {projectXAccountErrorMessage && projectXAccountFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {projectXAccountErrorMessage}
+          </Text>
+        )}
+        <TextInput2
+          placeholder="Project website"
+          id={'ProjectWebsite-ID'}
+          name={'FormFields.projectWebsite'}
+          value={buyBuilderState.projectWebsite}
+          onBlur={e => {}}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              projectWebsite: text,
+            });
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          style={{
+            marginTop: '20px',
+          }}
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+      </S.Section>
+    );
+  };
+
+  const rendeContactInformation = () => {
+    return (
+      <S.Section>
+        <Title text={'Contact information'} />
+        <S.Space />
+        <TextInput2
+          placeholder="Your X account link/handle"
+          id={'YourXAccount-ID'}
+          name={'FormFields.yourXAccount'}
+          value={buyBuilderState.yourXAccount}
+          onBlur={e => {
+            onChangeYourXAccountHandler(e.target.value);
+          }}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              yourXAccount: text,
+            });
+            onChangeYourXAccountHandler(text);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {yourXAccountErrorMessage && yourXAccountFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {yourXAccountErrorMessage}
+          </Text>
+        )}
+
+        <TextInput2
+          placeholder="Your telegram link/handle"
+          id={'YourTelegram-ID'}
+          name={'FormFields.yourTelegram'}
+          value={buyBuilderState.yourTelegramAccount}
+          onBlur={e => {
+            // onChangeYourTelegramHandler(e.target.value);
+          }}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              yourTelegramAccount: text,
+            });
+            // onChangeYourTelegramHandler(text);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          style={{
+            marginTop: '20px',
+          }}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {/* {yourTelegramErrorMessage && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {yourTelegramErrorMessage}
+          </Text>
+        )} */}
       </S.Section>
     );
   };
@@ -742,6 +985,121 @@ const BuyPage = React.memo((props: Props) => {
     );
   };
 
+  const validateComputerName = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setSubdomainErrorMessage(FormErrorMessage.computerName);
+    } else {
+      setSubdomainErrorMessage(undefined);
+    }
+    setSubdomainFocused(true);
+    return isValid;
+  };
+
+  const validateDescription = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setDescriptionErrorMessage(FormErrorMessage.description);
+    } else {
+      setDescriptionErrorMessage(undefined);
+    }
+    setDescriptionFocused(true);
+    return isValid;
+  };
+
+  const validateNetwork = () => {
+    let isValid = true;
+    if (buyBuilderState.network === NetworkEnum.Network_UNKNOW) {
+      isValid = false;
+      setNetworkErrorMessage(FormErrorMessage.network);
+    } else {
+      setNetworkErrorMessage(undefined);
+    }
+    setNetworkFocused(true);
+    return isValid;
+  };
+
+  const validateProjectX = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setProjectXAccountErrorMessage(FormErrorMessage.projectX);
+    } else {
+      setProjectXAccountErrorMessage(undefined);
+    }
+    setProjectXAccountFocused(true);
+    return isValid;
+  };
+
+  const validateYourXAccount = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setYourXAccountErrorMessage(FormErrorMessage.yourXAccount);
+    } else {
+      setYourXAccountErrorMessage(undefined);
+    }
+    settYourXAccountFocused(true);
+    return isValid;
+  };
+
+  const checkValidateForm = () => {
+    let isValid = true;
+    const { chainName, description, projectXAccount, yourXAccount } = buyBuilderState;
+
+    // Computer Name
+    if (!validateComputerName(chainName)) {
+      isValid = false;
+    }
+
+    // Description
+    if (!validateDescription(description)) {
+      isValid = false;
+    }
+
+    // Network
+    if (!validateNetwork()) {
+      isValid = false;
+    }
+
+    //Project X
+    if (!validateProjectX(projectXAccount)) {
+      isValid = false;
+    }
+
+    //Project X
+    if (!validateYourXAccount(yourXAccount)) {
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handeSubmitForm = async () => {
+    const params: SubmitFormParams = {
+      bitcoinL2Name: buyBuilderState.chainName,
+      bitcoinL2Description: buyBuilderState.description,
+      network: NetworkEnumMap[buyBuilderState.network],
+      dataAvailability: DALayerEnumMap[buyBuilderState.dataAvaibilityChain],
+      blockTime: buyBuilderState.blockTime + 's',
+      rollupProtocol: RollupEnumMap[buyBuilderState.rollupProtocol],
+      withdrawPeriod: `${dayDescribe(buyBuilderState.withdrawPeriod).str}`,
+      twName: buyBuilderState.yourTelegramAccount,
+      telegram: buyBuilderState.projectXAccount,
+    };
+    try {
+      await client.submitContactVS2(params);
+      setShowSubmitFormResult(true);
+    } catch (error) {
+      const { message } = getErrorMessage(error);
+      toast.error(message);
+    } finally {
+      setShowSubmitForm(false);
+    }
+  };
+
   const handleSubmit = throttle(
     async ({ bypassEmail }: { bypassEmail: boolean }) => {
       try {
@@ -752,7 +1110,9 @@ const BuyPage = React.memo((props: Props) => {
           }
         }
 
-        if (subdomainErrorMessage || gasLimitErrorMessage || isTyping || !buyBuilderState.chainName) return;
+        if (!checkValidateForm()) return;
+
+        // if (subdomainErrorMessage || gasLimitErrorMessage || isTyping || !buyBuilderState.chainName) return;
 
         if (isMainnet) {
           // return setShowVerifyEmail(true);/
@@ -761,78 +1121,84 @@ const BuyPage = React.memo((props: Props) => {
           // toggleContact();
 
           //Google Form
-          window.open('https://forms.gle/eUbL7nHuTPA3HLRz8', '_blank');
+          // window.open('https://forms.gle/eUbL7nHuTPA3HLRz8', '_blank');
+
+          setShowSubmitForm(true);
           return;
         } else {
           // if (!accountInfo?.emailVerified && !bypassEmail) {
           //   return setShowVerifyEmail(true);
           // }
+          setShowSubmitForm(true);
+          return;
         }
 
-        setLoading(true);
+        // setLoading(true);
 
-        const finalizationPeriodSeconds = convertDayToSeconds(buyBuilderState.withdrawPeriod);
-        const chainID = chainIDRandom ?? (await getChainIDRandom());
-        const chainName = buyBuilderState.chainName;
-        const domain = buyBuilderState.chainName?.toLowerCase()?.trim().replaceAll(' ', '-');
-        const blockTime = buyBuilderState.blockTime;
-        const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
-        const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
-        const gasLimit = buyBuilderState.gasLimit;
+        // const finalizationPeriodSeconds = convertDayToSeconds(buyBuilderState.withdrawPeriod);
+        // const chainID = chainIDRandom ?? (await getChainIDRandom());
+        // const chainName = buyBuilderState.chainName;
+        // const domain = buyBuilderState.chainName?.toLowerCase()?.trim().replaceAll(' ', '-');
+        // const blockTime = buyBuilderState.blockTime;
+        // const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
+        // const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
+        // const gasLimit = buyBuilderState.gasLimit;
+        // const bitcoinValidity = buyBuilderState.bitcoinValidity;
 
-        const twitterAccessToken = parent?.localStorage?.getItem('TWITTER_TOKEN');
-        let twitterID;
-        let userTwitterInfor;
+        // const twitterAccessToken = parent?.localStorage?.getItem('TWITTER_TOKEN');
+        // let twitterID;
+        // let userTwitterInfor;
 
-        if (twitterAccessToken && twitterAccessToken.length > 0) {
-          userTwitterInfor = await getUser(twitterAccessToken);
-          twitterID = userTwitterInfor?.twitter_id;
-        }
+        // if (twitterAccessToken && twitterAccessToken.length > 0) {
+        //   userTwitterInfor = await getUser(twitterAccessToken);
+        //   twitterID = userTwitterInfor?.twitter_id;
+        // }
 
-        let params: IOrderBuyReq = {
-          serviceType: ServiceTypeEnum.DEFAULT, //hard code
-          domain: domain,
-          chainId: String(chainID), //random
-          chainName: chainName,
-          description: '', //hard code
-          finalizationPeriod: Math.ceil(finalizationPeriodSeconds),
-          blockTime: Number(blockTime),
-          minGasPrice: minGasPrice,
-          dataAvaibilityChain: Number(dataAvaibilityChain),
-          isMainnet: isMainnet,
-          userName: ((userGamefi || {}) as any)?.name || '',
-          pluginIds: [PluginEnum.Plugin_Bridge],
-          nativeTokenPayingGas: paymentTransactionGas,
-          gasLimit: Number(gasLimit || GAS_LITMIT),
-          twitter_id: twitterID,
-        };
+        // let params: IOrderBuyReq = {
+        //   serviceType: ServiceTypeEnum.DEFAULT, //hard code
+        //   domain: domain,
+        //   chainId: String(chainID), //random
+        //   chainName: chainName,
+        //   description: '', //hard code
+        //   finalizationPeriod: Math.ceil(finalizationPeriodSeconds),
+        //   blockTime: Number(blockTime),
+        //   minGasPrice: minGasPrice,
+        //   dataAvaibilityChain: Number(dataAvaibilityChain),
+        //   isMainnet: isMainnet,
+        //   userName: ((userGamefi || {}) as any)?.name || '',
+        //   pluginIds: [PluginEnum.Plugin_Bridge],
+        //   nativeTokenPayingGas: paymentTransactionGas,
+        //   gasLimit: Number(gasLimit || GAS_LITMIT),
+        //   twitter_id: twitterID,
+        //   bitcoinValidity: bitcoinValidity,
+        // };
 
-        if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
-          if (formDataCustomizeToken.isError) return;
-          else
-            params = {
-              ...params,
-              preMintAmount: new BigNumber(formDataCustomizeToken.data?.totalSupply || '0')
-                .multipliedBy(1e18)
-                .toFixed(),
-              preMintAddress: formDataCustomizeToken.data?.receivingAddress,
-              ticker: formDataCustomizeToken.data?.tickerName,
-            };
-        }
+        // if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
+        //   if (formDataCustomizeToken.isError) return;
+        //   else
+        //     params = {
+        //       ...params,
+        //       preMintAmount: new BigNumber(formDataCustomizeToken.data?.totalSupply || '0')
+        //         .multipliedBy(1e18)
+        //         .toFixed(),
+        //       preMintAddress: formDataCustomizeToken.data?.receivingAddress,
+        //       ticker: formDataCustomizeToken.data?.tickerName,
+        //     };
+        // }
 
-        console.log('DEBUG [handleSubmit] params: ', params);
+        // console.log('DEBUG [handleSubmit] params: ', params);
 
-        const result = await client.orderBuyAPI(params);
-        await sleep(2);
-        if (result) {
-          onFetchData();
-          await sleep(1);
-          toast.success('Order successful', {
-            duration: 1000,
-          });
-          goDashboardPage(params.isMainnet, true);
-        }
-        onSuccess && onSuccess();
+        // const result = await client.orderBuyAPI(params);
+        // await sleep(2);
+        // if (result) {
+        //   onFetchData();
+        //   await sleep(1);
+        //   toast.success('Order successful', {
+        //     duration: 1000,
+        //   });
+        //   goDashboardPage(params.isMainnet, true);
+        // }
+        // onSuccess && onSuccess();
       } catch (error) {
         const { message } = getErrorMessage(error);
         toast.error(message);
@@ -888,6 +1254,15 @@ const BuyPage = React.memo((props: Props) => {
           <div className="sectionList">
             {/* Computer Name */}
             {renderComputerName()}
+
+            {/* Computer Description  */}
+            {renderDescription()}
+
+            {/* Project Information  */}
+            {renderProjectInformation()}
+
+            {/* Contact information  */}
+            {rendeContactInformation()}
 
             {/* Network */}
             {data?.network &&
@@ -1109,7 +1484,7 @@ const BuyPage = React.memo((props: Props) => {
             <Button
               sizes="normal"
               loading={{ isLoading: loading }}
-              disabled={isDisabledSubmit}
+              // disabled={isDisabledSubmit}
               onClick={() => handleSubmit({ bypassEmail: false })}
             >
               <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
@@ -1124,39 +1499,35 @@ const BuyPage = React.memo((props: Props) => {
                 Service costs
               </Text>
             </Row>
-            {isTotalCostFetching ? (
-              <Spinner size={24} />
-            ) : (
-              <Row gap={42}>
-                <div className="grid-content">
-                  <Text size="16">
-                    <span>• Setup cost: </span>
-                    {setupCostStr}
-                  </Text>
-                  <Text size="16">
-                    <span>• Operation cost: </span>
-                    {operationCostStr || ''}
-                  </Text>
-                  <Text size="16">
-                    <span>• Rollup cost: </span>
-                    {rollupCostStr || ''}
-                  </Text>
-                </div>
-                <S.BreakLine></S.BreakLine>
-              </Row>
-            )}
+            <Row gap={42}>
+              <div className="grid-content">
+                <Text size="16">
+                  <span>• Setup cost: </span>
+                  {estimateDataFormatted?.SetupCode || '0'}
+                </Text>
+                <Text size="16">
+                  <span>• Operation cost: </span>
+                  {estimateDataFormatted?.OperationCost || '0'}
+                </Text>
+                <Text size="16">
+                  <span>• Rollup cost: </span>
+                  {estimateDataFormatted?.RollupCost || '0'}
+                </Text>
+              </div>
+              <S.BreakLine></S.BreakLine>
+            </Row>
             <S.RowActionInfor>
               {isTotalCostFetching ? (
                 <Spinner size={24} />
               ) : (
                 <Text size="26" fontWeight="semibold" align="left" className="cost">
-                  {`Total: ${totalCostStr} BVM`}
+                  {`Total: ${estimateDataFormatted?.TotalCost} BVM`}
                 </Text>
               )}
               <Button
                 sizes="normal"
                 loading={{ isLoading: loading }}
-                disabled={isDisabledSubmit}
+                // disabled={isDisabledSubmit}
                 onClick={() => handleSubmit({ bypassEmail: false })}
               >
                 <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
@@ -1181,20 +1552,41 @@ const BuyPage = React.memo((props: Props) => {
         />
       )}
 
-      {/* {showCustomizeTokenModal && (
-        <CustomizeTokenModal
-          show={showCustomizeTokenModal}
+      {showSubmitForm && (
+        <SubmitFormModal
+          show={showSubmitForm}
+          data={{
+            networkName: buyBuilderState.chainName,
+            network: NetworkEnumMap[buyBuilderState.network],
+            blockTime: buyBuilderState.blockTime + 's',
+            rollupProtocol: RollupEnumMap[buyBuilderState.rollupProtocol],
+            withdrawalPeriod: `${dayDescribe(buyBuilderState.withdrawPeriod).str}`,
+            twitter: buyBuilderState.yourXAccount,
+            telegram: buyBuilderState.yourTelegramAccount,
+            projectXAccount: buyBuilderState.projectXAccount,
+            projectWebsite: buyBuilderState.projectWebsite,
+          }}
           onClose={() => {
-            setShowCustomizeTokenModal(false);
+            setShowSubmitForm(false);
           }}
           onSuccess={async () => {
-            await handleSubmit({
-              bypassEmail: true,
-            });
-            setShowVerifyEmail(false);
+            // TO DO
+            handeSubmitForm();
           }}
         />
-      )} */}
+      )}
+
+      {showSubmitFormResult && (
+        <SubmitResultFormModal
+          show={showSubmitFormResult}
+          onClose={() => {
+            setShowSubmitFormResult(false);
+          }}
+          onSuccess={async () => {
+            // TO DO
+          }}
+        />
+      )}
     </>
   );
 });

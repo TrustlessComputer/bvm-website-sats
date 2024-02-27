@@ -38,6 +38,10 @@ export type ItemDetail = {
 
 export type BuyBuilderSelectState = {
   chainName: string;
+  description: string;
+  projectXAccount: string;
+  yourXAccount: string;
+  yourTelegramAccount: string;
   network: NetworkEnum;
   rollupProtocol: RollupEnum;
   dataAvaibilityChain: DALayerEnum;
@@ -47,6 +51,7 @@ export type BuyBuilderSelectState = {
   minGasPrice: string;
   gasLimit: string;
   bitcoinValidity: number;
+  projectWebsite?: string;
   // layer1: Layer1Enum;
 };
 

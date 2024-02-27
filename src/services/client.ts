@@ -5,6 +5,7 @@ import {
   HistoryItemResp,
   IGetNonceReq,
   IGetNonceResp,
+  IOrderBuyEstimateRespone,
   IOrderBuyReq,
   IQuickStart,
   IVerifyEmail,
@@ -172,7 +173,7 @@ const getAllOrders = async (): Promise<OrderItem[]> => {
 
 const fetchBuyBuilderInfo = async (): Promise<BuyDataBuilder> => {
   try {
-    const data = (await axios.get(`/order/available-list`)) as BuyDataBuilder;
+    let data = (await axios.get(`/order/available-list`)) as BuyDataBuilder;
     return data;
   } catch (error) {
     console.log('[fetchBuyBuilderInfo] ERROR: ', error);
@@ -180,9 +181,9 @@ const fetchBuyBuilderInfo = async (): Promise<BuyDataBuilder> => {
   }
 };
 
-const orderBuyEstimateAPI = async (params: IOrderBuyReq): Promise<any> => {
+const orderBuyEstimateAPI = async (params: IOrderBuyReq): Promise<IOrderBuyEstimateRespone> => {
   try {
-    const data = (await axios.post(`/order/estimate-total-cost`, params)) as any;
+    const data = (await axios.post(`/order/estimate-total-cost`, params)) as IOrderBuyEstimateRespone;
     console.log('[orderBuyEstimateAPI] data ', data);
     return data;
   } catch (error: any) {
@@ -192,6 +193,22 @@ const orderBuyEstimateAPI = async (params: IOrderBuyReq): Promise<any> => {
 };
 
 const submitContact = async (params: IFormValues) => {
+  await axios.post(`/service/contact`, params);
+};
+
+export type SubmitFormParams = {
+  bitcoinL2Name: string;
+  bitcoinL2Description: string;
+  network: string;
+  dataAvailability: string;
+  blockTime: string;
+  rollupProtocol: string;
+  withdrawPeriod: string;
+  twName: string;
+  telegram: string;
+};
+
+const submitContactVS2 = async (params: SubmitFormParams) => {
   await axios.post(`/service/contact`, params);
 };
 
@@ -245,6 +262,7 @@ const client = {
   fetchBuyBuilderInfo,
   orderBuyEstimateAPI,
   submitContact,
+  submitContactVS2,
   getQuickStart,
   updateQuickStart,
   submitEmail,

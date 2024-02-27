@@ -1,10 +1,12 @@
 // ------------------------------------------------------------------------------------
 export enum NetworkEnum {
+  Network_UNKNOW = 0,
   Network_Testnet = 1,
   Network_Mainnet = 2,
 }
 
 export const NetworkEnumMap = {
+  [NetworkEnum.Network_UNKNOW]: '',
   [NetworkEnum.Network_Testnet]: 'Testnet',
   [NetworkEnum.Network_Mainnet]: 'Mainnet',
 };
@@ -12,6 +14,7 @@ export const NetworkEnumMap = {
 // ------------------------------------------------------------------------------------
 
 export enum DALayerEnum {
+  DALayer_UNKNOW = 0,
   DALayer_PLG = 10,
   DALayer_BTC = 11,
   DALayer_Goerli = 12,
@@ -25,6 +28,7 @@ export enum DALayerEnum {
 }
 
 export const DALayerEnumMap = {
+  [DALayerEnum.DALayer_UNKNOW]: 'Unknow',
   [DALayerEnum.DALayer_PLG]: 'Bitcoin + Polygon',
   [DALayerEnum.DALayer_BTC]: 'Bitcoin Only',
   [DALayerEnum.DALayer_Goerli]: 'Bitcoin + Ethereum (Goerli)',
@@ -46,12 +50,17 @@ export enum RollupEnum {
 }
 
 export enum BitcoinValidityEnum {
-  BitcoinValidity_Ordinals = 100,
-  BitcoinValidity_Stamps = 101,
+  BitcoinValidity_Ordinals = 0,
+  BitcoinValidity_Stamps = 1,
 }
 
+export const BitcoinValidityEnumMap = {
+  [BitcoinValidityEnum.BitcoinValidity_Ordinals]: 'Bitcoin Oridinal',
+  [BitcoinValidityEnum.BitcoinValidity_Stamps]: 'Bitcoin Stamps',
+};
+
 export const RollupEnumMap = {
-  [RollupEnum.Rollup_OpStack]: 'OP Stack',
+  [RollupEnum.Rollup_OpStack]: 'Optimistic Rollups',
   [RollupEnum.Rollup_ZK]: 'ZK Rollups',
 };
 
@@ -121,4 +130,12 @@ export enum NativeTokenPayingGasEnum {
 export const NativeTokenPayingGasMap = {
   [NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM]: 'BVM',
   [NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint]: 'Customized',
+};
+
+export const FormErrorMessage = {
+  network: 'Network is required.',
+  computerName: 'Bitcoin L2 name is required.',
+  description: 'Bitcoin L2 description is required.',
+  projectX: 'Project X account is required.',
+  yourXAccount: 'Your X account is required.',
 };
