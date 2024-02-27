@@ -23,7 +23,7 @@ import sleep from '@/utils/sleep';
 import { useWeb3React } from '@web3-react/core';
 import { Radio, Slider } from 'antd';
 import BigNumber from 'bignumber.js';
-import { debounce, throttle } from 'lodash';
+import { debounce, throttle, trim } from 'lodash';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { MessageCircle } from 'react-feather';
 import toast from 'react-hot-toast';
@@ -111,9 +111,6 @@ const BuyPage = React.memo((props: Props) => {
   const [data, setData] = useState<BuyDataBuilder | undefined>(undefined);
   const [buyBuilderState, setBuyBuilderState] = useState<BuyBuilderSelectState>(builderStateInit);
 
-  const [dataAvaibilitySelected, setDataAvaibilitySelected] = useState<ItemDetail | undefined>(undefined);
-  const [blockTimeSelected, setBlockTimeSelected] = useState<ItemDetail | undefined>(undefined);
-
   console.log('SALE rollupProtocol: ', typeof data?.rollupProtocol);
   console.log('SALE buyBuilderState: ', buyBuilderState.rollupProtocol);
 
@@ -125,32 +122,6 @@ const BuyPage = React.memo((props: Props) => {
   const isMainnet = useMemo(() => {
     return buyBuilderState.network === NetworkEnum.Network_Mainnet;
   }, [buyBuilderState.network]);
-
-  useEffect(() => {
-    // dataAvaibilityChain
-    if (data && buyBuilderState) {
-      const dataList = isMainnet
-        ? (data.dataAvaibilityChain[NetworkEnum.Network_Mainnet] as any[])
-        : (data.dataAvaibilityChain[NetworkEnum.Network_Testnet] as any[]);
-      const dataAvaiSelected = dataList.filter(item => item.value === buyBuilderState?.dataAvaibilityChain)[0];
-      setDataAvaibilitySelected(dataAvaiSelected);
-    } else {
-      setDataAvaibilitySelected(undefined);
-    }
-
-    // blockTime
-    if (data && buyBuilderState) {
-      const DAList: any[] = isMainnet
-        ? (data.blockTime[NetworkEnum.Network_Mainnet] as any[])
-        : (data.blockTime[NetworkEnum.Network_Testnet] as any[]);
-
-      const blockTimeList: any[] = DAList[buyBuilderState?.dataAvaibilityChain];
-      const selected = blockTimeList.filter(item => item.value === buyBuilderState?.blockTime)[0];
-      setBlockTimeSelected(selected);
-    } else {
-      setBlockTimeSelected(undefined);
-    }
-  }, [data, isMainnet, buyBuilderState.dataAvaibilityChain, buyBuilderState.blockTime]);
 
   const confirmBtnTitle = useMemo(() => {
     if (isMainnet) {
@@ -170,6 +141,19 @@ const BuyPage = React.memo((props: Props) => {
     let str = networkObjectSelected?.priceNote || '';
     str = str.replace('Setup cost:', '');
     str = str.replace('per month', '');
+    str = str.replace('BVM', '');
+    str = str.replace(' ', '');
+    str = trim(str);
+    return str || '';
+  }, [networkObjectSelected]);
+
+  const operationCostStr = useMemo(() => {
+    let str = networkObjectSelected?.price || '';
+    str = str.replace('Setup cost:', '');
+    str = str.replace('per month', '');
+    str = str.replace('BVM', '');
+    str = str.replace(' ', '');
+    str = trim(str);
     return str || '';
   }, [networkObjectSelected]);
 
@@ -272,16 +256,32 @@ const BuyPage = React.memo((props: Props) => {
 
   const totalCostStr = useMemo(() => {
     if (Number(totalCost) == 0 || Number(totalCost) === 0) {
-      return `Free`;
+      return 0;
     } else {
-      return `Total: ${formatter.formatAmount({
+      return `${formatter.formatAmount({
         originalAmount: Number(totalCost),
         decimals: 18,
         maxDigits: 2,
         isCeil: true,
-      })} BVM`;
+      })}`;
     }
   }, [totalCost]);
+
+  const rollupCostStr = useMemo(() => {
+    let str = new BigNumber(totalCost || '0')
+      .dividedBy(1e18)
+      .minus(new BigNumber(operationCostStr || '0'))
+      .minus(new BigNumber(setupCostStr || '0'))
+      .abs()
+      .toFixed();
+
+    return formatter.formatAmount({
+      originalAmount: Number(str),
+      decimals: 1,
+      maxDigits: 2,
+      isCeil: true,
+    });
+  }, [isMainnet, setupCostStr, operationCostStr, totalCost]);
 
   useEffect(() => {
     fetchData();
@@ -365,6 +365,40 @@ const BuyPage = React.memo((props: Props) => {
     );
   };
 
+  const renderBitcoinValiditySection = (props: SectionProps) => {
+    const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
+    const dataList: ItemDetail[] = isMainnet ? data[NetworkEnum.Network_Mainnet] : data[NetworkEnum.Network_Testnet];
+    return (
+      <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
+        <S.ListItemContainer>
+          {dataList?.map((item, index) => {
+            let privaeValue = item.price;
+            return (
+              <React.Fragment key={`${item.valueStr} ${index}`}>
+                <Item
+                  isMainnet={isMainnet}
+                  key={`${item.valueStr} ${index}`}
+                  value={item.value}
+                  isSelected={item.value === buyBuilderState.bitcoinValidity}
+                  disabled={item.value === valueDisabled}
+                  title={item.valueStr}
+                  content={privaeValue}
+                  priceNote={item.priceNote}
+                  onClickCallback={value => {
+                    setBuyBuilderState({
+                      ...buyBuilderState,
+                      [sectionType]: value,
+                    });
+                  }}
+                />
+              </React.Fragment>
+            );
+          })}
+        </S.ListItemContainer>
+      </Section>
+    );
+  };
+
   const renderDataAvaibilitySection = (props: SectionProps) => {
     const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
     const dataList: ItemDetail[] = isMainnet ? data[NetworkEnum.Network_Mainnet] : data[NetworkEnum.Network_Testnet];
@@ -389,7 +423,6 @@ const BuyPage = React.memo((props: Props) => {
                       ...buyBuilderState,
                       [sectionType]: value,
                     });
-                    setDataAvaibilitySelected(item);
                   }}
                 />
               </React.Fragment>
@@ -896,6 +929,16 @@ const BuyPage = React.memo((props: Props) => {
                 },
               })}
 
+            {/* Bitcoin Validity */}
+            {data?.bitcoinValidity &&
+              renderBitcoinValiditySection({
+                title: 'Bitcoin Validity',
+                desc: 'Which Bitcoin Validity is right for you?',
+                data: data.bitcoinValidity,
+                sectionType: 'bitcoinValidity',
+                descriptionDetail: undefined,
+              })}
+
             {/* DataAvaibility Chain */}
             {data?.dataAvaibilityChain &&
               renderDataAvaibilitySection({
@@ -1061,7 +1104,7 @@ const BuyPage = React.memo((props: Props) => {
         {!isMainnet ? (
           <S.FooterActions>
             <Text size="26" fontWeight="semibold" align="left" className="cost">
-              {totalCostStr}
+              {'Free'}
             </Text>
             <Button
               sizes="normal"
@@ -1081,35 +1124,33 @@ const BuyPage = React.memo((props: Props) => {
                 Service costs
               </Text>
             </Row>
-            <Row gap={42}>
-              <div className="grid-content">
-                <Text size="16">
-                  <span>• Setup: </span>
-                  {setupCostStr}
-                </Text>
-                <Text size="16">
-                  <span>• Operation: </span>
-                  {networkObjectSelected?.price || ''}
-                </Text>
-              </div>
-              <div className="grid-content">
-                <Text size="16">
-                  <span>• Data Availability: </span>
-                  {`${dataAvaibilitySelected?.price || ''}`}
-                </Text>
-                <Text size="16">
-                  <span>• Block Time: </span>
-                  {`${blockTimeSelected?.price || ''}`}
-                </Text>
-              </div>
-            </Row>
-
+            {isTotalCostFetching ? (
+              <Spinner size={24} />
+            ) : (
+              <Row gap={42}>
+                <div className="grid-content">
+                  <Text size="16">
+                    <span>• Setup cost: </span>
+                    {setupCostStr}
+                  </Text>
+                  <Text size="16">
+                    <span>• Operation cost: </span>
+                    {operationCostStr || ''}
+                  </Text>
+                  <Text size="16">
+                    <span>• Rollup cost: </span>
+                    {rollupCostStr || ''}
+                  </Text>
+                </div>
+                <S.BreakLine></S.BreakLine>
+              </Row>
+            )}
             <S.RowActionInfor>
               {isTotalCostFetching ? (
                 <Spinner size={24} />
               ) : (
                 <Text size="26" fontWeight="semibold" align="left" className="cost">
-                  {totalCostStr}
+                  {`Total: ${totalCostStr} BVM`}
                 </Text>
               )}
               <Button

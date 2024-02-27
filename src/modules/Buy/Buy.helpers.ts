@@ -64,12 +64,13 @@ export const getBuyBuilderStateInit = (type?: string | null): BuyBuilderSelectSt
     network: NetworkEnum.Network_Testnet,
     blockTime: 10,
     dataAvaibilityChain: DALayerEnum.DALayer_BTC,
-    pluginIds: [PluginEnum.Plugin_Bridge], //HARD CODE: Force Bridge select
+    pluginIds: [PluginEnum.Plugin_Bridge], // HARD CODE: Force Bridge select
     rollupProtocol: RollupEnum.Rollup_OpStack,
     withdrawPeriod: 7,
     chainName: '',
     minGasPrice: `${MIN_GAS_PRICE}`,
     gasLimit: `${GAS_LITMIT}`,
+    bitcoinValidity: 0, //HARD CODE: TO DO
   };
 
   if (type === undefined || type === null) return dataInit;

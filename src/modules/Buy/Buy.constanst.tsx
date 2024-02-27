@@ -45,6 +45,11 @@ export enum RollupEnum {
   Rollup_ZK = 21,
 }
 
+export enum BitcoinValidityEnum {
+  BitcoinValidity_Ordinals = 100,
+  BitcoinValidity_Stamps = 101,
+}
+
 export const RollupEnumMap = {
   [RollupEnum.Rollup_OpStack]: 'OP Stack',
   [RollupEnum.Rollup_ZK]: 'ZK Rollups',

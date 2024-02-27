@@ -193,8 +193,14 @@ const FooterActions2 = styled.div`
   )}
 `;
 
+const BreakLine = styled.div`
+  display: flex;
+  background-color: #787878;
+  height: 1px;
+  width: '100%';
+`;
+
 const RowActionInfor = styled.div`
-  margin-top: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -263,4 +269,5 @@ export {
   FooterInfo,
   FooterInfo2,
   RowActionInfor,
+  BreakLine,
 };

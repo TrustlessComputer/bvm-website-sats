@@ -4,12 +4,25 @@ import React from 'react';
 //Data Strcuture API
 export type BuyDataBuilder = {
   network: ItemDetail[];
-  dataAvaibilityChain: ItemDetail[] | any;
-  rollupProtocol: ItemDetail[];
-  blockTime: ItemDetail[] | any;
-  plugin: ItemDetail[];
-  nativeTokenPayingGas: ItemDetail[];
+  dataAvaibilityChain: {
+    [key in NetworkEnum]: ItemDetail[];
+  };
+  rollupProtocol: {
+    [key in NetworkEnum]: ItemDetail[];
+  };
+  blockTime: {
+    [key in NetworkEnum]: any;
+  };
+  plugin: {
+    [key in NetworkEnum]: ItemDetail[];
+  };
+  nativeTokenPayingGas: {
+    [key in NetworkEnum]: ItemDetail[];
+  };
   gasLimit: ItemDetail[];
+  bitcoinValidity: {
+    [key in NetworkEnum]: ItemDetail[];
+  };
 };
 
 export type ItemDetail = {
@@ -33,6 +46,7 @@ export type BuyBuilderSelectState = {
   withdrawPeriod: number;
   minGasPrice: string;
   gasLimit: string;
+  bitcoinValidity: number;
   // layer1: Layer1Enum;
 };
 
