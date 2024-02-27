@@ -154,16 +154,16 @@ const Price = () => {
         await client.orderBuyEstimateAPI((MOCKUP_PRICE_PARAMS as any)[PriceType.PROFESSIONAL]),
       ];
       const [essentials, professional] = await Promise.all(tasks);
-      if (essentials && essentials !== '0' && professional && professional !== '0') {
+      if (essentials && essentials.TotalCost !== '0' && professional && professional.TotalCost !== '0') {
         const essentialsFormated = convert.toNumber({
           text: formatter.shorterAmount({
-            originalAmount: essentials,
+            originalAmount: essentials.TotalCost,
             decimals: 18,
           }),
         });
         const professionalFormated = convert.toNumber({
           text: formatter.shorterAmount({
-            originalAmount: professional,
+            originalAmount: professional.TotalCost,
             decimals: 18,
           }),
         });
