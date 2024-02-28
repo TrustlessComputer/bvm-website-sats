@@ -1,8 +1,5 @@
 import SectionImage from '@/assets/images/robot_build.png';
-<<<<<<< HEAD
-=======
 import { SupportedChainId } from '@/chains';
->>>>>>> main
 import Button from '@/components/Button';
 import { EmailVerifier } from '@/components/EmailVerifier';
 import IconSVG from '@/components/IconSVG';
