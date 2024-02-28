@@ -34,7 +34,7 @@ const axios = createAxiosInstance({ baseURL: configs.API_URL + 'api' });
 
 export const axiosSetAccessToken = (token: string) => {
   accessToken = token;
-  axios.defaults.headers.Authorization = `Bearer ${token}`;
+  axios.defaults.headers.Authorization = `${token}`;
 };
 
 export const axiosRemoveAccessToken = () => {
