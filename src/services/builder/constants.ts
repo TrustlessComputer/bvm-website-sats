@@ -235,13 +235,13 @@ const COMPUTERS: Array<OrderItemResp> = [
     rpc: 'https://node.nakachain.xyz/',
     rollupCost: '0',
     userName: 'Naka team',
-    plugins: getPlugins({ isProduction: true, fromNetwork: 'bitcoin', toNetwork: 'trustless-computer' }),
+    plugins: getPlugins({ isProduction: true, fromNetwork: 'bitcoin', toNetwork: 'naka' }),
   },
 ];
 
 const QUICK_START: Array<IQuickStart> = [
   {
-    title: 'Build your Bitcoin Virtual Machine',
+    title: 'Build your Bitcoin L2',
     completed: true,
     type: QuickStartTypeEnum.CREATE,
   },

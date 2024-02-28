@@ -14,6 +14,7 @@ type Props = {
   onScrollBody?: (event: React.UIEvent<HTMLDivElement>) => void;
   titleAlign?: 'center' | 'left' | 'right' | 'unset';
   handleDevMode?: () => void;
+  hideCloseButton?: boolean;
 };
 
 const BaseModal = (props: Props) => {
@@ -27,14 +28,17 @@ const BaseModal = (props: Props) => {
     onScrollBody,
     titleAlign,
     handleDevMode,
+    hideCloseButton = false,
   } = props;
 
   return (
     <S.Container show={show} onHide={handleClose} centered width={width}>
       <Modal.Header>
-        <S.CloseWrapper onClick={handleClose}>
-          <XCircle size={32} strokeWidth={1} />
-        </S.CloseWrapper>
+        {!hideCloseButton && (
+          <S.CloseWrapper onClick={handleClose}>
+            <XCircle size={32} strokeWidth={1} />
+          </S.CloseWrapper>
+        )}
         {handleDevMode && (
           <S.CloseWrapper
             onClick={handleDevMode}

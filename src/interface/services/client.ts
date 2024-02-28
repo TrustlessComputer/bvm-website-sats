@@ -156,6 +156,14 @@ interface IOrderBuyReq {
   ticker?: string;
   gasLimit: number;
   twitter_id?: string | null;
+  bitcoinValidity: number;
+}
+
+interface IOrderBuyEstimateRespone {
+  SetupCode: string;
+  OperationCost: string;
+  RollupCost: string;
+  TotalCost: string;
 }
 
 interface IWithdrawFundReq {
@@ -201,4 +209,5 @@ export type {
   IQuickStart,
   IPlugin,
   IVerifyEmail,
+  IOrderBuyEstimateRespone,
 };

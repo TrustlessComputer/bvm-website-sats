@@ -1,10 +1,12 @@
 // ------------------------------------------------------------------------------------
 export enum NetworkEnum {
+  Network_UNKNOW = 0,
   Network_Testnet = 1,
   Network_Mainnet = 2,
 }
 
 export const NetworkEnumMap = {
+  [NetworkEnum.Network_UNKNOW]: '',
   [NetworkEnum.Network_Testnet]: 'Testnet',
   [NetworkEnum.Network_Mainnet]: 'Mainnet',
 };
@@ -12,19 +14,32 @@ export const NetworkEnumMap = {
 // ------------------------------------------------------------------------------------
 
 export enum DALayerEnum {
+  DALayer_UNKNOW = 0,
   DALayer_PLG = 10,
   DALayer_BTC = 11,
   DALayer_Goerli = 12,
   DALayer_Celestia = 13,
   DALayer_Eigen = 14,
+  DALayer_NearDa = 15,
+  DALayer_IPFS = 16,
+  DALayer_ARWEAVE = 17,
+  DALayer_AVAIL = 18,
+  DALayer_JACKAL = 19,
 }
 
 export const DALayerEnumMap = {
+  [DALayerEnum.DALayer_UNKNOW]: 'Unknow',
   [DALayerEnum.DALayer_PLG]: 'Bitcoin + Polygon',
   [DALayerEnum.DALayer_BTC]: 'Bitcoin Only',
   [DALayerEnum.DALayer_Goerli]: 'Bitcoin + Ethereum (Goerli)',
   [DALayerEnum.DALayer_Celestia]: 'Bitcoin + Celestia',
   [DALayerEnum.DALayer_Eigen]: 'Bitcoin + Eigen',
+  [DALayerEnum.DALayer_NearDa]: 'Near',
+
+  [DALayerEnum.DALayer_IPFS]: 'Bitcoin + IPFS',
+  [DALayerEnum.DALayer_ARWEAVE]: 'Bitcoin + Arweave',
+  [DALayerEnum.DALayer_AVAIL]: 'Bitcoin + Avail',
+  [DALayerEnum.DALayer_JACKAL]: 'Bitcoin + Jackal',
 };
 
 // ------------------------------------------------------------------------------------
@@ -34,8 +49,18 @@ export enum RollupEnum {
   Rollup_ZK = 21,
 }
 
+export enum BitcoinValidityEnum {
+  BitcoinValidity_Ordinals = 0,
+  BitcoinValidity_Stamps = 1,
+}
+
+export const BitcoinValidityEnumMap = {
+  [BitcoinValidityEnum.BitcoinValidity_Ordinals]: 'Bitcoin Oridinal',
+  [BitcoinValidityEnum.BitcoinValidity_Stamps]: 'Bitcoin Stamps',
+};
+
 export const RollupEnumMap = {
-  [RollupEnum.Rollup_OpStack]: 'OP Stack',
+  [RollupEnum.Rollup_OpStack]: 'Optimistic Rollups',
   [RollupEnum.Rollup_ZK]: 'ZK Rollups',
 };
 
@@ -105,4 +130,12 @@ export enum NativeTokenPayingGasEnum {
 export const NativeTokenPayingGasMap = {
   [NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM]: 'BVM',
   [NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint]: 'Customized',
+};
+
+export const FormErrorMessage = {
+  network: 'Network is required.',
+  computerName: 'Bitcoin L2 name is required.',
+  description: 'Bitcoin L2 description is required.',
+  projectX: 'Project X account is required.',
+  yourXAccount: 'Your X account is required.',
 };

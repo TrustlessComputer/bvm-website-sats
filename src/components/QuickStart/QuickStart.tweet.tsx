@@ -89,7 +89,7 @@ const QuickStartTweet = (props: IProps) => {
             Step 1
           </Text>
           <TwitterShareButton
-            url={`I just launched a new Bitcoin L2 blockchain at @NewBitcoinCity!\n\nCome and create your own.\nhttps://newbitcoincity.com/tc\n\nPowered by Bitcoin Virtual Machine - A no-code tool for building a full-featured Bitcoin L2 blockchain.\n`}
+            url={`I just launched a new Bitcoin L2 blockchain at @NewBitcoinCity!\n\nCome and create your own.\nhttps://newbitcoincity.com/tc\n\nPowered by Bitcoin L2 - A no-code tool for building a full-featured Bitcoin L2 blockchain.\n`}
             hashtags={[]}
             windowWidth={1000}
             windowHeight={800}

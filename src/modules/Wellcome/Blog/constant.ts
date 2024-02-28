@@ -105,7 +105,7 @@ const BLOGS = [
   },
   {
     id: '7',
-    title: `DeFi on Bitcoin? Bitcoin Virtual Machine Says Yes`,
+    title: `DeFi on Bitcoin? Bitcoin L2 Says Yes`,
     desc: `Developers can build decentralized apps on Bitcoin using Solidity smart contracts`,
     logo: 'Blockworks',
     imageUrl: `${CDN_URL_BLOGS}/Blockworks.webp`,
@@ -114,7 +114,7 @@ const BLOGS = [
   },
   {
     id: '8',
-    title: `BITCOIN VIRTUAL MACHINE DEPLOYS UNISWAP V2 SMART CONTRACTS: HUGE MILESTONE FOR BITCOIN`,
+    title: `BITCOIN L2 DEPLOYS UNISWAP V2 SMART CONTRACTS: HUGE MILESTONE FOR BITCOIN`,
     desc: `The emergence of #Ordinals and #BRC20 tokens has led to a renaissance period for #Bitcoin  
     With their deployment of Uniswap v2 smart contracts on #BTC, @TrustlessOnBTC is right at the forefront of this exciting development`,
     logo: 'Influencive',
@@ -143,7 +143,7 @@ const BLOGS = [
   {
     id: '12',
     title: `Bitcoin Transactions Hit Record High as New Token Type Takes Off`,
-    desc: `Bitcoin Virtual Machine enables its own form of fungible tokens, called SBRC-20s, punk3700, a pseudonymous core contributor to Bitcoin Virtual Machine, told The Defiant.`,
+    desc: `Bitcoin L2 enables its own form of fungible tokens, called SBRC-20s, punk3700, a pseudonymous core contributor to Bitcoin L2, told The Defiant.`,
     logo: 'The Defiant',
     imageUrl: `${CDN_URL_BLOGS}/defiant.png`,
     link: 'https://thedefiant.io/bitcoin-transactions-hit-record-high-as-new-token-type-takes-off',

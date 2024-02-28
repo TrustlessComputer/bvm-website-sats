@@ -34,7 +34,7 @@ export interface IPrice {
 
 const TrialPrice: IPrice = {
   id: 'free',
-  price: '7-day free trial',
+  price: 'Free Trial',
   unit: '',
   type: 'Free',
   subType: '',

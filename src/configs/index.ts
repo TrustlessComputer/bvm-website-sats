@@ -21,6 +21,7 @@ const DOCS_TRUSTLESS_URL = 'https://docs.trustless.computer';
 const DISCORD_URL = 'https://discord.gg/n26ekXWBqm';
 const TWITTER_URL = 'https://twitter.com/newbitcoincity';
 const DISCORD_TRUSTLESS_URL = 'https://discord.gg/n26ekXWBqm';
+const TELEGRAM_TRUSTLESS_URL = 'https://t.me/bird2836';
 
 const ISSUE_TOKEN_URL =
   'https://docs.trustless.computer/quickstart/build-your-first-bitcoin-dapps/issue-your-own-governance-token';
@@ -39,11 +40,14 @@ const CHAIN_ID = {
   NAKA_CHAIN_MAINNET: 42223,
 };
 
-const APP_NAME = 'Bitcoin Virtual Machine';
+const APP_NAME = 'Bitcoin L2';
 
 const DISABLED_FEATURES = {
   DEPLOY: false,
 };
+
+const PERP_API_URL = ENVS.VITE_PUBLIC_PERP_API;
+// const PERP_API_URL = 'https://api.bvm.network';
 
 const configs = {
   isDev,
@@ -63,9 +67,11 @@ const configs = {
   DISCORD_URL,
   TWITTER_URL,
   DISCORD_TRUSTLESS_URL,
+  TELEGRAM_TRUSTLESS_URL,
   ISSUE_TOKEN_URL,
   CROWD_URL,
   DAO_URL,
+  PERP_API_URL,
 };
 
 export const CDN_ICONS_URL = `${CDN_URL}/nbc/icons/bvm-icons`;

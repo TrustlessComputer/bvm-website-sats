@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet';
 
-export const META_TITLE = 'Bitcoin Virtual Machine';
+export const META_TITLE = 'Bitcoin L2';
 export const META_DESCRIPTION = 'Effortlessly create and manage your own Bitcoin Layer 2 network.';
 export const META_SUB_DESCRIPTION = 'Set up your fully operational Bitcoin Layer 2 network with just a single click.';
 

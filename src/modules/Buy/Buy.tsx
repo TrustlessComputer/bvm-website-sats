@@ -1,29 +1,50 @@
 import SectionImage from '@/assets/images/robot_build.png';
+<<<<<<< HEAD
+=======
+import { SupportedChainId } from '@/chains';
+>>>>>>> main
 import Button from '@/components/Button';
+import { EmailVerifier } from '@/components/EmailVerifier';
+import IconSVG from '@/components/IconSVG';
+import { Row } from '@/components/Row';
+import { Spinner } from '@/components/Spinner';
 import Text from '@/components/Text';
 import { TextInput2 } from '@/components/TextInput/TextInput2';
-import { IOrderBuyReq } from '@/interface/services/client';
+import configs from '@/configs';
+import { ModalsContext } from '@/contexts/modals.context';
+import { WalletContext } from '@/contexts/wallet.context';
+import useRouteHelper from '@/hooks/useRouterHelper';
+import { IOrderBuyEstimateRespone, IOrderBuyReq } from '@/interface/services/client';
 import { Image } from '@/modules/Wellcome/styled';
-import client from '@/services/client';
+import client, { SubmitFormParams } from '@/services/client';
 import { useAppSelector } from '@/state/hooks';
 import { useFetchUserData, useIsAuthenticated } from '@/state/user/hooks';
+import { accountInfoSelector, userGamefiByAddressSelector } from '@/state/user/selector';
 import { getErrorMessage } from '@/utils';
 import formatter from '@/utils/amount';
 import sleep from '@/utils/sleep';
-import { Slider, Radio, RadioChangeEvent } from 'antd';
+import { useWeb3React } from '@web3-react/core';
+import { Radio, Slider } from 'antd';
 import BigNumber from 'bignumber.js';
-import { debounce, throttle } from 'lodash';
+import { debounce, throttle, trim } from 'lodash';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Spinner } from '@/components/Spinner';
+import { MessageCircle } from 'react-feather';
 import toast from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 import { GAS_LITMIT, MIN_GAS_PRICE, ServiceTypeEnum } from '../Account/Order/FormOrder.constants';
+import { getUser } from './Buy.TwitterUtil';
 import {
   DALayerEnum,
+  FormErrorMessage,
   NativeTokenPayingGasEnum,
   NetworkEnum,
   PluginEnum,
   PluginTypeEnum,
   RollupEnum,
+  BitcoinValidityEnum,
+  NetworkEnumMap,
+  RollupEnumMap,
+  DALayerEnumMap,
 } from './Buy.constanst';
 import {
   convertDayToSeconds,
@@ -32,26 +53,17 @@ import {
   getChainIDRandom,
   getRandonComputerName,
 } from './Buy.helpers';
-import { BuyDataBuilder, BuyBuilderSelectState, SectionProps, ItemDetail } from './Buy.types';
+import { BuyBuilderSelectState, BuyDataBuilder, ItemDetail, SectionProps } from './Buy.types';
+import CustomizeTokenView from './CustomizeTokenView';
 import Item from './components/Item';
+import Section from './components/Section';
 import Segment from './components/Segment';
 import Title from './components/Title';
 import * as S from './styled';
-import Section from './components/Section';
-import useRouteHelper from '@/hooks/useRouterHelper';
-import { WalletContext } from '@/contexts/wallet.context';
-import { SupportedChainId } from '@/chains';
-import { useLocation } from 'react-router-dom';
-import { useWeb3React } from '@web3-react/core';
-import { accountInfoSelector, userGamefiByAddressSelector } from '@/state/user/selector';
-import IconSVG from '@/components/IconSVG';
-import configs from '@/configs';
-import { MessageCircle } from 'react-feather';
-import { Row } from '@/components/Row';
-import { EmailVerifier } from '@/components/EmailVerifier';
-import { ModalsContext } from '@/contexts/modals.context';
-import CustomizeTokenModal from './CustomizeTokenModal';
-import CustomizeTokenView from './CustomizeTokenView';
+import SubmitFormModal from './SubmitFormModal';
+import SubmitResultFormModal from './SubmitResultFormModal';
+import { ErrorMessage } from 'formik';
+import { TextArea } from '@/components/TextInput/TextArea';
 
 type Props = {
   onSuccess?: () => void;
@@ -73,7 +85,9 @@ const BuyPage = React.memo((props: Props) => {
   );
 
   const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
-  // const [showCustomizeTokenModal, setShowCustomizeTokenModal] = useState<boolean>(true);
+
+  const [showSubmitForm, setShowSubmitForm] = useState<boolean>(false);
+  const [showSubmitFormResult, setShowSubmitFormResult] = useState<boolean>(false);
 
   const accountInfo = useAppSelector(accountInfoSelector);
 
@@ -100,20 +114,40 @@ const BuyPage = React.memo((props: Props) => {
     data: undefined,
   });
 
+  const [networkErrorMessage, setNetworkErrorMessage] = useState<string | undefined>(undefined);
+  const [networkFocused, setNetworkFocused] = useState<boolean>(false);
+
   const [subdomainErrorMessage, setSubdomainErrorMessage] = useState<string | undefined>(undefined);
+  const [subdomainFocused, setSubdomainFocused] = useState<boolean>(false);
+
+  const [descriptionErrorMessage, setDescriptionErrorMessage] = useState<string | undefined>(undefined);
+  const [descriptionFocused, setDescriptionFocused] = useState<boolean>(false);
+
+  const [projectXAccountErrorMessage, setProjectXAccountErrorMessage] = useState<string | undefined>(undefined);
+  const [projectXAccountFocused, setProjectXAccountFocused] = useState<boolean>(false);
+
+  const [yourXAccountErrorMessage, setYourXAccountErrorMessage] = useState<string | undefined>(undefined);
+  const [yourXAccountFocused, settYourXAccountFocused] = useState<boolean>(false);
+  // const [yourTelegramErrorMessage, setYourTelegramErrorMessage] = useState<string | undefined>(undefined);
+
   const [minGasPriceErrorMessage, setMinGasPriceErrorMessage] = useState<string | undefined>(undefined);
   const [gasLimitErrorMessage, setGasLimitErrorMessage] = useState<string | undefined>(undefined);
 
-  const [totalCost, setTotalCost] = useState<any>('0');
   const [isTotalCostFetching, setTotalCostFetching] = useState<boolean>(false);
   const [chainIDRandom, setChainIDRandom] = useState<number | undefined>(undefined);
 
   const [data, setData] = useState<BuyDataBuilder | undefined>(undefined);
   const [buyBuilderState, setBuyBuilderState] = useState<BuyBuilderSelectState>(builderStateInit);
+
+  const [estimateData, setEstimateData] = useState<IOrderBuyEstimateRespone | undefined>(undefined);
+
   console.log('SALE rollupProtocol: ', typeof data?.rollupProtocol);
   console.log('SALE buyBuilderState: ', buyBuilderState.rollupProtocol);
 
-  // console.log('DEBUG buyBuilderState: ', buyBuilderState);
+  console.log('DEBUG : ', {
+    buyBuilderState,
+    data,
+  });
 
   const isMainnet = useMemo(() => {
     return buyBuilderState.network === NetworkEnum.Network_Mainnet;
@@ -121,11 +155,11 @@ const BuyPage = React.memo((props: Props) => {
 
   const confirmBtnTitle = useMemo(() => {
     if (isMainnet) {
-      return 'Contact us';
+      return 'Submit';
     } else if (!isAuthenticated) {
       return 'Connect Wallet';
     } else {
-      return 'Build a Bitcoin L2';
+      return 'Submit';
     }
   }, [isMainnet, accountInfo]);
 
@@ -150,10 +184,10 @@ const BuyPage = React.memo((props: Props) => {
   }, [isMainnet]);
 
   useEffect(() => {
-    setBuyBuilderState({
-      ...buyBuilderState,
-      chainName: getRandonComputerName(isMainnet),
-    });
+    // setBuyBuilderState({
+    //   ...buyBuilderState,
+    //   chainName: getRandonComputerName(isMainnet),
+    // });
   }, [isMainnet]);
 
   const fetchData = async () => {
@@ -182,6 +216,7 @@ const BuyPage = React.memo((props: Props) => {
         const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
         const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
         const isMainnet = buyBuilderState.network === NetworkEnum.Network_Mainnet;
+        const bitcoinValidity = buyBuilderState.bitcoinValidity || BitcoinValidityEnum.BitcoinValidity_Ordinals;
 
         const params: IOrderBuyReq = {
           serviceType: ServiceTypeEnum.DEFAULT, //hard code
@@ -198,15 +233,15 @@ const BuyPage = React.memo((props: Props) => {
           pluginIds: [PluginEnum.Plugin_Bridge],
           nativeTokenPayingGas: NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM,
           gasLimit: GAS_LITMIT,
+          bitcoinValidity: bitcoinValidity,
         };
         // console.log('CREATE ORDER BUY params ==>> ', params);
 
         const result = await client.orderBuyEstimateAPI(params);
-        setTotalCost(result || '0');
+        setEstimateData(result);
       } catch (error) {
         const { message } = getErrorMessage(error);
         toast.error(message);
-        setTotalCost('0');
       } finally {
         setTotalCostFetching(false);
       }
@@ -218,26 +253,66 @@ const BuyPage = React.memo((props: Props) => {
     if (isMainnet) {
       getEstimateOrderBuy(buyBuilderState);
     } else {
-      setTotalCost('0');
     }
   }, [buyBuilderState, isMainnet]);
 
   const isDisabledSubmit = useMemo(() => {
-    return loading || isTyping || !!subdomainErrorMessage || !!minGasPriceErrorMessage || !!gasLimitErrorMessage;
-  }, [loading, isTyping, subdomainErrorMessage]);
+    return (
+      loading ||
+      isTyping ||
+      !!subdomainErrorMessage ||
+      !!descriptionErrorMessage ||
+      !!projectXAccountErrorMessage ||
+      !!minGasPriceErrorMessage ||
+      !!gasLimitErrorMessage
+    );
+  }, [loading, isTyping, buyBuilderState]);
 
-  const totalCostStr = useMemo(() => {
-    if (Number(totalCost) == 0 || Number(totalCost) === 0) {
-      return `Free`;
+  const estimateDataFormatted = useMemo(() => {
+    let result = {
+      SetupCode: '0',
+      OperationCost: '0',
+      RollupCost: '0',
+      TotalCost: '0',
+    };
+    if (!estimateData) {
+      return result;
     } else {
-      return `Total: ${formatter.formatAmount({
-        originalAmount: Number(totalCost),
+      let setupCodeFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.SetupCode || '0'),
         decimals: 18,
         maxDigits: 2,
         isCeil: true,
-      })} BVM`;
+      })}`;
+
+      let operationCostFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.OperationCost || '0'),
+        decimals: 18,
+        maxDigits: 2,
+        isCeil: true,
+      })}`;
+
+      let rollupCostFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.RollupCost || '0'),
+        decimals: 18,
+        maxDigits: 2,
+        isCeil: true,
+      })}`;
+
+      let totalCostFomatted = `${formatter.formatAmount({
+        originalAmount: Number(estimateData.TotalCost || '0'),
+        decimals: 18,
+        maxDigits: 2,
+        isCeil: true,
+      })}`;
+
+      result.SetupCode = setupCodeFomatted;
+      result.OperationCost = operationCostFomatted;
+      result.RollupCost = rollupCostFomatted;
+      result.TotalCost = totalCostFomatted;
+      return result;
     }
-  }, [totalCost]);
+  }, [estimateData]);
 
   useEffect(() => {
     fetchData();
@@ -260,7 +335,7 @@ const BuyPage = React.memo((props: Props) => {
       <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
         <S.ListItemContainer>
           {dataList?.map((item, index) => {
-            const contentValue = item.value === NetworkEnum.Network_Mainnet ? item.price : '7-day free trial';
+            const contentValue = item.value === NetworkEnum.Network_Mainnet ? item.price : 'Free Trial';
             return (
               <React.Fragment key={`${item.valueStr} ${index}`}>
                 <Item
@@ -273,6 +348,8 @@ const BuyPage = React.memo((props: Props) => {
                   content={contentValue}
                   priceNote={item.priceNote}
                   onClickCallback={value => {
+                    setNetworkErrorMessage(undefined);
+                    setNetworkFocused(true);
                     setBuyBuilderState({
                       ...buyBuilderState,
                       [sectionType]: value,
@@ -283,6 +360,11 @@ const BuyPage = React.memo((props: Props) => {
             );
           })}
         </S.ListItemContainer>
+        {networkErrorMessage && networkFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {networkErrorMessage}
+          </Text>
+        )}
       </Section>
     );
   };
@@ -310,6 +392,40 @@ const BuyPage = React.memo((props: Props) => {
                     setBuyBuilderState({
                       ...buyBuilderState,
                       [sectionType]: value,
+                    });
+                  }}
+                />
+              </React.Fragment>
+            );
+          })}
+        </S.ListItemContainer>
+      </Section>
+    );
+  };
+
+  const renderBitcoinValiditySection = (props: SectionProps) => {
+    const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
+    const dataList: ItemDetail[] = isMainnet ? data[NetworkEnum.Network_Mainnet] : data[NetworkEnum.Network_Testnet];
+    return (
+      <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
+        <S.ListItemContainer>
+          {dataList?.map((item, index) => {
+            let privaeValue = item.price;
+            return (
+              <React.Fragment key={`${item.valueStr} ${index}`}>
+                <Item
+                  isMainnet={isMainnet}
+                  key={`${item.valueStr} ${index}`}
+                  value={item.value}
+                  isSelected={item.value === buyBuilderState.bitcoinValidity}
+                  disabled={item.value === valueDisabled}
+                  title={item.valueStr}
+                  content={privaeValue}
+                  priceNote={item.priceNote}
+                  onClickCallback={value => {
+                    setBuyBuilderState({
+                      ...buyBuilderState,
+                      bitcoinValidity: value,
                     });
                   }}
                 />
@@ -361,8 +477,8 @@ const BuyPage = React.memo((props: Props) => {
       ? data[NetworkEnum.Network_Mainnet]
       : data[NetworkEnum.Network_Testnet];
 
-    const dataList: ItemDetail[] = dataListBasedNetwork[buyBuilderState.dataAvaibilityChain] || [];
-
+    const dataList: ItemDetail[] =
+      dataListBasedNetwork[buyBuilderState.dataAvaibilityChain] || dataListBasedNetwork[DALayerEnum.DALayer_BTC];
     return (
       <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
         <S.ListItemContainer>
@@ -524,6 +640,7 @@ const BuyPage = React.memo((props: Props) => {
             type="number"
             step={'any'}
             autoComplete="off"
+            autoFocus={false}
             spellCheck={false}
             onWheel={(e: any) => e?.target?.blur()}
           />
@@ -540,16 +657,9 @@ const BuyPage = React.memo((props: Props) => {
 
   const onChangeComputerNameHandler = useCallback(
     debounce(async (text: string) => {
-      if (!text || text.length < 1) {
-        setSubdomainErrorMessage('Computer name is required.');
+      if (!validateComputerName(text)) {
         setTyping(false);
-      }
-
-      // else if (text.length > CHAIN_NAME_MAX_LENGTH) {
-      //   setSubdomainErrorMessage(`Computer name must be at least ${CHAIN_NAME_MAX_LENGTH} characters.`);
-      //   setTyping(false);
-      // }
-      else {
+      } else {
         try {
           const isValid = await client.validateSubDomainAPI(text);
           setSubdomainErrorMessage(isValid ? undefined : 'Something went wrong');
@@ -564,6 +674,51 @@ const BuyPage = React.memo((props: Props) => {
     }, 500),
     [],
   );
+
+  const onChangeDescriptionHandler = useCallback(
+    debounce(async (text: string) => {
+      if (!validateDescription(text)) {
+        setTyping(false);
+      } else {
+        setDescriptionErrorMessage(undefined);
+      }
+    }, 100),
+    [],
+  );
+
+  const onChangeProjectXHandler = useCallback(
+    debounce(async (text: string) => {
+      if (!validateProjectX(text)) {
+        setTyping(false);
+      } else {
+        setProjectXAccountErrorMessage(undefined);
+      }
+    }, 100),
+    [],
+  );
+
+  const onChangeYourXAccountHandler = useCallback(
+    debounce(async (text: string) => {
+      if (!validateYourXAccount(text)) {
+        setTyping(false);
+      } else {
+        setYourXAccountErrorMessage(undefined);
+      }
+    }, 100),
+    [],
+  );
+
+  // const onChangeYourTelegramHandler = useCallback(
+  //   debounce(async (text: string) => {
+  //     if (!text || text.length < 1) {
+  //       setYourTelegramErrorMessage('Your telegram is required.');
+  //       setTyping(false);
+  //     } else {
+  //       setYourTelegramErrorMessage(undefined);
+  //     }
+  //   }, 100),
+  //   [],
+  // );
 
   const onChangeGasPriceHandler = (text: string) => {
     if (!text || text.length < 1) {
@@ -586,7 +741,7 @@ const BuyPage = React.memo((props: Props) => {
   const renderComputerName = () => {
     return (
       <S.Section>
-        <Title text={'Computer Name'} />
+        <Title text={'Bitcoin L2 Name'} />
         <S.Space />
         <TextInput2
           placeholder=""
@@ -595,6 +750,9 @@ const BuyPage = React.memo((props: Props) => {
           value={buyBuilderState.chainName}
           onBlur={e => {
             onChangeComputerNameHandler(e.target.value);
+          }}
+          onFocus={e => {
+            setSubdomainFocused(true);
           }}
           onChange={e => {
             const chainName = e.target.value;
@@ -615,14 +773,180 @@ const BuyPage = React.memo((props: Props) => {
           step={'any'}
           autoComplete="off"
           spellCheck={false}
-          autoFocus={true}
+          autoFocus={false}
           onWheel={(e: any) => e?.target?.blur()}
         />
-        {subdomainErrorMessage && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative">
+        {subdomainErrorMessage && subdomainFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
             {subdomainErrorMessage}
           </Text>
         )}
+      </S.Section>
+    );
+  };
+
+  const renderDescription = () => {
+    return (
+      <S.Section>
+        <Title text={'Bitcoin L2 description'} />
+        <S.Space />
+        <TextArea
+          placeholder="Tell us more about your plan with your Bitcoin L2"
+          id={'ComputerDescription-ID'}
+          name={'FormFields.computerDescription'}
+          value={buyBuilderState.description}
+          onBlur={e => {
+            onChangeDescriptionHandler(e.target.value);
+          }}
+          onFocus={e => {
+            setDescriptionFocused(true);
+          }}
+          onChange={e => {
+            const description = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              description: description,
+            });
+            onChangeDescriptionHandler(description);
+          }}
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {descriptionErrorMessage && descriptionFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {descriptionErrorMessage}
+          </Text>
+        )}
+      </S.Section>
+    );
+  };
+
+  const renderProjectInformation = () => {
+    return (
+      <S.Section>
+        <Title text={'Project information'} />
+        <S.Space />
+        <TextInput2
+          placeholder="Project X account link/handle"
+          id={'ProjectInformation-ID'}
+          name={'FormFields.projectInformation'}
+          value={buyBuilderState.projectXAccount}
+          onBlur={e => {
+            onChangeProjectXHandler(e.target.value);
+          }}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              projectXAccount: text,
+            });
+            onChangeProjectXHandler(text);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {projectXAccountErrorMessage && projectXAccountFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {projectXAccountErrorMessage}
+          </Text>
+        )}
+        <TextInput2
+          placeholder="Project website"
+          id={'ProjectWebsite-ID'}
+          name={'FormFields.projectWebsite'}
+          value={buyBuilderState.projectWebsite}
+          onBlur={e => {}}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              projectWebsite: text,
+            });
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          style={{
+            marginTop: '20px',
+          }}
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+      </S.Section>
+    );
+  };
+
+  const rendeContactInformation = () => {
+    return (
+      <S.Section>
+        <Title text={'Contact information'} />
+        <S.Space />
+        <TextInput2
+          placeholder="Your X account link/handle"
+          id={'YourXAccount-ID'}
+          name={'FormFields.yourXAccount'}
+          value={buyBuilderState.yourXAccount}
+          onBlur={e => {
+            onChangeYourXAccountHandler(e.target.value);
+          }}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              yourXAccount: text,
+            });
+            onChangeYourXAccountHandler(text);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {yourXAccountErrorMessage && yourXAccountFocused && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {yourXAccountErrorMessage}
+          </Text>
+        )}
+
+        <TextInput2
+          placeholder="Your telegram link/handle"
+          id={'YourTelegram-ID'}
+          name={'FormFields.yourTelegram'}
+          value={buyBuilderState.yourTelegramAccount}
+          onBlur={e => {
+            // onChangeYourTelegramHandler(e.target.value);
+          }}
+          onChange={e => {
+            const text = e.target.value;
+            setBuyBuilderState({
+              ...buyBuilderState,
+              yourTelegramAccount: text,
+            });
+            // onChangeYourTelegramHandler(text);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          style={{
+            marginTop: '20px',
+          }}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {/* {yourTelegramErrorMessage && !isTyping && (
+          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
+            {yourTelegramErrorMessage}
+          </Text>
+        )} */}
       </S.Section>
     );
   };
@@ -664,6 +988,121 @@ const BuyPage = React.memo((props: Props) => {
     );
   };
 
+  const validateComputerName = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setSubdomainErrorMessage(FormErrorMessage.computerName);
+    } else {
+      setSubdomainErrorMessage(undefined);
+    }
+    setSubdomainFocused(true);
+    return isValid;
+  };
+
+  const validateDescription = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setDescriptionErrorMessage(FormErrorMessage.description);
+    } else {
+      setDescriptionErrorMessage(undefined);
+    }
+    setDescriptionFocused(true);
+    return isValid;
+  };
+
+  const validateNetwork = () => {
+    let isValid = true;
+    if (buyBuilderState.network === NetworkEnum.Network_UNKNOW) {
+      isValid = false;
+      setNetworkErrorMessage(FormErrorMessage.network);
+    } else {
+      setNetworkErrorMessage(undefined);
+    }
+    setNetworkFocused(true);
+    return isValid;
+  };
+
+  const validateProjectX = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setProjectXAccountErrorMessage(FormErrorMessage.projectX);
+    } else {
+      setProjectXAccountErrorMessage(undefined);
+    }
+    setProjectXAccountFocused(true);
+    return isValid;
+  };
+
+  const validateYourXAccount = (text: string) => {
+    let isValid = true;
+    if (!text || text.length < 1) {
+      isValid = false;
+      setYourXAccountErrorMessage(FormErrorMessage.yourXAccount);
+    } else {
+      setYourXAccountErrorMessage(undefined);
+    }
+    settYourXAccountFocused(true);
+    return isValid;
+  };
+
+  const checkValidateForm = () => {
+    let isValid = true;
+    const { chainName, description, projectXAccount, yourXAccount } = buyBuilderState;
+
+    // Computer Name
+    if (!validateComputerName(chainName)) {
+      isValid = false;
+    }
+
+    // Description
+    if (!validateDescription(description)) {
+      isValid = false;
+    }
+
+    // Network
+    if (!validateNetwork()) {
+      isValid = false;
+    }
+
+    //Project X
+    if (!validateProjectX(projectXAccount)) {
+      isValid = false;
+    }
+
+    //Project X
+    if (!validateYourXAccount(yourXAccount)) {
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handeSubmitForm = async () => {
+    const params: SubmitFormParams = {
+      bitcoinL2Name: buyBuilderState.chainName,
+      bitcoinL2Description: buyBuilderState.description,
+      network: NetworkEnumMap[buyBuilderState.network],
+      dataAvailability: DALayerEnumMap[buyBuilderState.dataAvaibilityChain],
+      blockTime: buyBuilderState.blockTime + 's',
+      rollupProtocol: RollupEnumMap[buyBuilderState.rollupProtocol],
+      withdrawPeriod: `${dayDescribe(buyBuilderState.withdrawPeriod).str}`,
+      twName: buyBuilderState.yourTelegramAccount,
+      telegram: buyBuilderState.projectXAccount,
+    };
+    try {
+      await client.submitContactVS2(params);
+      setShowSubmitFormResult(true);
+    } catch (error) {
+      const { message } = getErrorMessage(error);
+      toast.error(message);
+    } finally {
+      setShowSubmitForm(false);
+    }
+  };
+
   const handleSubmit = throttle(
     async ({ bypassEmail }: { bypassEmail: boolean }) => {
       try {
@@ -674,75 +1113,95 @@ const BuyPage = React.memo((props: Props) => {
           }
         }
 
-        if (subdomainErrorMessage || gasLimitErrorMessage || isTyping || !buyBuilderState.chainName) return;
+        if (!checkValidateForm()) return;
+
+        // if (subdomainErrorMessage || gasLimitErrorMessage || isTyping || !buyBuilderState.chainName) return;
 
         if (isMainnet) {
           // return setShowVerifyEmail(true);/
           //SHOW FORM CONTACT US!
           // return setShowContacUseForm(true);
-          toggleContact();
+          // toggleContact();
+
+          //Google Form
+          // window.open('https://forms.gle/eUbL7nHuTPA3HLRz8', '_blank');
+
+          setShowSubmitForm(true);
           return;
         } else {
-          if (!accountInfo?.emailVerified && !bypassEmail) {
-            return setShowVerifyEmail(true);
-          }
+          // if (!accountInfo?.emailVerified && !bypassEmail) {
+          //   return setShowVerifyEmail(true);
+          // }
+          setShowSubmitForm(true);
+          return;
         }
 
-        setLoading(true);
+        // setLoading(true);
 
-        const finalizationPeriodSeconds = convertDayToSeconds(buyBuilderState.withdrawPeriod);
-        const chainID = chainIDRandom ?? (await getChainIDRandom());
-        const chainName = buyBuilderState.chainName;
-        const domain = buyBuilderState.chainName?.toLowerCase()?.trim().replaceAll(' ', '-');
-        const blockTime = buyBuilderState.blockTime;
-        const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
-        const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
-        const gasLimit = buyBuilderState.gasLimit;
+        // const finalizationPeriodSeconds = convertDayToSeconds(buyBuilderState.withdrawPeriod);
+        // const chainID = chainIDRandom ?? (await getChainIDRandom());
+        // const chainName = buyBuilderState.chainName;
+        // const domain = buyBuilderState.chainName?.toLowerCase()?.trim().replaceAll(' ', '-');
+        // const blockTime = buyBuilderState.blockTime;
+        // const minGasPrice = new BigNumber(2).multipliedBy(1e9).toFixed();
+        // const dataAvaibilityChain = buyBuilderState.dataAvaibilityChain;
+        // const gasLimit = buyBuilderState.gasLimit;
+        // const bitcoinValidity = buyBuilderState.bitcoinValidity;
 
-        let params: IOrderBuyReq = {
-          serviceType: ServiceTypeEnum.DEFAULT, //hard code
-          domain: domain,
-          chainId: String(chainID), //random
-          chainName: chainName,
-          description: '', //hard code
-          finalizationPeriod: Math.ceil(finalizationPeriodSeconds),
-          blockTime: Number(blockTime),
-          minGasPrice: minGasPrice,
-          dataAvaibilityChain: Number(dataAvaibilityChain),
-          isMainnet: isMainnet,
-          userName: ((userGamefi || {}) as any)?.name || '',
-          pluginIds: [PluginEnum.Plugin_Bridge],
-          nativeTokenPayingGas: paymentTransactionGas,
-          gasLimit: Number(gasLimit || GAS_LITMIT),
-          twitter_id: parent.localStorage.getItem('TWITTER_TOKEN'),
-        };
+        // const twitterAccessToken = parent?.localStorage?.getItem('TWITTER_TOKEN');
+        // let twitterID;
+        // let userTwitterInfor;
 
-        if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
-          if (formDataCustomizeToken.isError) return;
-          else
-            params = {
-              ...params,
-              preMintAmount: new BigNumber(formDataCustomizeToken.data?.totalSupply || '0')
-                .multipliedBy(1e18)
-                .toFixed(),
-              preMintAddress: formDataCustomizeToken.data?.receivingAddress,
-              ticker: formDataCustomizeToken.data?.tickerName,
-            };
-        }
+        // if (twitterAccessToken && twitterAccessToken.length > 0) {
+        //   userTwitterInfor = await getUser(twitterAccessToken);
+        //   twitterID = userTwitterInfor?.twitter_id;
+        // }
 
-        console.log('DEBUG [handleSubmit] params: ', params);
+        // let params: IOrderBuyReq = {
+        //   serviceType: ServiceTypeEnum.DEFAULT, //hard code
+        //   domain: domain,
+        //   chainId: String(chainID), //random
+        //   chainName: chainName,
+        //   description: '', //hard code
+        //   finalizationPeriod: Math.ceil(finalizationPeriodSeconds),
+        //   blockTime: Number(blockTime),
+        //   minGasPrice: minGasPrice,
+        //   dataAvaibilityChain: Number(dataAvaibilityChain),
+        //   isMainnet: isMainnet,
+        //   userName: ((userGamefi || {}) as any)?.name || '',
+        //   pluginIds: [PluginEnum.Plugin_Bridge],
+        //   nativeTokenPayingGas: paymentTransactionGas,
+        //   gasLimit: Number(gasLimit || GAS_LITMIT),
+        //   twitter_id: twitterID,
+        //   bitcoinValidity: bitcoinValidity,
+        // };
 
-        const result = await client.orderBuyAPI(params);
-        await sleep(2);
-        if (result) {
-          onFetchData();
-          await sleep(1);
-          toast.success('Order successful', {
-            duration: 1000,
-          });
-          goDashboardPage(params.isMainnet, true);
-        }
-        onSuccess && onSuccess();
+        // if (paymentTransactionGas === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
+        //   if (formDataCustomizeToken.isError) return;
+        //   else
+        //     params = {
+        //       ...params,
+        //       preMintAmount: new BigNumber(formDataCustomizeToken.data?.totalSupply || '0')
+        //         .multipliedBy(1e18)
+        //         .toFixed(),
+        //       preMintAddress: formDataCustomizeToken.data?.receivingAddress,
+        //       ticker: formDataCustomizeToken.data?.tickerName,
+        //     };
+        // }
+
+        // console.log('DEBUG [handleSubmit] params: ', params);
+
+        // const result = await client.orderBuyAPI(params);
+        // await sleep(2);
+        // if (result) {
+        //   onFetchData();
+        //   await sleep(1);
+        //   toast.success('Order successful', {
+        //     duration: 1000,
+        //   });
+        //   goDashboardPage(params.isMainnet, true);
+        // }
+        // onSuccess && onSuccess();
       } catch (error) {
         const { message } = getErrorMessage(error);
         toast.error(message);
@@ -776,11 +1235,11 @@ const BuyPage = React.memo((props: Props) => {
               <MessageCircle />
               <div>
                 <Text size="14" align="center">
-                  Have questions about Bitcoin Virtual Machine?
+                  Have questions about Bitcoin L2?
                 </Text>
                 <Text size="12" align="center" className="discord">
-                  <a href={configs.DISCORD_TRUSTLESS_URL} target="_blank">
-                    Chat with us via Discord
+                  <a href={configs.TELEGRAM_TRUSTLESS_URL} target="_blank">
+                    Chat with us via Telegram
                   </a>
                 </Text>
               </div>
@@ -789,15 +1248,24 @@ const BuyPage = React.memo((props: Props) => {
         </S.LeftContainer>
         <S.RightContainer>
           <Text size="32" fontWeight="semibold" align="left" className="header">
-            Customize your Bitcoin Virtual Machine
+            Customize your Bitcoin L2
           </Text>
           <Text size="20" fontWeight="regular" align="left" className="header">
-            Bitcoin Virtual Machines are secure, low-cost, and lightning-fast L2 blockchains — fully loaded with DEX,
-            DAO, NFT marketplace, and the whole shebang!
+            Bitcoin L2s are secure, low-cost, and lightning-fast L2 blockchains — fully loaded with DEX, DAO, NFT
+            marketplace, and the whole shebang!
           </Text>
           <div className="sectionList">
             {/* Computer Name */}
             {renderComputerName()}
+
+            {/* Computer Description  */}
+            {renderDescription()}
+
+            {/* Project Information  */}
+            {renderProjectInformation()}
+
+            {/* Contact information  */}
+            {rendeContactInformation()}
 
             {/* Network */}
             {data?.network &&
@@ -839,6 +1307,16 @@ const BuyPage = React.memo((props: Props) => {
                 },
               })}
 
+            {/* Bitcoin Validity */}
+            {data?.bitcoinValidity &&
+              renderBitcoinValiditySection({
+                title: 'Bitcoin Validity',
+                desc: 'Which Bitcoin Validity is right for you?',
+                data: data.bitcoinValidity,
+                sectionType: 'bitcoinValidity',
+                descriptionDetail: undefined,
+              })}
+
             {/* DataAvaibility Chain */}
             {data?.dataAvaibilityChain &&
               renderDataAvaibilitySection({
@@ -870,7 +1348,7 @@ const BuyPage = React.memo((props: Props) => {
             {data?.blockTime &&
               renderBlockTimeSection({
                 title: 'Block Time',
-                desc: 'How fast do you want your Bitcoin Virtual Machine to go?',
+                desc: 'How fast do you want your Bitcoin L2 to go?',
                 data: data?.blockTime,
                 sectionType: 'blockTime',
                 descriptionDetail: {
@@ -905,8 +1383,7 @@ const BuyPage = React.memo((props: Props) => {
                 content: (
                   <p>
                     Similar to the minimum gas price on other EVM-based blockchains, the gas price for transactions
-                    within your Bitcoin Virtual Machine must be set to a value higher than or equal to the one you
-                    choose.
+                    within your Bitcoin L2 must be set to a value higher than or equal to the one you choose.
                   </p>
                 ),
               },
@@ -971,7 +1448,7 @@ const BuyPage = React.memo((props: Props) => {
           <Row align="center">
             <IconSVG maxWidth="28" src={`${configs.CDN_APP_ICON_URL}/ic-computer.svg`} className="mr-8" />
             <Text size="18" fontWeight="semibold">
-              Bitcoin Virtual Machine
+              Bitcoin L2
             </Text>
           </Row>
           {!!data && (
@@ -1002,24 +1479,66 @@ const BuyPage = React.memo((props: Props) => {
             {isMainnet ? 'This process can take up to 12 hours' : 'This process can take up to 20 minutes'}
           </Text>
         </S.FooterInfo>
-        <S.FooterActions>
-          {isTotalCostFetching ? (
-            <Spinner size={24} />
-          ) : (
+        {!isMainnet ? (
+          <S.FooterActions>
             <Text size="26" fontWeight="semibold" align="left" className="cost">
-              {totalCostStr}
+              {'Free'}
             </Text>
-          )}
-          <Button
-            sizes="normal"
-            loading={{ isLoading: loading }}
-            disabled={isDisabledSubmit}
-            onClick={() => handleSubmit({ bypassEmail: false })}
-          >
-            <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
-            {confirmBtnTitle}
-          </Button>
-        </S.FooterActions>
+            <Button
+              sizes="normal"
+              loading={{ isLoading: loading }}
+              // disabled={isDisabledSubmit}
+              onClick={() => handleSubmit({ bypassEmail: false })}
+            >
+              <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
+              {confirmBtnTitle}
+            </Button>
+          </S.FooterActions>
+        ) : (
+          <S.FooterActions2>
+            <Row align="center">
+              <IconSVG maxWidth="28" src={`${configs.CDN_APP_ICON_URL}/ic-computer.svg`} className="mr-8" />
+              <Text size="18" fontWeight="semibold">
+                Service costs
+              </Text>
+            </Row>
+            <Row gap={42}>
+              <div className="grid-content">
+                <Text size="16">
+                  <span>• Setup cost: </span>
+                  {estimateDataFormatted?.SetupCode || '0'}
+                </Text>
+                <Text size="16">
+                  <span>• Operation cost: </span>
+                  {estimateDataFormatted?.OperationCost || '0'}
+                </Text>
+                <Text size="16">
+                  <span>• Rollup cost: </span>
+                  {estimateDataFormatted?.RollupCost || '0'}
+                </Text>
+              </div>
+              <S.BreakLine></S.BreakLine>
+            </Row>
+            <S.RowActionInfor>
+              {isTotalCostFetching ? (
+                <Spinner size={24} />
+              ) : (
+                <Text size="26" fontWeight="semibold" align="left" className="cost">
+                  {`Total: ${estimateDataFormatted?.TotalCost} BVM`}
+                </Text>
+              )}
+              <Button
+                sizes="normal"
+                loading={{ isLoading: loading }}
+                // disabled={isDisabledSubmit}
+                onClick={() => handleSubmit({ bypassEmail: false })}
+              >
+                <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
+                {confirmBtnTitle}
+              </Button>
+            </S.RowActionInfor>
+          </S.FooterActions2>
+        )}
       </S.FooterView>
       {showVerifyEmail && (
         <EmailVerifier
@@ -1036,20 +1555,41 @@ const BuyPage = React.memo((props: Props) => {
         />
       )}
 
-      {/* {showCustomizeTokenModal && (
-        <CustomizeTokenModal
-          show={showCustomizeTokenModal}
+      {showSubmitForm && (
+        <SubmitFormModal
+          show={showSubmitForm}
+          data={{
+            networkName: buyBuilderState.chainName,
+            network: NetworkEnumMap[buyBuilderState.network],
+            blockTime: buyBuilderState.blockTime + 's',
+            rollupProtocol: RollupEnumMap[buyBuilderState.rollupProtocol],
+            withdrawalPeriod: `${dayDescribe(buyBuilderState.withdrawPeriod).str}`,
+            twitter: buyBuilderState.yourXAccount,
+            telegram: buyBuilderState.yourTelegramAccount,
+            projectXAccount: buyBuilderState.projectXAccount,
+            projectWebsite: buyBuilderState.projectWebsite,
+          }}
           onClose={() => {
-            setShowCustomizeTokenModal(false);
+            setShowSubmitForm(false);
           }}
           onSuccess={async () => {
-            await handleSubmit({
-              bypassEmail: true,
-            });
-            setShowVerifyEmail(false);
+            // TO DO
+            handeSubmitForm();
           }}
         />
-      )} */}
+      )}
+
+      {showSubmitFormResult && (
+        <SubmitResultFormModal
+          show={showSubmitFormResult}
+          onClose={() => {
+            setShowSubmitFormResult(false);
+          }}
+          onSuccess={async () => {
+            // TO DO
+          }}
+        />
+      )}
     </>
   );
 });

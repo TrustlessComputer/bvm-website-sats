@@ -129,7 +129,7 @@ const ServiceItem = (props: props) => {
           <Text size="24" fontWeight="semibold" className="mb-8">
             {mapper.computerIndexer}
           </Text>
-          <OrderRow label="Computer name" value={item.chainName} isNode={true} />
+          <OrderRow label="Bitcoin L2 Name" value={item.chainName} isNode={true} />
           {!mapper.isLayer1 && <OrderRow label="Rollup protocol" value="Optimistic rollups" isNode={true} />}
           <OrderRow label="Data availability layer" value={mapper.dataAvailabilityLayer} isNode={true} />
           <OrderRow label="Block time" value={mapper.blockTime} isNode={true} />

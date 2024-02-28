@@ -69,7 +69,7 @@ const MENU_DESKTOP: Array<IMenuItem> = [
     target: '_self',
   },
   {
-    name: 'Bitcoin Virtual Machine',
+    name: 'Bitcoin L2',
     path: `/${PREFIX}`,
     external: true,
     target: '_self',

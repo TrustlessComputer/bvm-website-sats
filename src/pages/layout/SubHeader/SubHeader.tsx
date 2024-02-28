@@ -70,7 +70,7 @@ const SubHeader = () => {
         }}
       >
         <S.MainTitle size="18" fontWeight="semibold">
-          Bitcoin Virtual Machine
+          Bitcoin L2
         </S.MainTitle>
       </Link>
       <Row gap={32} justify="space-between" width="fit-content">

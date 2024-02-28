@@ -44,6 +44,9 @@ const Container = styled.div`
 `;
 
 const LeftContainer = styled.div`
+  display: flex;
+  flex: 1;
+
   .sticky {
     position: sticky;
     top: ${px2rem(0)};
@@ -109,18 +112,16 @@ const Space = styled.div`
 const FooterView = styled.div`
   position: sticky;
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding-left: ${px2rem(180)};
+  flex-direction: row;
+  /* background-color: lightblue; */
   width: 100%;
-  gap: ${px2rem(120)};
+  gap: ${px2rem(32)};
   bottom: 0;
   min-height: ${px2rem(160)};
   padding-top: ${px2rem(24)};
   padding-bottom: ${px2rem(24)};
   padding-left: ${px2rem(60)};
   padding-right: ${px2rem(60)};
-  align-items: center;
   background-color: ${({ theme }) => theme.background_secondary};
   border-top: 1px solid ${({ theme }) => opacify(20, theme.text_primary)};
   ${MediaQueryBuilder(
@@ -148,20 +149,94 @@ const FooterView = styled.div`
 
 const FooterActions = styled.div`
   display: flex;
+  flex: 1;
   align-items: center;
+  justify-content: flex-end;
   gap: ${px2rem(32)};
   ${MediaQueryBuilder(
     'lg',
     css`
       flex: 1;
-      justify-content: space-between;
+      justify-content: flex-end;
     `,
   )}
 `;
 
+const FooterActions2 = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /* background-color: grey; */
+  gap: ${px2rem(12)};
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${px2rem(42)};
+  }
+  .grid-content {
+    display: flex;
+    flex-direction: column;
+    gap: ${px2rem(8)};
+  }
+  ${MediaQueryBuilder(
+    'xs',
+    css`
+      display: none;
+    `,
+  )}
+  ${MediaQueryBuilder(
+    'lg',
+    css`
+      flex: 1;
+      /* justify-content: space-between; */
+    `,
+  )}
+`;
+
+const BreakLine = styled.div`
+  display: flex;
+  background-color: #787878;
+  height: 1px;
+  width: '100%';
+`;
+
+const RowActionInfor = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${px2rem(32)};
+`;
+
 const FooterInfo = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
+  /* background-color: green; */
+  gap: ${px2rem(12)};
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${px2rem(42)};
+  }
+  .grid-content {
+    display: flex;
+    flex-direction: column;
+    gap: ${px2rem(8)};
+  }
+  ${MediaQueryBuilder(
+    'xs',
+    css`
+      display: none;
+    `,
+  )}
+`;
+
+const FooterInfo2 = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  background-color: red;
   gap: ${px2rem(12)};
   .grid {
     display: grid;
@@ -190,5 +265,9 @@ export {
   Space,
   FooterView,
   FooterActions,
+  FooterActions2,
   FooterInfo,
+  FooterInfo2,
+  RowActionInfor,
+  BreakLine,
 };

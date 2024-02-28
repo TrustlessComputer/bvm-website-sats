@@ -18,8 +18,8 @@ export const GAS_LITMIT = 30000000; //
 export const EVNS_LIST = [EnvironmentsEnum.Mainnet, EnvironmentsEnum.Testnet];
 
 export const EVNS_LIST_MAP = {
-  [EnvironmentsEnum.Mainnet]: 'Bitcoin Virtual Machine (mainnet)',
-  [EnvironmentsEnum.Testnet]: 'Bitcoin Virtual Machine (testnet)',
+  [EnvironmentsEnum.Mainnet]: 'Bitcoin L2 (mainnet)',
+  [EnvironmentsEnum.Testnet]: 'Bitcoin L2 (testnet)',
 };
 
 export const SUB_DOMAIN_MAP = {

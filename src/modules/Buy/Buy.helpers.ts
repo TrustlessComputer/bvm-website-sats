@@ -1,6 +1,6 @@
 import client from '@/services/client';
 import { BuyBuilderSelectState } from './Buy.types';
-import { DALayerEnum, NetworkEnum, PluginEnum, RollupEnum } from './Buy.constanst';
+import { BitcoinValidityEnum, DALayerEnum, NetworkEnum, PluginEnum, RollupEnum } from './Buy.constanst';
 import { GAS_LITMIT, MIN_GAS_PRICE } from '../Account/Order/FormOrder.constants';
 import { PriceType, PriceTypeList } from '../Price/constants';
 
@@ -61,15 +61,20 @@ export const dayDescribe = (day: number) => {
 
 export const getBuyBuilderStateInit = (type?: string | null): BuyBuilderSelectState | any => {
   const dataInit: BuyBuilderSelectState = {
-    network: NetworkEnum.Network_Testnet,
+    network: NetworkEnum.Network_UNKNOW, //
     blockTime: 10,
     dataAvaibilityChain: DALayerEnum.DALayer_BTC,
-    pluginIds: [PluginEnum.Plugin_Bridge], //HARD CODE: Force Bridge select
+    pluginIds: [PluginEnum.Plugin_Bridge], // HARD CODE: Force Bridge select
     rollupProtocol: RollupEnum.Rollup_OpStack,
     withdrawPeriod: 7,
     chainName: '',
+    description: '',
     minGasPrice: `${MIN_GAS_PRICE}`,
     gasLimit: `${GAS_LITMIT}`,
+    bitcoinValidity: BitcoinValidityEnum.BitcoinValidity_Ordinals,
+    projectXAccount: '',
+    yourXAccount: '',
+    yourTelegramAccount: '',
   };
 
   if (type === undefined || type === null) return dataInit;
@@ -101,8 +106,8 @@ export const getBuyBuilderStateInit = (type?: string | null): BuyBuilderSelectSt
 };
 
 export const getRandonComputerName = (isMainnet: boolean) => {
-  const prefix = 'Bitcoin Virtual Machine';
+  const prefix = 'Bitcoin L2';
   const suffix = isMainnet ? '' : '(Testnet)';
-  const randomNumber = Math.floor(Math.random() * 900) + 100; //random from 100 -> 999
+  const randomNumber = Math.floor(Math.random() * 9000) + 1000; //random from 100 -> 999
   return `${prefix}-${randomNumber}${suffix ? `-${suffix}` : ''}`;
 };
