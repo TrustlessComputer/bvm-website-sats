@@ -132,10 +132,26 @@ export const NativeTokenPayingGasMap = {
   [NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint]: 'Customized',
 };
 
-export const FormErrorMessage = {
-  network: 'Network is required.',
-  computerName: 'Bitcoin L2 name is required.',
-  description: 'Bitcoin L2 description is required.',
-  projectX: 'Project X account is required.',
-  yourXAccount: 'Your X account is required.',
+export enum FormFields {
+  NETWORK = 'NETWORK',
+  COMPUTER_NAME = 'COMPUTER_NAME',
+  DESCRIPTION = 'DESCRIPTION',
+  PROJECT_X = 'PROJECT_X',
+  PROJECT_WEBSITE = 'PROJECT_WEBSITE',
+  YOUR_X_ACC = 'YOUR_X_ACC',
+  YOUR_TELEGRAM = 'YOUR_Telegram_ACC',
+  MIN_GAS_PRICE = 'MIN_GAS_PRICE',
+  BLOCK_GAS_LIMIT = 'BLOCK_GAS_LIMIT',
+}
+
+export const FormFieldsErrorMessage = {
+  [FormFields.NETWORK]: 'Network is required.',
+  [FormFields.COMPUTER_NAME]: 'Bitcoin L2 name is required.',
+  [FormFields.PROJECT_WEBSITE]: 'Project website name is required.',
+  [FormFields.DESCRIPTION]: 'Bitcoin L2 description is required.',
+  [FormFields.PROJECT_X]: 'Project X account is required.',
+  [FormFields.YOUR_X_ACC]: 'Your X account is required.',
+  [FormFields.MIN_GAS_PRICE]: 'Min gas price is required.',
+  [FormFields.BLOCK_GAS_LIMIT]: 'Gas limit is required.',
+  [FormFields.YOUR_TELEGRAM]: 'Your telegram is required.',
 };

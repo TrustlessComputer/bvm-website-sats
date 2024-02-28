@@ -32,7 +32,7 @@ import { GAS_LITMIT, MIN_GAS_PRICE, ServiceTypeEnum } from '../Account/Order/For
 import { getUser } from './Buy.TwitterUtil';
 import {
   DALayerEnum,
-  FormErrorMessage,
+  FormFieldsErrorMessage,
   NativeTokenPayingGasEnum,
   NetworkEnum,
   PluginEnum,
@@ -50,7 +50,7 @@ import {
   getChainIDRandom,
   getRandonComputerName,
 } from './Buy.helpers';
-import { BuyBuilderSelectState, BuyDataBuilder, ItemDetail, SectionProps } from './Buy.types';
+import { BuyBuilderSelectState, IAvailableList, ItemDetail, SectionProps } from './Buy.types';
 import CustomizeTokenView from './CustomizeTokenView';
 import Item from './components/Item';
 import Section from './components/Section';
@@ -61,6 +61,21 @@ import SubmitFormModal from './SubmitFormModal';
 import SubmitResultFormModal from './SubmitResultFormModal';
 import { ErrorMessage } from 'formik';
 import { TextArea } from '@/components/TextInput/TextArea';
+import ComputerDescriptionSection from './components2/ComputerDescriptionSection';
+import ProjectInformationSection from './components2/ProjectInformationSection';
+import ContactInformationSection from './components2/ContactInformationSection';
+import NetworkSection from './components2/NetworkSection';
+import RollupProtocolSection from './components2/RollupProtocolSection';
+import BitcoinValiditySection from './components2/BitcoinValiditySection';
+import DataAvailabilitySection from './components2/DataAvailabilitySection';
+import BlockTimeSection from './components2/BlockTimeSection';
+import MinGasPriceSection from './components2/MinGasPriceSection';
+import BlockGasLimitSection from './components2/BlockGasLimitSection';
+import WithdrawalPeriodSection from './components2/WithdrawalPeriodSection';
+import ComputerNameSection from './components2/ComputerNameSection';
+import TokenPayingGasSection from './components2/TokenPayingGasSection';
+import PreInstalledDappsSection from './components2/PreInstalledDappsSection';
+import { useBuyProvider } from './providers/Buy.hook';
 
 type Props = {
   onSuccess?: () => void;
@@ -76,6 +91,7 @@ const BuyPage = React.memo((props: Props) => {
   const onFetchData = useFetchUserData();
   const { search } = useLocation();
   const { toggleContact } = useContext(ModalsContext);
+  const { submitHandler, isMainnet, estimateTotalCostData } = useBuyProvider();
 
   const [paymentTransactionGas, setPaymentTransactionGas] = useState<NativeTokenPayingGasEnum>(
     NativeTokenPayingGasEnum.NativeTokenPayingGas_BVM,
@@ -133,7 +149,7 @@ const BuyPage = React.memo((props: Props) => {
   const [isTotalCostFetching, setTotalCostFetching] = useState<boolean>(false);
   const [chainIDRandom, setChainIDRandom] = useState<number | undefined>(undefined);
 
-  const [data, setData] = useState<BuyDataBuilder | undefined>(undefined);
+  const [data, setData] = useState<IAvailableList | undefined>(undefined);
   const [buyBuilderState, setBuyBuilderState] = useState<BuyBuilderSelectState>(builderStateInit);
 
   const [estimateData, setEstimateData] = useState<IOrderBuyEstimateRespone | undefined>(undefined);
@@ -145,11 +161,6 @@ const BuyPage = React.memo((props: Props) => {
     buyBuilderState,
     data,
   });
-
-  const isMainnet = useMemo(() => {
-    return buyBuilderState.network === NetworkEnum.Network_Mainnet;
-  }, [buyBuilderState.network]);
-
   const confirmBtnTitle = useMemo(() => {
     if (isMainnet) {
       return 'Submit';
@@ -190,7 +201,7 @@ const BuyPage = React.memo((props: Props) => {
   const fetchData = async () => {
     try {
       setFetching(true);
-      const data = await client.fetchBuyBuilderInfo();
+      const data = await client.fetchAvailableList();
       setData(data);
       // console.log('[BuyPage] DEBUG fetchData ==> ', data);
     } catch (error) {
@@ -234,7 +245,7 @@ const BuyPage = React.memo((props: Props) => {
         };
         // console.log('CREATE ORDER BUY params ==>> ', params);
 
-        const result = await client.orderBuyEstimateAPI(params);
+        const result = await client.estimateTotalCostAPI(params);
         setEstimateData(result);
       } catch (error) {
         const { message } = getErrorMessage(error);
@@ -323,115 +334,6 @@ const BuyPage = React.memo((props: Props) => {
       ...buyBuilderState,
       withdrawPeriod: Number(value),
     });
-  };
-
-  const renderNetworkSection = (props: SectionProps) => {
-    const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
-    const dataList = data as ItemDetail[];
-    return (
-      <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
-        <S.ListItemContainer>
-          {dataList?.map((item, index) => {
-            const contentValue = item.value === NetworkEnum.Network_Mainnet ? item.price : 'Free Trial';
-            return (
-              <React.Fragment key={`${item.valueStr} ${index}`}>
-                <Item
-                  isMainnet={isMainnet}
-                  key={`${item.valueStr} ${index}`}
-                  value={item.value}
-                  isSelected={item.value === buyBuilderState.network}
-                  disabled={item.value === valueDisabled}
-                  title={item.valueStr}
-                  content={contentValue}
-                  priceNote={item.priceNote}
-                  onClickCallback={value => {
-                    setNetworkErrorMessage(undefined);
-                    setNetworkFocused(true);
-                    setBuyBuilderState({
-                      ...buyBuilderState,
-                      [sectionType]: value,
-                    });
-                  }}
-                />
-              </React.Fragment>
-            );
-          })}
-        </S.ListItemContainer>
-        {networkErrorMessage && networkFocused && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
-            {networkErrorMessage}
-          </Text>
-        )}
-      </Section>
-    );
-  };
-
-  const renderRollupProtocolSection = (props: SectionProps) => {
-    const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
-    const dataList: ItemDetail[] = isMainnet ? data[NetworkEnum.Network_Mainnet] : data[NetworkEnum.Network_Testnet];
-    return (
-      <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
-        <S.ListItemContainer>
-          {dataList?.map((item, index) => {
-            let privaeValue = item.price;
-            return (
-              <React.Fragment key={`${item.valueStr} ${index}`}>
-                <Item
-                  isMainnet={isMainnet}
-                  key={`${item.valueStr} ${index}`}
-                  value={item.value}
-                  isSelected={item.value === buyBuilderState.rollupProtocol}
-                  disabled={item.value === valueDisabled}
-                  title={item.valueStr}
-                  content={privaeValue}
-                  priceNote={item.priceNote}
-                  onClickCallback={value => {
-                    setBuyBuilderState({
-                      ...buyBuilderState,
-                      [sectionType]: value,
-                    });
-                  }}
-                />
-              </React.Fragment>
-            );
-          })}
-        </S.ListItemContainer>
-      </Section>
-    );
-  };
-
-  const renderBitcoinValiditySection = (props: SectionProps) => {
-    const { title = '', desc = '', sectionType, valueDisabled, data, descriptionDetail } = props;
-    const dataList: ItemDetail[] = isMainnet ? data[NetworkEnum.Network_Mainnet] : data[NetworkEnum.Network_Testnet];
-    return (
-      <Section title={title} description={desc} descriptionDetail={descriptionDetail}>
-        <S.ListItemContainer>
-          {dataList?.map((item, index) => {
-            let privaeValue = item.price;
-            return (
-              <React.Fragment key={`${item.valueStr} ${index}`}>
-                <Item
-                  isMainnet={isMainnet}
-                  key={`${item.valueStr} ${index}`}
-                  value={item.value}
-                  isSelected={item.value === buyBuilderState.bitcoinValidity}
-                  disabled={item.value === valueDisabled}
-                  title={item.valueStr}
-                  content={privaeValue}
-                  priceNote={item.priceNote}
-                  onClickCallback={value => {
-                    setBuyBuilderState({
-                      ...buyBuilderState,
-                      bitcoinValidity: value,
-                    });
-                  }}
-                />
-              </React.Fragment>
-            );
-          })}
-        </S.ListItemContainer>
-      </Section>
-    );
   };
 
   const renderDataAvaibilitySection = (props: SectionProps) => {
@@ -735,219 +637,6 @@ const BuyPage = React.memo((props: Props) => {
     }
   };
 
-  const renderComputerName = () => {
-    return (
-      <S.Section>
-        <Title text={'Bitcoin L2 Name'} />
-        <S.Space />
-        <TextInput2
-          placeholder=""
-          id={'ComputerName-ID'}
-          name={'FormFields.chainName'}
-          value={buyBuilderState.chainName}
-          onBlur={e => {
-            onChangeComputerNameHandler(e.target.value);
-          }}
-          onFocus={e => {
-            setSubdomainFocused(true);
-          }}
-          onChange={e => {
-            const chainName = e.target.value;
-            setBuyBuilderState({
-              ...buyBuilderState,
-              chainName: chainName,
-            });
-            onChangeComputerNameHandler(chainName);
-          }}
-          onKeyDown={event => {
-            if (event.key === 'Enter') {
-              handleSubmit({
-                bypassEmail: false,
-              });
-            }
-          }}
-          type="text"
-          step={'any'}
-          autoComplete="off"
-          spellCheck={false}
-          autoFocus={false}
-          onWheel={(e: any) => e?.target?.blur()}
-        />
-        {subdomainErrorMessage && subdomainFocused && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
-            {subdomainErrorMessage}
-          </Text>
-        )}
-      </S.Section>
-    );
-  };
-
-  const renderDescription = () => {
-    return (
-      <S.Section>
-        <Title text={'Bitcoin L2 description'} />
-        <S.Space />
-        <TextArea
-          placeholder="Tell us more about your plan with your Bitcoin L2"
-          id={'ComputerDescription-ID'}
-          name={'FormFields.computerDescription'}
-          value={buyBuilderState.description}
-          onBlur={e => {
-            onChangeDescriptionHandler(e.target.value);
-          }}
-          onFocus={e => {
-            setDescriptionFocused(true);
-          }}
-          onChange={e => {
-            const description = e.target.value;
-            setBuyBuilderState({
-              ...buyBuilderState,
-              description: description,
-            });
-            onChangeDescriptionHandler(description);
-          }}
-          spellCheck={false}
-          autoFocus={false}
-          onWheel={(e: any) => e?.target?.blur()}
-        />
-        {descriptionErrorMessage && descriptionFocused && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
-            {descriptionErrorMessage}
-          </Text>
-        )}
-      </S.Section>
-    );
-  };
-
-  const renderProjectInformation = () => {
-    return (
-      <S.Section>
-        <Title text={'Project information'} />
-        <S.Space />
-        <TextInput2
-          placeholder="Project X account link/handle"
-          id={'ProjectInformation-ID'}
-          name={'FormFields.projectInformation'}
-          value={buyBuilderState.projectXAccount}
-          onBlur={e => {
-            onChangeProjectXHandler(e.target.value);
-          }}
-          onChange={e => {
-            const text = e.target.value;
-            setBuyBuilderState({
-              ...buyBuilderState,
-              projectXAccount: text,
-            });
-            onChangeProjectXHandler(text);
-          }}
-          type="text"
-          step={'any'}
-          autoComplete="off"
-          spellCheck={false}
-          autoFocus={false}
-          onWheel={(e: any) => e?.target?.blur()}
-        />
-        {projectXAccountErrorMessage && projectXAccountFocused && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
-            {projectXAccountErrorMessage}
-          </Text>
-        )}
-        <TextInput2
-          placeholder="Project website"
-          id={'ProjectWebsite-ID'}
-          name={'FormFields.projectWebsite'}
-          value={buyBuilderState.projectWebsite}
-          onBlur={e => {}}
-          onChange={e => {
-            const text = e.target.value;
-            setBuyBuilderState({
-              ...buyBuilderState,
-              projectWebsite: text,
-            });
-          }}
-          type="text"
-          step={'any'}
-          autoComplete="off"
-          style={{
-            marginTop: '20px',
-          }}
-          spellCheck={false}
-          autoFocus={false}
-          onWheel={(e: any) => e?.target?.blur()}
-        />
-      </S.Section>
-    );
-  };
-
-  const rendeContactInformation = () => {
-    return (
-      <S.Section>
-        <Title text={'Contact information'} />
-        <S.Space />
-        <TextInput2
-          placeholder="Your X account link/handle"
-          id={'YourXAccount-ID'}
-          name={'FormFields.yourXAccount'}
-          value={buyBuilderState.yourXAccount}
-          onBlur={e => {
-            onChangeYourXAccountHandler(e.target.value);
-          }}
-          onChange={e => {
-            const text = e.target.value;
-            setBuyBuilderState({
-              ...buyBuilderState,
-              yourXAccount: text,
-            });
-            onChangeYourXAccountHandler(text);
-          }}
-          type="text"
-          step={'any'}
-          autoComplete="off"
-          spellCheck={false}
-          autoFocus={false}
-          onWheel={(e: any) => e?.target?.blur()}
-        />
-        {yourXAccountErrorMessage && yourXAccountFocused && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
-            {yourXAccountErrorMessage}
-          </Text>
-        )}
-
-        <TextInput2
-          placeholder="Your telegram link/handle"
-          id={'YourTelegram-ID'}
-          name={'FormFields.yourTelegram'}
-          value={buyBuilderState.yourTelegramAccount}
-          onBlur={e => {
-            // onChangeYourTelegramHandler(e.target.value);
-          }}
-          onChange={e => {
-            const text = e.target.value;
-            setBuyBuilderState({
-              ...buyBuilderState,
-              yourTelegramAccount: text,
-            });
-            // onChangeYourTelegramHandler(text);
-          }}
-          type="text"
-          step={'any'}
-          autoComplete="off"
-          spellCheck={false}
-          autoFocus={false}
-          style={{
-            marginTop: '20px',
-          }}
-          onWheel={(e: any) => e?.target?.blur()}
-        />
-        {/* {yourTelegramErrorMessage && !isTyping && (
-          <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
-            {yourTelegramErrorMessage}
-          </Text>
-        )} */}
-      </S.Section>
-    );
-  };
-
   const renderMinGasPrice = (props: SectionProps) => {
     const { title = '', desc = '', descriptionDetail } = props;
     return (
@@ -989,7 +678,7 @@ const BuyPage = React.memo((props: Props) => {
     let isValid = true;
     if (!text || text.length < 1) {
       isValid = false;
-      setSubdomainErrorMessage(FormErrorMessage.computerName);
+      // setSubdomainErrorMessage(FormFieldsErrorMessage.computerName);
     } else {
       setSubdomainErrorMessage(undefined);
     }
@@ -1001,7 +690,7 @@ const BuyPage = React.memo((props: Props) => {
     let isValid = true;
     if (!text || text.length < 1) {
       isValid = false;
-      setDescriptionErrorMessage(FormErrorMessage.description);
+      // setDescriptionErrorMessage(FormFieldsErrorMessage.description);
     } else {
       setDescriptionErrorMessage(undefined);
     }
@@ -1013,7 +702,7 @@ const BuyPage = React.memo((props: Props) => {
     let isValid = true;
     if (buyBuilderState.network === NetworkEnum.Network_UNKNOW) {
       isValid = false;
-      setNetworkErrorMessage(FormErrorMessage.network);
+      // setNetworkErrorMessage(FormFieldsErrorMessage.network);
     } else {
       setNetworkErrorMessage(undefined);
     }
@@ -1025,7 +714,7 @@ const BuyPage = React.memo((props: Props) => {
     let isValid = true;
     if (!text || text.length < 1) {
       isValid = false;
-      setProjectXAccountErrorMessage(FormErrorMessage.projectX);
+      // setProjectXAccountErrorMessage(FormFieldsErrorMessage.projectX);
     } else {
       setProjectXAccountErrorMessage(undefined);
     }
@@ -1037,7 +726,7 @@ const BuyPage = React.memo((props: Props) => {
     let isValid = true;
     if (!text || text.length < 1) {
       isValid = false;
-      setYourXAccountErrorMessage(FormErrorMessage.yourXAccount);
+      // setYourXAccountErrorMessage(FormFieldsErrorMessage.yourXAccount);
     } else {
       setYourXAccountErrorMessage(undefined);
     }
@@ -1102,6 +791,7 @@ const BuyPage = React.memo((props: Props) => {
 
   const handleSubmit = throttle(
     async ({ bypassEmail }: { bypassEmail: boolean }) => {
+      submitHandler();
       try {
         if (!isAuthenticated) {
           const isSuccess = await onConnect(SupportedChainId.NOS);
@@ -1253,68 +943,28 @@ const BuyPage = React.memo((props: Props) => {
           </Text>
           <div className="sectionList">
             {/* Computer Name */}
-            {renderComputerName()}
+            <ComputerNameSection />
 
             {/* Computer Description  */}
-            {renderDescription()}
+            <ComputerDescriptionSection />
 
             {/* Project Information  */}
-            {renderProjectInformation()}
+            <ProjectInformationSection />
 
             {/* Contact information  */}
-            {rendeContactInformation()}
+            <ContactInformationSection />
 
             {/* Network */}
-            {data?.network &&
-              renderNetworkSection({
-                title: 'Network',
-                desc: 'Which network is right for you?',
-                data: data.network,
-                sectionType: 'network',
-                descriptionDetail: {
-                  title: 'Network',
-                  content: <p>Select whether you want to create a testnet or deploy a mainnet. The testnet is free.</p>,
-                },
-              })}
+            <NetworkSection />
 
             {/* Rollup Protocol */}
-            {data?.rollupProtocol &&
-              renderRollupProtocolSection({
-                title: 'Rollup Protocol',
-                desc: 'Which rollup protocol is right for you?',
-                data: data.rollupProtocol,
-                sectionType: 'rollupProtocol',
-                valueDisabled: RollupEnum.Rollup_ZK,
-                descriptionDetail: {
-                  title: 'Rollup Protocol',
-                  content: (
-                    <p>
-                      You can choose from two types of rollups with different security models:
-                      <br />
-                      <br />
-                      <span>• Optimistic rollups:</span> assumes transactions are valid by default and only runs
-                      computation, via a fraud proof, in the event of a challenge.
-                      <br />
-                      <p className="mt-12">
-                        <span>• Zero-knowledge rollups:</span> runs computation off-chain and submits a validity proof
-                        to the chain.
-                      </p>
-                    </p>
-                  ),
-                },
-              })}
+            <RollupProtocolSection />
 
             {/* Bitcoin Validity */}
-            {data?.bitcoinValidity &&
-              renderBitcoinValiditySection({
-                title: 'Bitcoin Validity',
-                desc: 'Which Bitcoin Validity is right for you?',
-                data: data.bitcoinValidity,
-                sectionType: 'bitcoinValidity',
-                descriptionDetail: undefined,
-              })}
+            <BitcoinValiditySection />
 
             {/* DataAvaibility Chain */}
+            <DataAvailabilitySection />
             {data?.dataAvaibilityChain &&
               renderDataAvaibilitySection({
                 title: 'Data Availability',
@@ -1342,6 +992,7 @@ const BuyPage = React.memo((props: Props) => {
               })}
 
             {/* Block Time */}
+            <BlockTimeSection />
             {data?.blockTime &&
               renderBlockTimeSection({
                 title: 'Block Time',
@@ -1371,6 +1022,7 @@ const BuyPage = React.memo((props: Props) => {
               })}
 
             {/* Min Gas Price */}
+            <MinGasPriceSection />
             {renderMinGasPrice({
               title: 'Min Gas Price (Gwei)',
               desc: 'Which min gas price is right for you?',
@@ -1387,6 +1039,7 @@ const BuyPage = React.memo((props: Props) => {
             })}
 
             {/* Gas Limit */}
+            <BlockGasLimitSection />
             {renderGasLimitSection({
               title: 'Block gas limit',
               desc: 'Which block gas limit is right for you?',
@@ -1396,6 +1049,7 @@ const BuyPage = React.memo((props: Props) => {
             })}
 
             {/* Withdrawal Period (SLIDER)*/}
+            <WithdrawalPeriodSection />
             {renderWithdrawalPeriod({
               title: 'Withdrawal Period',
               desc: 'Which withdrawal period is right for you?',
@@ -1421,6 +1075,7 @@ const BuyPage = React.memo((props: Props) => {
             })}
             <div style={{ height: '2px' }}></div>
             {/* Token for paying Transaction Gas */}
+            <TokenPayingGasSection />
             {data?.nativeTokenPayingGas &&
               renderTokenPayingGas({
                 title: 'Native token for paying transaction gas',
@@ -1431,6 +1086,7 @@ const BuyPage = React.memo((props: Props) => {
               })}
 
             {/* Plugin */}
+            <PreInstalledDappsSection />
             {data?.plugin &&
               renderSegmentSection({
                 title: 'Pre-Installed Dapps (coming soon)',
@@ -1503,15 +1159,15 @@ const BuyPage = React.memo((props: Props) => {
               <div className="grid-content">
                 <Text size="16">
                   <span>• Setup cost: </span>
-                  {estimateDataFormatted?.SetupCode || '0'}
+                  {estimateTotalCostData?.SetupCode || '0'}
                 </Text>
                 <Text size="16">
                   <span>• Operation cost: </span>
-                  {estimateDataFormatted?.OperationCost || '0'}
+                  {estimateTotalCostData?.OperationCost || '0'}
                 </Text>
                 <Text size="16">
                   <span>• Rollup cost: </span>
-                  {estimateDataFormatted?.RollupCost || '0'}
+                  {estimateTotalCostData?.RollupCost || '0'}
                 </Text>
               </div>
               <S.BreakLine></S.BreakLine>
@@ -1521,7 +1177,7 @@ const BuyPage = React.memo((props: Props) => {
                 <Spinner size={24} />
               ) : (
                 <Text size="26" fontWeight="semibold" align="left" className="cost">
-                  {`Total: ${estimateDataFormatted?.TotalCost} BVM`}
+                  {`Total: ${estimateTotalCostData?.TotalCost} BVM`}
                 </Text>
               )}
               <Button

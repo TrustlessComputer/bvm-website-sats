@@ -150,8 +150,8 @@ const Price = () => {
     try {
       setLoading(true);
       const tasks = [
-        await client.orderBuyEstimateAPI((MOCKUP_PRICE_PARAMS as any)[PriceType.ESSENTIALS]),
-        await client.orderBuyEstimateAPI((MOCKUP_PRICE_PARAMS as any)[PriceType.PROFESSIONAL]),
+        await client.estimateTotalCostAPI((MOCKUP_PRICE_PARAMS as any)[PriceType.ESSENTIALS]),
+        await client.estimateTotalCostAPI((MOCKUP_PRICE_PARAMS as any)[PriceType.PROFESSIONAL]),
       ];
       const [essentials, professional] = await Promise.all(tasks);
       if (essentials && essentials.TotalCost !== '0' && professional && professional.TotalCost !== '0') {

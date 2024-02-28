@@ -23,7 +23,7 @@ import configs from '@/configs';
 import { builderAccountInfo, builderOrderList } from '@/services/builder/client';
 import storageAuthen from '@/storage/storage.authen';
 import { COMPUTERS, QUICK_START } from '@/services/builder/constants';
-import { BuyDataBuilder } from '@/modules/Buy/Buy.types';
+import { IAvailableList } from '@/modules/Buy/Buy.types';
 import { IFormValues } from '@/components/ContactModal';
 import { getErrorMessage } from '@/utils';
 import toast from 'react-hot-toast';
@@ -171,9 +171,9 @@ const getAllOrders = async (): Promise<OrderItem[]> => {
   );
 };
 
-const fetchBuyBuilderInfo = async (): Promise<BuyDataBuilder> => {
+const fetchAvailableList = async (): Promise<IAvailableList> => {
   try {
-    let data = (await axios.get(`/order/available-list`)) as BuyDataBuilder;
+    let data = (await axios.get(`/order/available-list`)) as IAvailableList;
     return data;
   } catch (error) {
     console.log('[fetchBuyBuilderInfo] ERROR: ', error);
@@ -181,13 +181,13 @@ const fetchBuyBuilderInfo = async (): Promise<BuyDataBuilder> => {
   }
 };
 
-const orderBuyEstimateAPI = async (params: IOrderBuyReq): Promise<IOrderBuyEstimateRespone> => {
+const estimateTotalCostAPI = async (params: IOrderBuyReq): Promise<IOrderBuyEstimateRespone> => {
   try {
     const data = (await axios.post(`/order/estimate-total-cost`, params)) as IOrderBuyEstimateRespone;
-    console.log('[orderBuyEstimateAPI] data ', data);
+    console.log('[estimateTotalCostAPI] data ', data);
     return data;
   } catch (error: any) {
-    console.log('[orderBuyEstimateAPI] error ', error);
+    console.log('[estimateTotalCostAPI] error ', error);
     throw error;
   }
 };
@@ -259,8 +259,8 @@ const client = {
   withdrawRewards,
   cancelOrder,
   getAllOrders,
-  fetchBuyBuilderInfo,
-  orderBuyEstimateAPI,
+  fetchAvailableList,
+  estimateTotalCostAPI,
   submitContact,
   submitContactVS2,
   getQuickStart,
