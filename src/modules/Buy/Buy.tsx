@@ -68,7 +68,7 @@ type Props = {
 
 const BuyPage = React.memo((props: Props) => {
   const { onSuccess } = props;
-  const { goDashboardPage } = useRouteHelper();
+  const { goDashboardPage, requiredLogin } = useRouteHelper();
   const isAuthenticated = useIsAuthenticated();
   const { onConnect } = useContext(WalletContext);
   const { account } = useWeb3React();
@@ -1104,10 +1104,12 @@ const BuyPage = React.memo((props: Props) => {
     async ({ bypassEmail }: { bypassEmail: boolean }) => {
       try {
         if (!isAuthenticated) {
-          const isSuccess = await onConnect(SupportedChainId.NOS);
-          if (!isSuccess) {
-            return setLoading(false);
-          }
+          // const isSuccess = await onConnect(SupportedChainId.NOS);
+          // if (!isSuccess) {
+          //   return setLoading(false);
+          // }
+
+          requiredLogin();
         }
 
         if (!checkValidateForm()) return;

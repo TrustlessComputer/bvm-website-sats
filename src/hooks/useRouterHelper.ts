@@ -3,16 +3,19 @@ import { setRoutePathSelected } from '@/state/application/reducer';
 import { useAppDispatch } from '@/state/hooks';
 import { useNavigate } from 'react-router-dom';
 
+const REQUIRED_LOGIN = 'REQUIRED_LOGIN';
+
 const useRouteHelper = () => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
-  const postMessage = (newURL: string) => {
+  const postMessage = (newURL: string, message?: string) => {
     parent.postMessage(
       JSON.stringify({
         name: 'trustless-computer-change-route',
         url: newURL,
+        message: message,
       }),
       '*',
     );
@@ -52,6 +55,10 @@ const useRouteHelper = () => {
     postMessage(ROUTE_PATH.BUY);
   };
 
+  const requiredLogin = () => {
+    postMessage(ROUTE_PATH.BUY, REQUIRED_LOGIN);
+  };
+
   return {
     goHomePage,
     goNotFoundPage,
@@ -59,6 +66,7 @@ const useRouteHelper = () => {
     goDashboardPage,
     goBuildPage,
     postMessage,
+    requiredLogin,
   };
 };
 
