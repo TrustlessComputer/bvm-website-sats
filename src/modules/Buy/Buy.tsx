@@ -285,52 +285,6 @@ const BuyPage = React.memo((props: Props) => {
     );
   }, [loading, isTyping, buyBuilderState]);
 
-  const estimateDataFormatted = useMemo(() => {
-    let result = {
-      SetupCode: '0',
-      OperationCost: '0',
-      RollupCost: '0',
-      TotalCost: '0',
-    };
-    if (!estimateData) {
-      return result;
-    } else {
-      let setupCodeFomatted = `${formatter.formatAmount({
-        originalAmount: Number(estimateData.SetupCode || '0'),
-        decimals: 18,
-        maxDigits: 2,
-        isCeil: true,
-      })}`;
-
-      let operationCostFomatted = `${formatter.formatAmount({
-        originalAmount: Number(estimateData.OperationCost || '0'),
-        decimals: 18,
-        maxDigits: 2,
-        isCeil: true,
-      })}`;
-
-      let rollupCostFomatted = `${formatter.formatAmount({
-        originalAmount: Number(estimateData.RollupCost || '0'),
-        decimals: 18,
-        maxDigits: 2,
-        isCeil: true,
-      })}`;
-
-      let totalCostFomatted = `${formatter.formatAmount({
-        originalAmount: Number(estimateData.TotalCost || '0'),
-        decimals: 18,
-        maxDigits: 2,
-        isCeil: true,
-      })}`;
-
-      result.SetupCode = setupCodeFomatted;
-      result.OperationCost = operationCostFomatted;
-      result.RollupCost = rollupCostFomatted;
-      result.TotalCost = totalCostFomatted;
-      return result;
-    }
-  }, [estimateData]);
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -987,31 +941,6 @@ const BuyPage = React.memo((props: Props) => {
 
             {/* DataAvaibility Chain */}
             <DataAvailabilitySection />
-            {data?.dataAvaibilityChain &&
-              renderDataAvaibilitySection({
-                title: 'Data Availability',
-                desc: 'Which data availability layer is right for you?',
-                data: data.dataAvaibilityChain,
-                sectionType: 'dataAvaibilityChain',
-                descriptionDetail: {
-                  title: 'Data Availability',
-                  content: (
-                    <p>
-                      Initially, there are two types of data availability options:
-                      <br />
-                      <br />
-                      <span>• Bitcoin + Polygon:</span> the data is written to the Polygon network. This is a pragmatic
-                      and hybrid approach, where data availability is on Polygon, and data validation is on Bitcoin.
-                      <br />
-                      <p className="mt-12">
-                        <span>• Bitcoin:</span> thanks to the Taproot-type transaction, it is now possible to embed any
-                        data into a Bitcoin Blockchain, which will be permanently stored on the Bitcoin network and
-                        inherit its features, such as availability, immutability, and determinism.
-                      </p>
-                    </p>
-                  ),
-                },
-              })}
 
             {/* Block Time */}
             <BlockTimeSection />
