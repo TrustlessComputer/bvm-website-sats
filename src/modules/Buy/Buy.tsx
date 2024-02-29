@@ -1109,18 +1109,18 @@ const BuyPage = React.memo((props: Props) => {
           //   return setLoading(false);
           // }
 
-          parent.postMessage(
-            JSON.stringify({
-              name: 'trustless-computer-change-route',
-              url: '/bvm-website-sats-iframe/price',
-              message: 'REQUIRED_LOGIN',
-            }),
-            '*',
-          );
+          // parent.postMessage(
+          //   JSON.stringify({
+          //     name: 'trustless-computer-change-route',
+          //     url: '/bvm-website-sats-iframe/price',
+          //     message: 'REQUIRED_LOGIN',
+          //   }),
+          //   '*',
+          // );
 
-          // requiredLogin();
+          requiredLogin();
 
-          // return;
+          return;
         }
 
         if (!checkValidateForm()) return;
