@@ -13,10 +13,7 @@ const useIsAuthenticated = () => {
   // const isAuthenticated = useAppSelector(isAuthenticatedSelector)(account);
 
   const apiAccessToken = parent.localStorage.getItem(STORAGE_KEYS.API_ACCESS_TOKEN);
-
-  console.log('PHAT useIsAuthenticated ---- apiAccessToken ', apiAccessToken);
   const isAuthenticated = !!apiAccessToken;
-  console.log('PHAT isAuthenticated ----  ', isAuthenticated);
 
   if (isAuthenticated) {
     axiosSetAccessToken(apiAccessToken);
