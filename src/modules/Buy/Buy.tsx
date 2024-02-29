@@ -1110,6 +1110,8 @@ const BuyPage = React.memo((props: Props) => {
           // }
 
           requiredLogin();
+
+          return;
         }
 
         if (!checkValidateForm()) return;

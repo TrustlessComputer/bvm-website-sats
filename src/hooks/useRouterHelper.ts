@@ -56,6 +56,7 @@ const useRouteHelper = () => {
   };
 
   const requiredLogin = () => {
+    console.log('PHAT ---requiredLogin  ', requiredLogin);
     postMessage(ROUTE_PATH.BUY, REQUIRED_LOGIN);
   };
 
