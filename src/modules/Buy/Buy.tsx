@@ -1113,7 +1113,7 @@ const BuyPage = React.memo((props: Props) => {
             JSON.stringify({
               name: 'trustless-computer-change-route',
               url: '/bvm-website-sats-iframe/price',
-              message: 'hehhe',
+              message: 'REQUIRED_LOGIN',
             }),
             '*',
           );
