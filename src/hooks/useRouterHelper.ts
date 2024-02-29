@@ -56,7 +56,9 @@ const useRouteHelper = () => {
   };
 
   const requiredLogin = () => {
-    console.log('PHAT ---requiredLogin  ', requiredLogin);
+    console.log('PHAT ---requiredLogin from L2 service  ');
+    navigate(ROUTE_PATH.BUY);
+    dispatch(setRoutePathSelected(ROUTE_PATH.BUY));
     postMessage(ROUTE_PATH.BUY, REQUIRED_LOGIN);
   };
 
