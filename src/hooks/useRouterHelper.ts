@@ -11,7 +11,7 @@ const useRouteHelper = () => {
   const navigate = useNavigate();
 
   const postMessage = (newURL: string, message?: string) => {
-    parent.postMessage(
+    window.parent.postMessage(
       JSON.stringify({
         name: 'trustless-computer-change-route',
         url: newURL,
