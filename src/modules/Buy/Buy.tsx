@@ -83,8 +83,8 @@ type Props = {
 
 const BuyPage = React.memo((props: Props) => {
   const { onSuccess } = props;
-  const { goDashboardPage } = useRouteHelper();
-  const isAuthenticated = useIsAuthenticated();
+  const { goDashboardPage, requiredLogin } = useRouteHelper();
+  // const isAuthenticated = useIsAuthenticated();
   const { onConnect } = useContext(WalletContext);
   const { account } = useWeb3React();
   const userGamefi = useAppSelector(userGamefiByAddressSelector)(account);
@@ -154,6 +154,8 @@ const BuyPage = React.memo((props: Props) => {
 
   const [estimateData, setEstimateData] = useState<IOrderBuyEstimateRespone | undefined>(undefined);
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   console.log('SALE rollupProtocol: ', typeof data?.rollupProtocol);
   console.log('SALE buyBuilderState: ', buyBuilderState.rollupProtocol);
 
@@ -161,6 +163,13 @@ const BuyPage = React.memo((props: Props) => {
     buyBuilderState,
     data,
   });
+
+  useEffect(() => {
+    setInterval(() => {
+      setIsAuthenticated(useIsAuthenticated());
+    }, 2000);
+  }, []);
+
   const confirmBtnTitle = useMemo(() => {
     if (isMainnet) {
       return 'Submit';
@@ -169,7 +178,7 @@ const BuyPage = React.memo((props: Props) => {
     } else {
       return 'Submit';
     }
-  }, [isMainnet, accountInfo]);
+  }, [isMainnet, accountInfo, isAuthenticated]);
 
   useEffect(() => {
     const getChainIDRandomFunc = async () => {
@@ -775,7 +784,7 @@ const BuyPage = React.memo((props: Props) => {
       blockTime: buyBuilderState.blockTime + 's',
       rollupProtocol: RollupEnumMap[buyBuilderState.rollupProtocol],
       withdrawPeriod: `${dayDescribe(buyBuilderState.withdrawPeriod).str}`,
-      twName: buyBuilderState.yourTelegramAccount,
+      twName: buyBuilderState.yourXAccount,
       telegram: buyBuilderState.projectXAccount,
     };
     try {
@@ -794,10 +803,23 @@ const BuyPage = React.memo((props: Props) => {
       submitHandler();
       try {
         if (!isAuthenticated) {
-          const isSuccess = await onConnect(SupportedChainId.NOS);
-          if (!isSuccess) {
-            return setLoading(false);
-          }
+          // const isSuccess = await onConnect(SupportedChainId.NOS);
+          // if (!isSuccess) {
+          //   return setLoading(false);
+          // }
+
+          // parent.postMessage(
+          //   JSON.stringify({
+          //     name: 'trustless-computer-change-route',
+          //     url: '/bvm-website-sats-iframe/price',
+          //     message: 'REQUIRED_LOGIN',
+          //   }),
+          //   '*',
+          // );
+
+          requiredLogin();
+
+          return;
         }
 
         if (!checkValidateForm()) return;
