@@ -69,7 +69,7 @@ type Props = {
 const BuyPage = React.memo((props: Props) => {
   const { onSuccess } = props;
   const { goDashboardPage, requiredLogin } = useRouteHelper();
-  const isAuthenticated = useIsAuthenticated();
+  // const isAuthenticated = useIsAuthenticated();
   const { onConnect } = useContext(WalletContext);
   const { account } = useWeb3React();
   const userGamefi = useAppSelector(userGamefiByAddressSelector)(account);
@@ -138,6 +138,8 @@ const BuyPage = React.memo((props: Props) => {
 
   const [estimateData, setEstimateData] = useState<IOrderBuyEstimateRespone | undefined>(undefined);
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   console.log('SALE rollupProtocol: ', typeof data?.rollupProtocol);
   console.log('SALE buyBuilderState: ', buyBuilderState.rollupProtocol);
 
@@ -145,6 +147,12 @@ const BuyPage = React.memo((props: Props) => {
     buyBuilderState,
     data,
   });
+
+  useEffect(() => {
+    setInterval(() => {
+      setIsAuthenticated(useIsAuthenticated());
+    }, 2000);
+  }, []);
 
   const isMainnet = useMemo(() => {
     return buyBuilderState.network === NetworkEnum.Network_Mainnet;

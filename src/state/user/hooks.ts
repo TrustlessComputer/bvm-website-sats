@@ -12,9 +12,7 @@ const useIsAuthenticated = () => {
   // const { account } = useWeb3React();
   // const isAuthenticated = useAppSelector(isAuthenticatedSelector)(account);
 
-  const apiAccessToken = useMemo(() => {
-    return parent.localStorage.getItem(STORAGE_KEYS.API_ACCESS_TOKEN);
-  }, [window]);
+  const apiAccessToken = parent.localStorage.getItem(STORAGE_KEYS.API_ACCESS_TOKEN);
 
   console.log('PHAT useIsAuthenticated ---- apiAccessToken ', apiAccessToken);
   const isAuthenticated = !!apiAccessToken;
