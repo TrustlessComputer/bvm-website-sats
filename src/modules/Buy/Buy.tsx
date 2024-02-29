@@ -166,7 +166,7 @@ const BuyPage = React.memo((props: Props) => {
     } else {
       return 'Submit';
     }
-  }, [isMainnet, accountInfo]);
+  }, [isMainnet, accountInfo, isAuthenticated]);
 
   useEffect(() => {
     const getChainIDRandomFunc = async () => {
