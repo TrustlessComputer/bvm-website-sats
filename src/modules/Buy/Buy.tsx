@@ -1086,7 +1086,7 @@ const BuyPage = React.memo((props: Props) => {
       blockTime: buyBuilderState.blockTime + 's',
       rollupProtocol: RollupEnumMap[buyBuilderState.rollupProtocol],
       withdrawPeriod: `${dayDescribe(buyBuilderState.withdrawPeriod).str}`,
-      twName: buyBuilderState.yourTelegramAccount,
+      twName: buyBuilderState.yourXAccount,
       telegram: buyBuilderState.projectXAccount,
     };
     try {
