@@ -1118,9 +1118,9 @@ const BuyPage = React.memo((props: Props) => {
             '*',
           );
 
-          requiredLogin();
+          // requiredLogin();
 
-          return;
+          // return;
         }
 
         if (!checkValidateForm()) return;
