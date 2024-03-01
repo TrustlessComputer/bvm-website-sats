@@ -1,43 +1,40 @@
 import { TextInput2 } from '@/components/TextInput/TextInput2';
-import { MIN_GAS_PRICE } from '@/modules/Account/Order/FormOrder.constants';
-import { FormFieldsErrorMessage, FormFields } from '../Buy.constanst';
+import { isEmpty } from 'lodash';
+import { FormFields, FormFieldsErrorMessage } from '../Buy.constanst';
 import ErrorMessage from '../components/ErrorMessage';
 import Section from '../components/Section';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const MinGasPriceSection = () => {
-  const { formFieldsManager, setFormFieldsManager } = useBuyProvider();
+  const { minGasPriceField, setMinGasPriceField } = useBuy();
+  const { value, hasFocused, errorMessage, hasError } = minGasPriceField;
   const fieldName = FormFields.MIN_GAS_PRICE;
-  const dataField = formFieldsManager[fieldName];
-  const { value, hasFocused, errorMessage, hasError } = dataField;
 
-  const fieldData = formFieldsManager[fieldName];
+  const onChangeHandler = async (e: any) => {
+    const text = e.target.value;
+    let errorMessage = FormFieldsErrorMessage[fieldName];
+    let isValid = true;
 
-  const onChangeHandler = (text: string) => {
-    let errorMessage = undefined;
-    if (!text || text.length < 1) {
-      errorMessage = FormFieldsErrorMessage[FormFields.MIN_GAS_PRICE];
-    } else if (Number(text) < MIN_GAS_PRICE) {
-      errorMessage = `Min gas price must be at least ${MIN_GAS_PRICE} Gwei.`;
-    } else {
-      errorMessage = undefined;
+    if (isEmpty(text)) {
+      isValid = false;
+    } else if (Number(text) <= 0) {
+      isValid = false;
+      errorMessage = 'Gas price must be greater than 0';
     }
 
-    setFormFieldsManager({
-      ...formFieldsManager,
-      [fieldName]: {
-        ...fieldData,
-        value: text,
-        errorMessage: errorMessage,
-        hasError: !!errorMessage,
-        hasFocused: true,
-      },
+    setMinGasPriceField({
+      ...minGasPriceField,
+      hasFocused: true,
+      value: text,
+      hasError: !!minGasPriceField.isRequired && !isValid,
+      errorMessage,
     });
   };
 
   return (
     <Section
+      isRequired
       title={'Min Gas Price (Gwei)'}
       description={'Which min gas price is right for you?'}
       descriptionDetail={{
@@ -52,35 +49,22 @@ const MinGasPriceSection = () => {
     >
       <S.ListItemContainer>
         <TextInput2
-          placeholder=""
+          placeholder="Min gas price"
           id={fieldName}
           name={fieldName}
           value={value}
-          onBlur={(e: any) => {
-            const text = e.target.value;
-            onChangeHandler(text);
-          }}
-          onFocus={(e: any) => {
-            setFormFieldsManager({
-              ...formFieldsManager,
-              [fieldName]: {
-                ...dataField,
-                hasFocused: true,
-              },
-            });
-          }}
-          onChange={e => {
-            const text = e.target.value;
-            onChangeHandler(text);
-          }}
-          type="text"
-          step={'any'}
+          className={`${hasFocused && hasError ? 'error' : ''}`}
+          onBlur={onChangeHandler}
+          onChange={onChangeHandler}
+          onFocus={(e: any) => {}}
           autoComplete="off"
           spellCheck={false}
           autoFocus={false}
+          type="number"
+          step={'any'}
           onWheel={(e: any) => e?.target?.blur()}
         />
-        {errorMessage && hasFocused && hasError && <ErrorMessage message={errorMessage} />}
+        {hasFocused && hasError && <ErrorMessage message={errorMessage} />}
       </S.ListItemContainer>
     </Section>
   );

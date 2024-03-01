@@ -3,11 +3,11 @@ import { NetworkEnum, PluginTypeEnum } from '../Buy.constanst';
 import { ItemDetail } from '../Buy.types';
 import Segment from '../components/Segment';
 import Title from '../components/Title';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const PreInstalledDappsSection = () => {
-  const { availableListData, isMainnet, preInstallDAppSelected, setPreInstallDAppSelected } = useBuyProvider();
+  const { availableListData, isMainnet, preInstallDAppSelected, setPreInstallDAppSelected } = useBuy();
   if (!availableListData || !availableListData.plugin) return <></>;
 
   const dataList: ItemDetail[] = isMainnet

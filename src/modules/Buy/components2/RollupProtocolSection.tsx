@@ -2,11 +2,11 @@ import { NetworkEnum, RollupEnum } from '../Buy.constanst';
 import { ItemDetail } from '../Buy.types';
 import Item from '../components/Item';
 import Section from '../components/Section';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const RollupProtocolSection = () => {
-  const { availableListData, isMainnet, rollupProtocolSelected, setRollupProtocolSelected } = useBuyProvider();
+  const { availableListData, isMainnet, rollupProtocolSelected, setRollupProtocolSelected } = useBuy();
 
   const dataWithNetwork = availableListData?.rollupProtocol;
 
@@ -46,14 +46,14 @@ const RollupProtocolSection = () => {
               isMainnet={isMainnet}
               item={item}
               value={item.value}
-              isSelected={item.value === rollupProtocolSelected?.value}
+              isSelected={item.value === rollupProtocolSelected}
               disabled={item.value === RollupEnum.Rollup_ZK}
               title={item.valueStr}
               content={item.price}
               priceNote={item.priceNote}
               onClickCallback={value => {}}
               onClickCB={item => {
-                setRollupProtocolSelected(item!);
+                setRollupProtocolSelected(item.value!);
               }}
             />
           );

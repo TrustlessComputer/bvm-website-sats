@@ -12,7 +12,7 @@ export type Props = {
   isMainnet?: boolean;
   item?: ItemDetail;
   onClickCallback?: (value: number) => void;
-  onClickCB?: (item?: ItemDetail) => void;
+  onClickCB?: (item: ItemDetail) => void;
   priceNote?: string;
   key?: string;
 };
@@ -43,7 +43,7 @@ const Item = React.memo((props: Props) => {
       onClick={() => {
         if (disabled) return;
         onClickCallback && onClickCallback(value);
-        onClickCB && onClickCB(item);
+        onClickCB && onClickCB(item!);
       }}
     >
       <Text size="20" align="left">

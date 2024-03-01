@@ -1,16 +1,11 @@
-import { FormFields, NetworkEnum } from '../Buy.constanst';
-import ErrorMessage from '../components/ErrorMessage';
+import { NetworkEnum } from '../Buy.constanst';
 import Item from '../components/Item';
 import Section from '../components/Section';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const NetworkSection = () => {
-  const { formFieldsManager, setFormFieldsManager, availableListData, isMainnet, networkSelected, setNetworkSelected } =
-    useBuyProvider();
-  const fieldName = FormFields.NETWORK;
-  const dataField = formFieldsManager[fieldName];
-  const { value, hasFocused, errorMessage, hasError } = dataField;
+  const { availableListData, isMainnet, networkSelected, setNetworkSelected } = useBuy();
 
   const dataList = availableListData?.network;
 
@@ -32,21 +27,21 @@ const NetworkSection = () => {
             <Item
               isMainnet={isMainnet}
               item={item}
-              key={`${item.valueStr} ${index}`}
+              key={`${item.valueStr}-${index}`}
               value={item.value}
-              isSelected={item.value === networkSelected?.value}
+              isSelected={item.value === networkSelected}
               title={item.valueStr}
               content={contentValue}
               priceNote={item.priceNote}
               onClickCallback={value => {}}
               onClickCB={item => {
-                setNetworkSelected(item!);
+                setNetworkSelected(item.value);
               }}
             />
           );
         })}
       </S.ListItemContainer>
-      {errorMessage && hasFocused && <ErrorMessage message={errorMessage} />}
+      {/* {errorMessage && hasFocused && <ErrorMessage message={errorMessage} />} */}
     </Section>
   );
 };

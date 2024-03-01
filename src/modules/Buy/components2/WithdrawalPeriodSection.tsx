@@ -1,12 +1,12 @@
 import Text from '@/components/Text';
 import { Slider } from 'antd';
 import Section from '../components/Section';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 import { dayDescribe } from '../Buy.helpers';
 
 const WithdrawalPeriodSection = () => {
-  const { withdrawalPeriodSelected, setWithdrawalPeriodSelected } = useBuyProvider();
+  const { withdrawalPeriodSelected, setWithdrawalPeriodSelected } = useBuy();
 
   const onChange = (value: number) => {
     if (isNaN(value)) {

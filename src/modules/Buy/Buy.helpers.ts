@@ -63,7 +63,7 @@ export const dayDescribe = (day: number) => {
 
 export const getBuyBuilderStateInit = (type?: string | null): BuyBuilderSelectState | any => {
   const dataInit: BuyBuilderSelectState = {
-    network: NetworkEnum.Network_UNKNOW, //
+    network: NetworkEnum.Network_Testnet, //
     blockTime: 10,
     dataAvaibilityChain: DALayerEnum.DALayer_BTC,
     pluginIds: [PluginEnum.Plugin_Bridge], // HARD CODE: Force Bridge select

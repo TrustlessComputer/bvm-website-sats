@@ -2,11 +2,11 @@ import { NetworkEnum } from '../Buy.constanst';
 import { ItemDetail } from '../Buy.types';
 import Item from '../components/Item';
 import Section from '../components/Section';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const BitcoinValiditySection = () => {
-  const { availableListData, isMainnet, bitcoinValiditySelected, setBitcoinValiditySelected } = useBuyProvider();
+  const { availableListData, isMainnet, bitcoinValiditySelected, setBitcoinValiditySelected } = useBuy();
 
   const dataWithNetwork = availableListData?.bitcoinValidity;
 
@@ -30,13 +30,13 @@ const BitcoinValiditySection = () => {
               isMainnet={isMainnet}
               item={item}
               value={item.value}
-              isSelected={item.value === bitcoinValiditySelected?.value}
+              isSelected={item.value === bitcoinValiditySelected}
               title={item.valueStr}
               content={item.price}
               priceNote={item.priceNote}
               onClickCallback={value => {}}
               onClickCB={item => {
-                setBitcoinValiditySelected(item!);
+                setBitcoinValiditySelected(item.value!);
               }}
             />
           );

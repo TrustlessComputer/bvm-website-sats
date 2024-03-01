@@ -2,11 +2,11 @@ import { NetworkEnum } from '../Buy.constanst';
 import { ItemDetail } from '../Buy.types';
 import Item from '../components/Item';
 import Section from '../components/Section';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const DataAvailabilitySection = () => {
-  const { availableListData, isMainnet, dataValiditySelected, setDataValiditySelected } = useBuyProvider();
+  const { availableListData, isMainnet, dataValiditySelected, setDataValiditySelected } = useBuy();
 
   const dataWithNetwork = availableListData?.dataAvaibilityChain;
 
@@ -47,13 +47,13 @@ const DataAvailabilitySection = () => {
               isMainnet={isMainnet}
               item={item}
               value={item.value}
-              isSelected={item.value === dataValiditySelected?.value}
+              isSelected={item.value === dataValiditySelected}
               title={item.valueStr}
               content={item.price}
               priceNote={item.priceNote}
               onClickCallback={value => {}}
               onClickCB={item => {
-                setDataValiditySelected(item!);
+                setDataValiditySelected(item.value!);
               }}
             />
           );

@@ -1,4 +1,4 @@
-import { DALayerEnum, IntervalChargeTimeEnum, NetworkEnum, PluginEnum, RollupEnum } from './Buy.constanst';
+import { DALayerEnum, IntervalChargeTimeEnum, NetworkEnum, RollupEnum } from './Buy.constanst';
 import React from 'react';
 
 //Data Strcuture API

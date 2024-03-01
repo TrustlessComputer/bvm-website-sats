@@ -6,7 +6,12 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const TitleContainer = styled.div``;
+const TitleContainer = styled.div`
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
 
 const DescriptionContainer = styled.div`
   margin-top: ${px2rem(10)};

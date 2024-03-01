@@ -3,11 +3,11 @@ import { isEmpty } from 'lodash';
 import { FormFields } from '../Buy.constanst';
 import ErrorMessage from '../components/ErrorMessage';
 import Title from '../components/Title';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const ContactInformationSection = () => {
-  const { yourXField, setYourTelegramField, yourTelegramField, setYourXField } = useBuyProvider();
+  const { yourXField, setYourTelegramField, yourTelegramField, setYourXField } = useBuy();
 
   const onChangeHandler = async (field: FormFields, e: any) => {
     const text = e.target.value;
@@ -15,7 +15,8 @@ const ContactInformationSection = () => {
       setYourXField({
         ...yourXField,
         value: text,
-        hasError: yourXField.isRequired && isEmpty(text),
+        hasFocused: true,
+        hasError: !!yourXField.isRequired && isEmpty(text),
       });
     }
 
@@ -23,24 +24,23 @@ const ContactInformationSection = () => {
       setYourTelegramField({
         ...yourTelegramField,
         value: text,
-        hasError: yourTelegramField.isRequired && isEmpty(text),
+        hasFocused: true,
+        hasError: !!yourTelegramField.isRequired && isEmpty(text),
       });
     }
   };
 
   return (
     <S.Section>
-      <Title text={'Contact information'} />
+      <Title text={'Contact information'} isRequired />
       <S.Space />
       <TextInput2
         placeholder="Your X account link/handle"
         id={FormFields.YOUR_X_ACC}
         name={FormFields.YOUR_X_ACC}
         value={yourXField.value}
+        className={`${yourXField.hasFocused && yourXField.hasError ? 'error' : ''}`}
         onBlur={(e: any) => {
-          onChangeHandler(FormFields.YOUR_X_ACC, e);
-        }}
-        onFocus={(e: any) => {
           onChangeHandler(FormFields.YOUR_X_ACC, e);
         }}
         onChange={e => {
@@ -53,9 +53,8 @@ const ContactInformationSection = () => {
         autoFocus={false}
         onWheel={(e: any) => e?.target?.blur()}
       />
-      {yourXField.errorMessage && yourXField.hasFocused && yourXField.hasError && (
-        <ErrorMessage message={yourXField.errorMessage} />
-      )}
+      {yourXField.hasFocused && yourXField.hasError && <ErrorMessage message={yourXField.errorMessage} />}
+
       <S.Space />
       <TextInput2
         placeholder="Your telegram link/handle"
@@ -63,9 +62,6 @@ const ContactInformationSection = () => {
         name={FormFields.YOUR_TELEGRAM}
         value={yourTelegramField.value}
         onBlur={(e: any) => {
-          onChangeHandler(FormFields.YOUR_TELEGRAM, e);
-        }}
-        onFocus={(e: any) => {
           onChangeHandler(FormFields.YOUR_TELEGRAM, e);
         }}
         onChange={e => {

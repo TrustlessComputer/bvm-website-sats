@@ -1,19 +1,19 @@
+import { memo } from 'react';
 import { DALayerEnum, NetworkEnum } from '../Buy.constanst';
 import { ItemDetail } from '../Buy.types';
 import Item from '../components/Item';
 import Section from '../components/Section';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const BlockTimeSection = () => {
-  const { availableListData, isMainnet, blockTimeSelected, setBlockTimeSelected, dataValiditySelected } =
-    useBuyProvider();
+  const { availableListData, isMainnet, blockTimeSelected, setBlockTimeSelected, dataValiditySelected } = useBuy();
 
   const blockTime = availableListData?.blockTime;
   if (!blockTime) return <></>;
 
   const dataWithNetwork = isMainnet ? blockTime[NetworkEnum.Network_Mainnet] : blockTime[NetworkEnum.Network_Testnet];
-  const DAValue = dataValiditySelected?.value || DALayerEnum.DALayer_BTC;
+  const DAValue = dataValiditySelected || DALayerEnum.DALayer_BTC;
 
   const blockTimeList = dataWithNetwork[DAValue];
 
@@ -49,13 +49,13 @@ const BlockTimeSection = () => {
               isMainnet={isMainnet}
               item={item}
               value={item.value}
-              isSelected={item.value === blockTimeSelected?.value}
+              isSelected={item.value === blockTimeSelected}
               title={item.valueStr}
               content={item.price}
               priceNote={item.priceNote}
               onClickCallback={value => {}}
               onClickCB={item => {
-                setBlockTimeSelected(item!);
+                setBlockTimeSelected(item.value!);
               }}
             />
           );
@@ -65,4 +65,4 @@ const BlockTimeSection = () => {
   );
 };
 
-export default BlockTimeSection;
+export default memo(BlockTimeSection);

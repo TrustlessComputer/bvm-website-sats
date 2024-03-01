@@ -5,20 +5,20 @@ import { useCallback } from 'react';
 import { FormFields, FormFieldsErrorMessage } from '../Buy.constanst';
 import ErrorMessage from '../components/ErrorMessage';
 import Title from '../components/Title';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const ComputerNameSection = () => {
-  const { computerNameField, setComputerNameField } = useBuyProvider();
+  const { computerNameField, setComputerNameField } = useBuy();
+  const { value, hasFocused, errorMessage, hasError } = computerNameField;
 
   const fieldID = FormFields.COMPUTER_NAME;
-  const { value, hasFocused, errorMessage, hasError } = computerNameField;
 
   const onChangeHandler = useCallback(
     debounce(async (e: any) => {
       const text = e.target.value;
       let isValid = !isEmpty(text);
-      let errorMessage = FormFieldsErrorMessage[FormFields.COMPUTER_NAME];
+      let errorMessage = FormFieldsErrorMessage[fieldID];
       if (isValid) {
         try {
           isValid = await client.validateSubDomainAPI(text);
@@ -27,11 +27,12 @@ const ComputerNameSection = () => {
         } finally {
         }
       }
+
       setComputerNameField({
         ...computerNameField,
         value: text,
         hasFocused: true,
-        hasError: computerNameField.isRequired && !isValid,
+        hasError: !!computerNameField.isRequired && !isValid,
         errorMessage: isValid ? undefined : errorMessage,
       });
     }, 500),
@@ -46,14 +47,10 @@ const ComputerNameSection = () => {
         placeholder="Your computer name"
         id={fieldID}
         name={fieldID}
-        style={
-          {
-            // border: hasError ? '1px solid red' : '',
-          }
-        }
+        className={`${hasFocused && hasError ? 'error' : ''}`}
         value={value}
         onBlur={onChangeHandler}
-        onFocus={onChangeHandler}
+        onFocus={(e: any) => {}}
         onChange={e => {
           const text = e.target.value;
           setComputerNameField({
@@ -69,7 +66,7 @@ const ComputerNameSection = () => {
         autoFocus={false}
         onWheel={(e: any) => e?.target?.blur()}
       />
-      {errorMessage && hasFocused && hasError && <ErrorMessage message={errorMessage} />}
+      {hasFocused && hasError && <ErrorMessage message={errorMessage} />}
     </S.Section>
   );
 };

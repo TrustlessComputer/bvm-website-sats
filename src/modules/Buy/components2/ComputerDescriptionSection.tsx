@@ -3,13 +3,13 @@ import { isEmpty } from 'lodash';
 import { FormFields } from '../Buy.constanst';
 import ErrorMessage from '../components/ErrorMessage';
 import Title from '../components/Title';
-import { useBuyProvider } from '../providers/Buy.hook';
+import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
 
 const ComputerDescriptionSection = () => {
-  const { computerDescriptionField, setComputerDescriptionField, validateField } = useBuyProvider();
-  const fieldName = FormFields.DESCRIPTION;
+  const { computerDescriptionField, setComputerDescriptionField } = useBuy();
   const { value, hasFocused, errorMessage, hasError } = computerDescriptionField;
+  const fieldName = FormFields.DESCRIPTION;
 
   const onChangeHandler = async (e: any) => {
     const text = e.target.value;
@@ -17,7 +17,7 @@ const ComputerDescriptionSection = () => {
       ...computerDescriptionField,
       hasFocused: true,
       value: text,
-      hasError: computerDescriptionField.isRequired && isEmpty(text),
+      hasError: !!computerDescriptionField.isRequired && isEmpty(text),
     });
   };
 
@@ -30,15 +30,16 @@ const ComputerDescriptionSection = () => {
         id={fieldName}
         name={fieldName}
         value={value}
+        className={`${hasFocused && hasError ? 'error' : ''}`}
         onBlur={onChangeHandler}
-        onFocus={onChangeHandler}
         onChange={onChangeHandler}
+        onFocus={(e: any) => {}}
         autoComplete="off"
         spellCheck={false}
         autoFocus={false}
         onWheel={(e: any) => e?.target?.blur()}
       />
-      {errorMessage && hasFocused && hasError && <ErrorMessage message={errorMessage} />}
+      {hasFocused && hasError && <ErrorMessage message={errorMessage} />}
     </S.Section>
   );
 };

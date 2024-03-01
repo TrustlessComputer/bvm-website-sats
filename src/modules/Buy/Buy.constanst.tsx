@@ -1,12 +1,14 @@
+export const MIN_GAS_PRICE = 1; // 1 gweis
+export const GAS_LITMIT = 30000000; //
+export const WITHDRAWAL_PERIOD = 7; //
+
 // ------------------------------------------------------------------------------------
 export enum NetworkEnum {
-  Network_UNKNOW = 0,
   Network_Testnet = 1,
   Network_Mainnet = 2,
 }
 
 export const NetworkEnumMap = {
-  [NetworkEnum.Network_UNKNOW]: '',
   [NetworkEnum.Network_Testnet]: 'Testnet',
   [NetworkEnum.Network_Mainnet]: 'Mainnet',
 };
@@ -107,7 +109,6 @@ export const PluginTypeEnumMap = {
   [PluginTypeEnum.PluginType_DAO]: 'DAO',
 };
 
-// TO DO
 export enum Layer1Enum {
   Bitcoin = 2000,
   Ethereum = 2001,
@@ -142,6 +143,9 @@ export enum FormFields {
   YOUR_TELEGRAM = 'YOUR_Telegram_ACC',
   MIN_GAS_PRICE = 'MIN_GAS_PRICE',
   BLOCK_GAS_LIMIT = 'BLOCK_GAS_LIMIT',
+  TICKER = 'TICKER',
+  TOTAL_SUPPLY = 'TOTAL_SUPPLY',
+  RECEIVING_ADDRESS = 'RECEIVING_ADDRESS',
 }
 
 export const FormFieldsErrorMessage = {
@@ -154,4 +158,19 @@ export const FormFieldsErrorMessage = {
   [FormFields.MIN_GAS_PRICE]: 'Min gas price is required.',
   [FormFields.BLOCK_GAS_LIMIT]: 'Gas limit is required.',
   [FormFields.YOUR_TELEGRAM]: 'Your telegram is required.',
+  [FormFields.TICKER]: 'Ticker is required.',
+  [FormFields.TOTAL_SUPPLY]: 'Total supply is required.',
+  [FormFields.RECEIVING_ADDRESS]: 'Receiving address is required.',
+};
+
+export enum BlockTimeEnum {
+  BlockTime_2s = 2,
+  BlockTime_5s = 5,
+  BlockTime_10s = 10,
+}
+
+export const BlockTimeEnumMap = {
+  [BlockTimeEnum.BlockTime_2s]: '2 seconds',
+  [BlockTimeEnum.BlockTime_5s]: '5 seconds',
+  [BlockTimeEnum.BlockTime_10s]: '10 seconds',
 };
