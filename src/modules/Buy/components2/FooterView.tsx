@@ -107,7 +107,7 @@ const FooterView = ({ onSuccess }: { onSuccess?: any }) => {
               sizes="normal"
               // loading={{ isLoading: !!estimateTotalCostFetching }}
               disabled={!!estimateTotalCostFetching}
-              onClick={() => submitHandler()}
+              onClick={() => submitHandler(onSuccess)}
             >
               <IconSVG src={`${configs.CDN_APP_ICON_URL}/rocket.svg`} maxWidth="24" />
               {confirmBtnTitle}

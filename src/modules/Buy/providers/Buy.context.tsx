@@ -263,7 +263,6 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     }, 500);
   }, []);
 
-  console.log('RRR --- ');
   const fetchAvailableList = async () => {
     try {
       setAvailableListFetching(true);
@@ -386,8 +385,8 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
       await client.submitContactVS2(submitFormParams);
       setShowSubmitFormResult(true);
     } catch (error) {
-      const { message } = getErrorMessage(error);
-      toast.error(message);
+      const { message, desc } = getErrorMessage(error);
+      toast.error(message || desc, { duration: 2000 });
     } finally {
       setShowSubmitForm(false);
     }
