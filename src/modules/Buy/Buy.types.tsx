@@ -1,8 +1,8 @@
-import { DALayerEnum, IntervalChargeTimeEnum, NetworkEnum, PluginEnum, RollupEnum } from './Buy.constanst';
+import { DALayerEnum, IntervalChargeTimeEnum, NetworkEnum, RollupEnum } from './Buy.constanst';
 import React from 'react';
 
 //Data Strcuture API
-export type BuyDataBuilder = {
+export type IAvailableList = {
   network: ItemDetail[];
   dataAvaibilityChain: {
     [key in NetworkEnum]: ItemDetail[];
@@ -11,7 +11,9 @@ export type BuyDataBuilder = {
     [key in NetworkEnum]: ItemDetail[];
   };
   blockTime: {
-    [key in NetworkEnum]: any;
+    [key in NetworkEnum]: {
+      [key in number]: ItemDetail[];
+    };
   };
   plugin: {
     [key in NetworkEnum]: ItemDetail[];
@@ -67,4 +69,4 @@ export type SectionProps = {
   };
 };
 
-export type SectionType = keyof BuyDataBuilder;
+export type SectionType = keyof IAvailableList;

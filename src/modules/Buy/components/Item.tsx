@@ -10,12 +10,27 @@ export type Props = {
   value: number;
   disabled?: boolean;
   isMainnet?: boolean;
-  onClickCallback: (value: number) => void;
+  item?: ItemDetail;
+  onClickCallback?: (value: number) => void;
+  onClickCB?: (item: ItemDetail) => void;
   priceNote?: string;
+  key?: string;
 };
 
 const Item = React.memo((props: Props) => {
-  const { title, content, isSelected = true, value, disabled, isMainnet, priceNote, onClickCallback } = props;
+  const {
+    title,
+    content,
+    isSelected = true,
+    value,
+    disabled,
+    isMainnet,
+    item,
+    priceNote,
+    onClickCallback,
+    onClickCB,
+    key,
+  } = props;
 
   const selectedClassName = isSelected ? 'selected' : 'non-select';
   const disabledClassName = disabled ? 'disabled' : '';
@@ -23,10 +38,12 @@ const Item = React.memo((props: Props) => {
 
   return (
     <S.Container
+      key={key}
       className={`${selectedClassName} ${disabledClassName}`}
       onClick={() => {
         if (disabled) return;
-        onClickCallback(value);
+        onClickCallback && onClickCallback(value);
+        onClickCB && onClickCB(item!);
       }}
     >
       <Text size="20" align="left">

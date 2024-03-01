@@ -1,7 +1,6 @@
 import { OrderItemResp, OrderItem, AccountInfoResp, AccountInfo } from '@/interface/services/client';
 import BigNumber from 'bignumber.js';
 import formatter from '@/utils/amount';
-import { BuyDataBuilder } from '@/modules/Buy/Buy.types';
 
 const builderOrderList = async (orders: OrderItemResp[], isOwner: boolean): Promise<OrderItem[]> => {
   return orders.map(order => {

@@ -1,5 +1,6 @@
 import BaseModal from '@/components/BaseModal';
 
+import { useBuy } from '../providers/Buy.hook';
 import {
   BreakLine,
   CancelButton,
@@ -14,38 +15,15 @@ import {
   Text3,
 } from './styled';
 
-export interface IData {
-  networkName?: string;
-  network?: string;
-  blockTime?: string;
-  rollupProtocol?: string;
-  withdrawalPeriod?: string;
-  projectXAccount?: string;
-  projectWebsite?: string;
-  twitter?: string;
-  telegram?: string;
-}
-
 interface IProps {
   show: boolean;
-  data: IData;
   onClose?: () => void;
   onSuccess?: () => Promise<void>;
 }
 
 const CustomizeTokenModal = (props: IProps) => {
-  const { show, data, onClose, onSuccess } = props;
-  const {
-    networkName,
-    network,
-    blockTime,
-    rollupProtocol,
-    withdrawalPeriod,
-    projectXAccount,
-    projectWebsite,
-    twitter = '',
-    telegram = '',
-  } = data;
+  const { show, onClose, onSuccess } = props;
+  const { computerNameField, projectWebSiteField, projectXField, submitFormParams } = useBuy();
 
   const renderRowInfor = (label = '', content = '') => {
     return (
@@ -60,20 +38,20 @@ const CustomizeTokenModal = (props: IProps) => {
     <BaseModal show={show} handleClose={onClose} hideCloseButton={true} width={700}>
       <Container>
         <Text1>
-          You are creating a Bitcoin L2 named <Text2>{networkName}</Text2>
+          You are creating a Bitcoin L2 named <Text2>{computerNameField?.value || '--'}</Text2>
         </Text1>
-        {renderRowInfor('Network:', network || '--')}
-        {renderRowInfor('Block Time:', blockTime || '--')}
-        {renderRowInfor('Rollup Protocol:', rollupProtocol || '--')}
-        {renderRowInfor('Withdrawal Period:', withdrawalPeriod || '--')}
+        {renderRowInfor('Network:', submitFormParams?.network)}
+        {renderRowInfor('Block Time:', submitFormParams?.blockTime)}
+        {renderRowInfor('Rollup Protocol:', submitFormParams?.rollupProtocol)}
+        {renderRowInfor('Withdrawal Period:', submitFormParams?.withdrawPeriod)}
         <BreakLine />
         <Text3>YOUR PROJECT INFO:</Text3>
-        {renderRowInfor('Project X Account:', projectXAccount || '--')}
-        {renderRowInfor('Project Website:', projectWebsite || '--')}
+        {renderRowInfor('Project X Account:', projectXField?.value || '--')}
+        {renderRowInfor('Project Website:', projectWebSiteField?.value || '--')}
         <BreakLine />
         <Text3>YOUR CONTACT INFO:</Text3>
-        {renderRowInfor('Twitter:', twitter || '--')}
-        {renderRowInfor('Telegram:', telegram || '--')}
+        {renderRowInfor('Twitter:', submitFormParams?.twName)}
+        {renderRowInfor('Telegram:', submitFormParams?.telegram)}
         <RowButton>
           <CancelButton onClick={onClose}>Cancel</CancelButton>
           <SubmitButton onClick={onSuccess}>Submit</SubmitButton>

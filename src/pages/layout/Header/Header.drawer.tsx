@@ -79,10 +79,11 @@ const HeaderDrawer = () => {
     toggleValue();
   };
 
-  const renderMainItem = (item: IMenuItem) => {
+  const renderMainItem = (item: IMenuItem, index: number) => {
     const isActive = item.path.includes(PREFIX);
     return (
       <MainMenuItem
+        key={`${item.name}-${index}`}
         isActive={isActive}
         onClick={() => {
           if (isActive) return toggleValue();
@@ -96,7 +97,7 @@ const HeaderDrawer = () => {
     );
   };
 
-  const renderSubItem = (item: IMenuItem) => {
+  const renderSubItem = (item: IMenuItem, index: number) => {
     const isActive = item.path === activePath;
 
     const TextComp = (
@@ -106,11 +107,15 @@ const HeaderDrawer = () => {
     );
 
     if (item.external) {
-      return <SubMenuItemExternal onClick={() => window.open(item.path, '_blank')}>{TextComp}</SubMenuItemExternal>;
+      return (
+        <SubMenuItemExternal key={`${item.name}-${index}`} onClick={() => window.open(item.path, '_blank')}>
+          {TextComp}
+        </SubMenuItemExternal>
+      );
     }
 
     return (
-      <SubMenuItem to={item.path} isActive={isActive} onClick={toggleValue}>
+      <SubMenuItem key={`${item.name}-${index}`} to={item.path} isActive={isActive} onClick={toggleValue}>
         {TextComp}
       </SubMenuItem>
     );

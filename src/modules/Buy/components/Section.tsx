@@ -5,6 +5,7 @@ import * as S from './Section.styled';
 
 export type Props = {
   title?: string;
+  isRequired?: boolean;
   description?: string;
   children?: React.ReactNode | null;
   descriptionDetail?: {
@@ -14,7 +15,7 @@ export type Props = {
 };
 
 const Section = React.memo((props: Props) => {
-  const { title, description, children, descriptionDetail } = props;
+  const { title, description, children, descriptionDetail, isRequired } = props;
 
   const [isShowModal, setIsShowModal] = useState(false);
 
@@ -25,6 +26,17 @@ const Section = React.memo((props: Props) => {
           <Text size="20" fontWeight="semibold" align="left">
             {title}
           </Text>
+          {isRequired && (
+            <label
+              style={{
+                color: 'red',
+                fontSize: '11px',
+                marginBottom: '3px',
+              }}
+            >
+              {'(*)'}
+            </label>
+          )}
         </S.TitleContainer>
       )}
 

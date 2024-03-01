@@ -3,6 +3,8 @@ import { BuyBuilderSelectState } from './Buy.types';
 import { BitcoinValidityEnum, DALayerEnum, NetworkEnum, PluginEnum, RollupEnum } from './Buy.constanst';
 import { GAS_LITMIT, MIN_GAS_PRICE } from '../Account/Order/FormOrder.constants';
 import { PriceType, PriceTypeList } from '../Price/constants';
+import { IOrderBuyEstimateRespone } from '@/interface/services/client';
+import formatter from '@/utils/amount';
 
 export const getChainIDRandom = async () => {
   let chainID = Math.floor(Math.random() * 90000) + 10000; //random from 10000 -> 999999
@@ -61,7 +63,7 @@ export const dayDescribe = (day: number) => {
 
 export const getBuyBuilderStateInit = (type?: string | null): BuyBuilderSelectState | any => {
   const dataInit: BuyBuilderSelectState = {
-    network: NetworkEnum.Network_UNKNOW, //
+    network: NetworkEnum.Network_Testnet, //
     blockTime: 10,
     dataAvaibilityChain: DALayerEnum.DALayer_BTC,
     pluginIds: [PluginEnum.Plugin_Bridge], // HARD CODE: Force Bridge select
@@ -110,4 +112,50 @@ export const getRandonComputerName = (isMainnet: boolean) => {
   const suffix = isMainnet ? '' : '(Testnet)';
   const randomNumber = Math.floor(Math.random() * 9000) + 1000; //random from 100 -> 999
   return `${prefix}-${randomNumber}${suffix ? `-${suffix}` : ''}`;
+};
+
+export const estimateDataFormater = (estimateData: IOrderBuyEstimateRespone) => {
+  let result = {
+    SetupCode: '0',
+    OperationCost: '0',
+    RollupCost: '0',
+    TotalCost: '0',
+  };
+  if (!estimateData) {
+    return result;
+  } else {
+    let setupCodeFomatted = `${formatter.formatAmount({
+      originalAmount: Number(estimateData.SetupCode || '0'),
+      decimals: 18,
+      maxDigits: 2,
+      isCeil: true,
+    })}`;
+
+    let operationCostFomatted = `${formatter.formatAmount({
+      originalAmount: Number(estimateData.OperationCost || '0'),
+      decimals: 18,
+      maxDigits: 2,
+      isCeil: true,
+    })}`;
+
+    let rollupCostFomatted = `${formatter.formatAmount({
+      originalAmount: Number(estimateData.RollupCost || '0'),
+      decimals: 18,
+      maxDigits: 2,
+      isCeil: true,
+    })}`;
+
+    let totalCostFomatted = `${formatter.formatAmount({
+      originalAmount: Number(estimateData.TotalCost || '0'),
+      decimals: 18,
+      maxDigits: 2,
+      isCeil: true,
+    })}`;
+
+    result.SetupCode = setupCodeFomatted;
+    result.OperationCost = operationCostFomatted;
+    result.RollupCost = rollupCostFomatted;
+    result.TotalCost = totalCostFomatted;
+    return result;
+  }
 };

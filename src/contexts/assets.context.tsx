@@ -101,7 +101,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({ children }: PropsW
   }, [isAuthenticated]);
 
   useAsyncEffect(async () => {
-    dispatch(fetchUserGamefi(account));
+    // dispatch(fetchUserGamefi(account));
   }, [account]);
 
   return <AssetsContext.Provider value={contextValues}>{children}</AssetsContext.Provider>;

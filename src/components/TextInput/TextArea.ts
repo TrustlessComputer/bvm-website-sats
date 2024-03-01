@@ -61,4 +61,8 @@ export const TextArea = styled.textarea`
   input[type='number'] {
     -moz-appearance: textfield;
   }
+
+  &.error {
+    border: 1px solid #ff3737;
+  }
 `;

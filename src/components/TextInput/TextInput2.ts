@@ -60,4 +60,8 @@ export const TextInput2 = styled.input`
   input[type='number'] {
     -moz-appearance: textfield;
   }
+
+  &.error {
+    border: 1px solid #ff3737;
+  }
 `;
