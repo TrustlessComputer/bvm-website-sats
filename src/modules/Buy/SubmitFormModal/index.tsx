@@ -49,6 +49,7 @@ const CustomizeTokenModal = (props: IProps) => {
               setCountClick(prev => prev + 1);
             } else {
               orderBuyHandler();
+              onClose && onClose();
             }
           }}
         />
