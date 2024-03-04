@@ -406,10 +406,10 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
 
   const submitHandler = async (onSuccess?: any) => {
     try {
-      // if (!isAuthenticated) {
-      //   requiredLogin();
-      //   return;
-      // }
+      if (!isAuthenticated) {
+        requiredLogin();
+        return;
+      }
       if (validateAllFormFields()) {
         // orderBuyHandler(onSuccess)
         setShowSubmitForm(true);
