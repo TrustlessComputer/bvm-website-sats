@@ -145,6 +145,8 @@ export type IBuyContext = ComputerNameSection &
     submitHandler: (onSuccess?: any) => Promise<void>;
     confirmSubmitHandler: () => Promise<void>;
 
+    orderBuyHandler: () => Promise<void>;
+
     submitFormParams: SubmitFormParams | undefined;
   };
 
@@ -160,6 +162,7 @@ export const BuyContextInit: IBuyContext = {
 
   submitHandler: async () => {},
   confirmSubmitHandler: async () => {},
+  orderBuyHandler: async () => {},
 
   isMainnet: false,
   withdrawalPeriodSelected: 7,

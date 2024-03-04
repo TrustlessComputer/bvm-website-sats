@@ -151,6 +151,22 @@ const SubmitButton = styled.div`
   }
 `;
 
+const DevModeButton = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: ${px2rem(90)};
+  width: ${px2rem(90)};
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #130e67;
+  color: #fff;
+  opacity: 0;
+  height: ${px2rem(45)};
+  border-radius: 999px;
+`;
+
 export {
   Container,
   InputBox,
@@ -167,4 +183,5 @@ export {
   RowButton,
   CancelButton,
   SubmitButton,
+  DevModeButton,
 };

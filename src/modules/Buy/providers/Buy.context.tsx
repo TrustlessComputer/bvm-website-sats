@@ -504,6 +504,7 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     setShowSubmitFormResult,
 
     submitFormParams,
+    orderBuyHandler,
   };
 
   // console.log('[DEBUG] Buy Provider ALL DATA: ', values);

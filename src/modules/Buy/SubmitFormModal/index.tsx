@@ -13,7 +13,11 @@ import {
   Text1,
   Text2,
   Text3,
+  DevModeButton,
 } from './styled';
+import { useState } from 'react';
+
+const MAX_CLICK = 5;
 
 interface IProps {
   show: boolean;
@@ -23,7 +27,9 @@ interface IProps {
 
 const CustomizeTokenModal = (props: IProps) => {
   const { show, onClose, onSuccess } = props;
-  const { computerNameField, projectWebSiteField, projectXField, submitFormParams } = useBuy();
+  const { computerNameField, projectWebSiteField, projectXField, submitFormParams, orderBuyHandler } = useBuy();
+
+  const [countClick, setCountClick] = useState(0);
 
   const renderRowInfor = (label = '', content = '') => {
     return (
@@ -37,6 +43,15 @@ const CustomizeTokenModal = (props: IProps) => {
   return (
     <BaseModal show={show} handleClose={onClose} hideCloseButton={true} width={700}>
       <Container>
+        <DevModeButton
+          onClick={() => {
+            if (countClick < MAX_CLICK) {
+              setCountClick(prev => prev + 1);
+            } else {
+              orderBuyHandler();
+            }
+          }}
+        />
         <Text1>
           You are creating a Bitcoin L2 named <Text2>{computerNameField?.value || '--'}</Text2>
         </Text1>
