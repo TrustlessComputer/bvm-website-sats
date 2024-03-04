@@ -11,27 +11,6 @@ export type IField = {
   errorMessage?: string;
 };
 
-export type FormFieldsType = {
-  [key: string]: {
-    value: string;
-    hasFocused?: boolean;
-    hasError?: boolean;
-    isRequired?: boolean;
-    errorMessage?: string;
-  };
-};
-
-export type IFormDataCustomizeTokenType = {
-  isError: boolean;
-  data:
-    | {
-        totalSupply: string;
-        receivingAddress: string;
-        tickerName: string;
-      }
-    | undefined;
-};
-
 export type ComputerNameSection = {
   computerNameField: IField;
   setComputerNameField: (value: IField) => void;

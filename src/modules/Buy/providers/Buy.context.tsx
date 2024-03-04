@@ -44,27 +44,6 @@ export type IField = {
   errorMessage?: string;
 };
 
-export type FormFieldsType = {
-  [key: string]: {
-    value: string;
-    hasFocused?: boolean;
-    hasError?: boolean;
-    isRequired?: boolean;
-    errorMessage?: string;
-  };
-};
-
-export type IFormDataCustomizeTokenType = {
-  isError: boolean;
-  data:
-    | {
-        totalSupply: string;
-        receivingAddress: string;
-        tickerName: string;
-      }
-    | undefined;
-};
-
 export const BuyContext = createContext<IBuyContext>(BuyContextInit);
 
 export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren): React.ReactElement => {
@@ -86,11 +65,6 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
   // const typeData = urlParams?.get('type')?.replace('/', '') || undefined;
   // const builderStateInit = getBuyBuilderStateInit(typeData);
   // const [buyBuilderState, setBuyBuilderState] = useState<BuyBuilderSelectState>(builderStateInit);
-
-  const [formDataCustomizeToken, setFormDataCustomizeToken] = useState<IFormDataCustomizeTokenType>({
-    isError: true,
-    data: undefined,
-  });
 
   // ------------------------------------------------------------
   // Text and TextArea Fields
@@ -223,13 +197,12 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     };
 
     if (nativeTokenPayingGasSelected === NativeTokenPayingGasEnum.NativeTokenPayingGas_PreMint) {
-      if (!formDataCustomizeToken.isError)
-        params = {
-          ...params,
-          preMintAmount: new BigNumber(formDataCustomizeToken.data?.totalSupply || '0').multipliedBy(1e18).toFixed(),
-          preMintAddress: formDataCustomizeToken.data?.receivingAddress,
-          ticker: formDataCustomizeToken.data?.tickerName,
-        };
+      params = {
+        ...params,
+        preMintAmount: new BigNumber(totalSupplyField.value || '0').multipliedBy(1e18).toFixed(),
+        preMintAddress: receivingAddressField.value,
+        ticker: tickerField.value,
+      };
     }
 
     return params;
@@ -433,10 +406,10 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
 
   const submitHandler = async (onSuccess?: any) => {
     try {
-      if (!isAuthenticated) {
-        requiredLogin();
-        return;
-      }
+      // if (!isAuthenticated) {
+      //   requiredLogin();
+      //   return;
+      // }
       if (validateAllFormFields()) {
         // orderBuyHandler(onSuccess)
         setShowSubmitForm(true);
@@ -489,9 +462,6 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     estimateTotalCostData,
     setEstimateTotalCostData,
     estimateTotalCostFetching,
-
-    formDataCustomizeToken,
-    setFormDataCustomizeToken,
 
     networkSelected,
     setNetworkSelected,

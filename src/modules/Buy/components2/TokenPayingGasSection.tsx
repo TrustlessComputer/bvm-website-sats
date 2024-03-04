@@ -2,13 +2,14 @@ import { TextInput2 } from '@/components/TextInput/TextInput2';
 import { Radio } from 'antd';
 import { isEmpty } from 'lodash';
 import styled from 'styled-components';
-import { FormFields, NativeTokenPayingGasEnum, NetworkEnum } from '../Buy.constanst';
+import { FormFields, FormFieldsErrorMessage, NativeTokenPayingGasEnum, NetworkEnum } from '../Buy.constanst';
 import { ItemDetail } from '../Buy.types';
 import ErrorMessage from '../components/ErrorMessage';
 import Section from '../components/Section';
 import Title2 from '../components/Title2';
 import { useBuy } from '../providers/Buy.hook';
 import * as S from '../styled';
+import { ethers } from 'ethers';
 
 const Group1 = styled.div`
   margin-top: 10px;
@@ -70,11 +71,22 @@ const TokenPayingGasSection = () => {
     }
 
     if (field == RECEIVING_ADDRESS_ID) {
+      let isValid = true;
+      let errorMessage = undefined;
+      if (isEmpty(text)) {
+        isValid = false;
+        errorMessage = FormFieldsErrorMessage[RECEIVING_ADDRESS_ID];
+      } else if (!ethers.utils.isAddress(text)) {
+        isValid = false;
+        errorMessage = 'Address is invalid.';
+      }
+
       setReceivingAddressField({
         ...receivingAddressField,
         value: text,
         hasFocused: true,
-        hasError: !!receivingAddressField.isRequired && isEmpty(text),
+        hasError: !!receivingAddressField.isRequired && !isValid,
+        errorMessage: errorMessage,
       });
     }
   };
