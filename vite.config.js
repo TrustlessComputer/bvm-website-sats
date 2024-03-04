@@ -25,7 +25,8 @@ export default defineConfig(({ mode }) => {
   return {
     server: { hmr: true, port: 6009 },
     esbuild: {
-      pure: mode === 'production' ? ['console.log'] : [],
+      // pure: mode === 'production' ? ['console.log'] : [],
+      pure: mode === 'production' ? [] : [],
     },
     plugins: [
       visualizer({

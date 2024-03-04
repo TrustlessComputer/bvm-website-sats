@@ -24,7 +24,7 @@ const useLogin = () => {
         tcAddress,
       });
 
-      console.log(' DEBUG --1 --- ', nonce);
+      // console.log(' DEBUG --1 --- ', nonce);
 
       // sign message
       const signature = await onSignMessage({
@@ -32,7 +32,7 @@ const useLogin = () => {
         message: nonce,
       });
 
-      console.log(' DEBUG -- 2 --- ', signature);
+      // console.log(' DEBUG -- 2 --- ', signature);
 
       // verify signature
       const { isVerified, token, refreshToken } = await client.verifySignature({
@@ -40,7 +40,7 @@ const useLogin = () => {
         signature: signature || '',
       });
 
-      console.log(' DEBUG -- 3 --- ', { isVerified, token, refreshToken });
+      // console.log(' DEBUG -- 3 --- ', { isVerified, token, refreshToken });
 
       if (isVerified) {
         storageAuthen.setToken({

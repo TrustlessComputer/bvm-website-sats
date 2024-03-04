@@ -37,8 +37,8 @@ const Hydrated = ({ children }: { children?: any }) => {
               break;
           }
         } catch (error) {
-          console.log('error', event);
-          console.log(error);
+          // console.log('error', event);
+          // console.log(error);
         }
       });
     }

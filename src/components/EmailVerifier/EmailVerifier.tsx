@@ -43,7 +43,7 @@ const EmailVerifier = (props: IProps) => {
     const errors: Record<string, string> = {};
 
     if (values.step === 'submit') {
-      console.log(values.email);
+      // console.log(values.email);
       if (!values.email) {
         errors.email = 'Required.';
       } else if (!validateEmail(values.email)) {

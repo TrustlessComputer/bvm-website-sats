@@ -27,6 +27,8 @@ export enum DALayerEnum {
   DALayer_ARWEAVE = 17,
   DALayer_AVAIL = 18,
   DALayer_JACKAL = 19,
+  DALayer_SYSCOIN = 20,
+  DALayer_FILECOIN = 21,
 }
 
 export const DALayerEnumMap = {
@@ -42,6 +44,9 @@ export const DALayerEnumMap = {
   [DALayerEnum.DALayer_ARWEAVE]: 'Bitcoin + Arweave',
   [DALayerEnum.DALayer_AVAIL]: 'Bitcoin + Avail',
   [DALayerEnum.DALayer_JACKAL]: 'Bitcoin + Jackal',
+
+  [DALayerEnum.DALayer_SYSCOIN]: 'Bitcoin + Syscoin',
+  [DALayerEnum.DALayer_FILECOIN]: 'Bitcoin + Filecoin"',
 };
 
 // ------------------------------------------------------------------------------------

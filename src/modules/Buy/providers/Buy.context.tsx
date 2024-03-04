@@ -385,9 +385,12 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
       await client.submitContactVS2(submitFormParams);
       setShowSubmitFormResult(true);
     } catch (error) {
+      console.log('[confirmSubmitHandler] ERROR 1: ', error);
       const { message, desc } = getErrorMessage(error);
+      console.log('[confirmSubmitHandler] ERROR 2: ', { message, desc });
       toast.error(message || desc, { duration: 2000 });
     } finally {
+      console.log('[confirmSubmitHandler] finally: ');
       setShowSubmitForm(false);
     }
   };
@@ -407,7 +410,7 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
 
       let orderBuyReqParams: IOrderBuyReq = { ...orderBuyReq, twitter_id: twitterID };
 
-      console.log('DEBUG [orderBuyHandler] params: --- ', orderBuyReqParams);
+      // console.log('DEBUG [orderBuyHandler] params: --- ', orderBuyReqParams);
 
       const result = await client.orderBuyAPI(orderBuyReqParams);
       await sleep(2);

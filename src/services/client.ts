@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import createAxiosInstance from '@/services/http';
 import {
   AccountInfo,
@@ -97,10 +98,10 @@ const orderBuyAPI = async (params: IOrderBuyReq): Promise<any> => {
   // eslint-disable-next-line no-useless-catch
   try {
     const data = (await axios.post(`/order/register`, params)) as any;
-    console.log('[orderBuyAPI] data ', data);
+    // console.log('[orderBuyAPI] data ', data);
     return data;
   } catch (error: any) {
-    console.log('[orderBuyAPI] error ', error);
+    // console.log('[orderBuyAPI] error  ', error);
     throw error;
   }
 };
@@ -110,7 +111,7 @@ const fetchHistoryAPI = async (): Promise<any> => {
     const histories = (await axios.get(`/account/history`)) as HistoryItemResp[];
     return histories?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   } catch (error) {
-    console.log('[fetchHistoryAPI] ERROR: ', error);
+    // console.log('[fetchHistoryAPI] ERROR: ', error);
     return [];
   }
 };
@@ -122,7 +123,7 @@ const validateChainIdAPI = async (chainId: string): Promise<any> => {
     // console.log('[validateChainIdAPI] data ', data);
     return data && data.valid;
   } catch (error: any) {
-    console.log('[validateChainIdAPI] error ', error);
+    // console.log('[validateChainIdAPI] error ', error);
     throw error;
   }
 };
@@ -134,7 +135,7 @@ const validateSubDomainAPI = async (subdomain: string): Promise<any> => {
     // console.log('[validateSubDomainAPI] data ', data);
     return data && data.valid;
   } catch (error: any) {
-    console.log('[validateSubDomainAPI] error ', error);
+    // console.log('[validateSubDomainAPI] error ', error);
     throw error;
   }
 };
@@ -152,7 +153,7 @@ const withdrawRewards = async (orders: OrderItem[]): Promise<any> => {
         });
       }
     } catch (error) {
-      console.log('[withdrawRewards] error ', error);
+      // console.log('[withdrawRewards] error ', error);
     }
   }
 };
@@ -176,7 +177,7 @@ const fetchAvailableList = async (): Promise<IAvailableList> => {
     let data = (await axios.get(`/order/available-list`)) as IAvailableList;
     return data;
   } catch (error) {
-    console.log('[fetchBuyBuilderInfo] ERROR: ', error);
+    // console.log('[fetchAvailableList] ERROR: ', error);
     throw error;
   }
 };
@@ -184,10 +185,10 @@ const fetchAvailableList = async (): Promise<IAvailableList> => {
 const estimateTotalCostAPI = async (params: IOrderBuyReq): Promise<IOrderBuyEstimateRespone> => {
   try {
     const data = (await axios.post(`/order/estimate-total-cost`, params)) as IOrderBuyEstimateRespone;
-    console.log('[estimateTotalCostAPI] data ', data);
+    // console.log('[estimateTotalCostAPI] data ', data);
     return data;
   } catch (error: any) {
-    console.log('[estimateTotalCostAPI] error ', error);
+    // console.log('[estimateTotalCostAPI] error ', error);
     throw error;
   }
 };

@@ -11,8 +11,8 @@ const getChainList = async (): Promise<Array<IResourceChain>> => {
     // const chains = await res.json();
     return [...CHAINS_INFO] as Array<IResourceChain>;
   } catch (err: unknown) {
-    console.log('Failed to get chain list');
-    console.log(err);
+    // console.log('Failed to get chain list');
+    // console.log(err);
     return CHAINS_INFO;
   }
 };
