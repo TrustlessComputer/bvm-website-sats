@@ -224,7 +224,7 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     if (isMainnet) {
       return 'Submit';
     } else if (!isAuthenticated) {
-      return 'Connect Wallet';
+      return 'Login';
     } else {
       return 'Submit';
     }
