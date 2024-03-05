@@ -23,10 +23,13 @@ const ComputerDescriptionSection = () => {
 
   return (
     <S.Section>
-      <Title text={'Bitcoin L2 description'} isRequired />
+      <Title
+        text={'Tell us more about your plan with your Bitcoin L2'}
+        isRequired={!!computerDescriptionField.isRequired}
+      />
       <S.Space />
       <TextArea
-        placeholder="Tell us more about your plan with your Bitcoin L2"
+        placeholder="Enter your plan here"
         id={fieldName}
         name={fieldName}
         value={value}

@@ -6,13 +6,15 @@ export type Props = {
   text: string;
   isRequired?: boolean;
   size?: any;
+  style?: any;
 };
 
 const Title = React.memo((props: Props) => {
-  const { text, size = 20, isRequired } = props;
+  const { text, size = 20, style, isRequired } = props;
   return (
     <div
       style={{
+        ...style,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',

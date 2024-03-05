@@ -85,13 +85,13 @@ const BuyPage = React.memo((props: Props) => {
           </Text>
           <div className="sectionList">
             {/* Computer Name */}
-            <ComputerNameSection />
+            {/* <ComputerNameSection /> */}
 
             {/* Computer Description  */}
             <ComputerDescriptionSection />
 
             {/* Project Information  */}
-            <ProjectInformationSection />
+            {/* <ProjectInformationSection /> */}
 
             {/* Contact information  */}
             <ContactInformationSection />
