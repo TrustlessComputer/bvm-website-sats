@@ -32,10 +32,10 @@ const ContactInformationSection = () => {
 
   return (
     <S.Section>
-      <Title text={'Contact information'} isRequired />
+      <Title text={'Your X handle'} isRequired />
       <S.Space />
       <TextInput2
-        placeholder="Your X account link/handle"
+        placeholder="Enter here"
         id={FormFields.YOUR_X_ACC}
         name={FormFields.YOUR_X_ACC}
         value={yourXField.value}
@@ -54,10 +54,15 @@ const ContactInformationSection = () => {
         onWheel={(e: any) => e?.target?.blur()}
       />
       {yourXField.hasFocused && yourXField.hasError && <ErrorMessage message={yourXField.errorMessage} />}
-
+      <Title
+        text={'Your telegram handle'}
+        style={{
+          marginTop: '20px',
+        }}
+      />
       <S.Space />
       <TextInput2
-        placeholder="Your telegram link/handle"
+        placeholder="Enter here"
         id={FormFields.YOUR_TELEGRAM}
         name={FormFields.YOUR_TELEGRAM}
         value={yourTelegramField.value}

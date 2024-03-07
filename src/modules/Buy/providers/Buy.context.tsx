@@ -70,17 +70,17 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
   // Text and TextArea Fields
   // ------------------------------------------------------------
   const [computerNameField, setComputerNameField] = useState<IField>({
-    isRequired: true,
+    isRequired: false,
     errorMessage: FormFieldsErrorMessage[FormFields.COMPUTER_NAME],
   });
 
   const [computerDescriptionField, setComputerDescriptionField] = useState<IField>({
-    isRequired: true,
+    isRequired: false,
     errorMessage: FormFieldsErrorMessage[FormFields.DESCRIPTION],
   });
 
   const [projectXField, setProjectXField] = useState<IField>({
-    isRequired: true,
+    isRequired: false,
     errorMessage: FormFieldsErrorMessage[FormFields.PROJECT_X],
   });
 
@@ -173,7 +173,7 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     const chainID = chainIdRandom;
     const chainName = computerName;
     const domain = computerName?.toLowerCase()?.trim().replaceAll(' ', '-');
-    const blockTime = blockTimeSelected || BlockTimeEnum;
+    const blockTime = blockTimeSelected || BlockTimeEnum.BlockTime_10s;
     const minGasPrice = new BigNumber(minGasPriceField.value || 2).multipliedBy(1e9).toFixed();
     const bitcoinValidity = bitcoinValiditySelected || BitcoinValidityEnum.BitcoinValidity_Ordinals;
     const dataAvaibilityChain = dataValiditySelected || DALayerEnum.DALayer_BTC;
@@ -267,28 +267,22 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     let isValid = true;
 
     // Computer Name
-    if (computerNameField.isRequired && isEmpty(computerNameField.value)) {
-      isValid = false;
-      setComputerNameField({ ...computerNameField, hasFocused: true, hasError: true });
-    }
+    // if (computerNameField.isRequired && isEmpty(computerNameField.value)) {
+    //   isValid = false;
+    //   setComputerNameField({ ...computerNameField, hasFocused: true, hasError: true });
+    // }
 
     // Computer Description
-    if (computerDescriptionField.isRequired && isEmpty(computerDescriptionField.value)) {
-      isValid = false;
-      setComputerDescriptionField({ ...computerDescriptionField, hasFocused: true, hasError: true });
-    }
+    // if (computerDescriptionField.isRequired && isEmpty(computerDescriptionField.value)) {
+    //   isValid = false;
+    //   setComputerDescriptionField({ ...computerDescriptionField, hasFocused: true, hasError: true });
+    // }
 
     // Computer Project X Account
-    if (projectXField.isRequired && isEmpty(projectXField.value)) {
-      isValid = false;
-      setProjectXField({ ...projectXField, hasFocused: true, hasError: true });
-    }
-
-    // Your X Account
-    if (yourXField.isRequired && isEmpty(yourXField.value)) {
-      isValid = false;
-      setYourXField({ ...yourXField, hasFocused: true, hasError: true });
-    }
+    // if (projectXField.isRequired && isEmpty(projectXField.value)) {
+    //   isValid = false;
+    //   setProjectXField({ ...projectXField, hasFocused: true, hasError: true });
+    // }
 
     // Your X Account
     if (yourXField.isRequired && isEmpty(yourXField.value)) {

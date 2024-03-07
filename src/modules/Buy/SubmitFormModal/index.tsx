@@ -53,9 +53,9 @@ const CustomizeTokenModal = (props: IProps) => {
             }
           }}
         />
-        <Text1>
+        {/* <Text1>
           You are creating a Bitcoin L2 named <Text2>{computerNameField?.value || '--'}</Text2>
-        </Text1>
+        </Text1> */}
         {renderRowInfor('Network:', submitFormParams?.network)}
         {renderRowInfor('Block Time:', submitFormParams?.blockTime)}
         {renderRowInfor('Rollup Protocol:', submitFormParams?.rollupProtocol)}
