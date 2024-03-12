@@ -218,6 +218,7 @@ export const BuyProvider: React.FC<PropsWithChildren> = ({ children }: PropsWith
     withdrawPeriod: withdrawalPeriodSelected ? `${dayDescribe(withdrawalPeriodSelected).str}` : '--',
     twName: yourXField.value || '--',
     telegram: yourTelegramField.value || '--',
+    isContractUs: false,
   };
 
   const confirmBtnTitle = useMemo(() => {
