@@ -1,7 +1,9 @@
 import * as S from './Item.styled';
 import React from 'react';
 import Text from '@/components/Text';
-import { ItemDetail, SectionType } from '../Buy.types';
+import { ItemDetail } from '../Buy.types';
+import { Info } from 'react-feather';
+import { Tooltip } from 'antd';
 
 export type Props = {
   title: string;
@@ -15,6 +17,7 @@ export type Props = {
   onClickCB?: (item: ItemDetail) => void;
   priceNote?: string;
   key?: string;
+  infor?: string;
 };
 
 const Item = React.memo((props: Props) => {
@@ -30,6 +33,7 @@ const Item = React.memo((props: Props) => {
     onClickCallback,
     onClickCB,
     key,
+    infor,
   } = props;
 
   const selectedClassName = isSelected ? 'selected' : 'non-select';
@@ -55,6 +59,20 @@ const Item = React.memo((props: Props) => {
           <Text size="16" align="center" color="warning">
             {priceNote}
           </Text>
+        )}
+        {infor && (
+          <Tooltip
+            overlayStyle={{ maxWidth: '350px' }}
+            title={
+              <Text size="16" align="center" color="white">
+                {infor}
+              </Text>
+            }
+            placement="top"
+            color="black"
+          >
+            <Info color="#ffae00"></Info>
+          </Tooltip>
         )}
       </Text>
     </S.Container>

@@ -1,4 +1,4 @@
-import { NetworkEnum } from '../Buy.constanst';
+import { DALayerEnum, NetworkEnum } from '../Buy.constanst';
 import { ItemDetail } from '../Buy.types';
 import Item from '../components/Item';
 import Section from '../components/Section';
@@ -41,6 +41,7 @@ const DataAvailabilitySection = () => {
     >
       <S.ListItemContainer>
         {dataList?.map((item, index) => {
+          const isBitCoinSyscoin = item.value === DALayerEnum.DALayer_SYSCOIN;
           return (
             <Item
               key={`${item.valueStr} ${index}`}
@@ -55,6 +56,11 @@ const DataAvailabilitySection = () => {
               onClickCB={item => {
                 setDataValiditySelected(item.value!);
               }}
+              infor={
+                isBitCoinSyscoin
+                  ? "Your rollup will use Syscoin's DA protocol called BitcoinDA, which secures your rollup with Bitcoin's network through merged mining while supplementing with an additive decentralized finality. Syscoin's solution intersects Bitcoin yet is scalable and cost-effective"
+                  : undefined
+              }
             />
           );
         })}
