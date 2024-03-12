@@ -61,13 +61,13 @@ const CustomizeTokenModal = (props: IProps) => {
         {renderRowInfor('Rollup Protocol:', submitFormParams?.rollupProtocol)}
         {renderRowInfor('Withdrawal Period:', submitFormParams?.withdrawPeriod)}
         <BreakLine />
-        <Text3>YOUR PROJECT INFO:</Text3>
+        {/* <Text3>YOUR PROJECT INFO:</Text3>
         {renderRowInfor('Project X Account:', projectXField?.value || '--')}
         {renderRowInfor('Project Website:', projectWebSiteField?.value || '--')}
-        <BreakLine />
+        <BreakLine /> */}
         <Text3>YOUR CONTACT INFO:</Text3>
-        {renderRowInfor('Twitter:', submitFormParams?.twName)}
-        {renderRowInfor('Telegram:', submitFormParams?.telegram)}
+        {renderRowInfor('Twitter/Telegram:', submitFormParams?.twName || submitFormParams?.telegram)}
+        {/* {renderRowInfor('Telegram:', submitFormParams?.telegram)} */}
         <RowButton>
           <CancelButton onClick={onClose}>Cancel</CancelButton>
           <SubmitButton onClick={onSuccess}>Submit</SubmitButton>

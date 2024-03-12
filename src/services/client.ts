@@ -207,6 +207,7 @@ export type SubmitFormParams = {
   withdrawPeriod: string;
   twName: string;
   telegram: string;
+  isContractUs: boolean;
 };
 
 const submitContactVS2 = async (params: SubmitFormParams) => {
