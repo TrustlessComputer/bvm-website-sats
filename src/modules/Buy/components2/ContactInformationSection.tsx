@@ -31,55 +31,56 @@ const ContactInformationSection = () => {
   };
 
   return (
-    <S.Section>
-      <Title text={'Your X/telegram handle'} isRequired />
-      <S.Space />
-      <TextInput2
-        placeholder="Enter your X/telegram handle"
-        id={FormFields.YOUR_X_ACC}
-        name={FormFields.YOUR_X_ACC}
-        value={yourXField.value}
-        className={`${yourXField.hasFocused && yourXField.hasError ? 'error' : ''}`}
-        onBlur={(e: any) => {
-          onChangeHandler(FormFields.YOUR_X_ACC, e);
-        }}
-        onChange={e => {
-          onChangeHandler(FormFields.YOUR_X_ACC, e);
-        }}
-        type="text"
-        step={'any'}
-        autoComplete="off"
-        spellCheck={false}
-        autoFocus={false}
-        onWheel={(e: any) => e?.target?.blur()}
-      />
-      {yourXField.hasFocused && yourXField.hasError && <ErrorMessage message={yourXField.errorMessage} />}
-      {/* <Title
-        text={'Your telegram handle'}
-        style={{
-          marginTop: '20px',
-        }}
-      />
-      <S.Space />
-      <TextInput2
-        placeholder="Enter here"
-        id={FormFields.YOUR_TELEGRAM}
-        name={FormFields.YOUR_TELEGRAM}
-        value={yourTelegramField.value}
-        onBlur={(e: any) => {
-          onChangeHandler(FormFields.YOUR_TELEGRAM, e);
-        }}
-        onChange={e => {
-          onChangeHandler(FormFields.YOUR_TELEGRAM, e);
-        }}
-        type="text"
-        step={'any'}
-        autoComplete="off"
-        spellCheck={false}
-        autoFocus={false}
-        onWheel={(e: any) => e?.target?.blur()}
-      /> */}
-    </S.Section>
+    <S.RowSection>
+      <S.ContactLeftView>
+        <Title text={'Your X handle'} isRequired />
+        <S.Space />
+        <TextInput2
+          placeholder="Enter your X handle"
+          id={FormFields.YOUR_X_ACC}
+          name={FormFields.YOUR_X_ACC}
+          value={yourXField.value}
+          className={`${yourXField.hasFocused && yourXField.hasError ? 'error' : ''}`}
+          onBlur={(e: any) => {
+            onChangeHandler(FormFields.YOUR_X_ACC, e);
+          }}
+          onChange={e => {
+            onChangeHandler(FormFields.YOUR_X_ACC, e);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {yourXField.hasFocused && yourXField.hasError && <ErrorMessage message={yourXField.errorMessage} />}
+      </S.ContactLeftView>
+
+      <S.ContactRightView>
+        <Title text={'Your telegram handle'} />
+        <S.Space />
+        <TextInput2
+          placeholder="Enter your telegram handle"
+          id={FormFields.YOUR_TELEGRAM}
+          name={FormFields.YOUR_TELEGRAM}
+          value={yourTelegramField.value}
+          onBlur={(e: any) => {
+            onChangeHandler(FormFields.YOUR_TELEGRAM, e);
+          }}
+          onChange={e => {
+            onChangeHandler(FormFields.YOUR_TELEGRAM, e);
+          }}
+          type="text"
+          step={'any'}
+          autoComplete="off"
+          spellCheck={false}
+          autoFocus={false}
+          onWheel={(e: any) => e?.target?.blur()}
+        />
+        {yourXField.hasFocused && yourXField.hasError && <ErrorMessage message="" />}
+      </S.ContactRightView>
+    </S.RowSection>
   );
 };
 

@@ -7,9 +7,11 @@ export type Props = {
 
 const ErrorMessage = React.memo((props: Props) => {
   const { message = 'Error' } = props;
+
+  if (!message || message.length < 1) return <div style={{ height: '22px' }}></div>;
   return (
     <Text size="14" fontWeight="regular" color="negative" style={{ marginTop: '5px' }}>
-      {message}
+      {message || ''}
     </Text>
   );
 });

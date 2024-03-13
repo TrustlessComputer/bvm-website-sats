@@ -66,8 +66,8 @@ const CustomizeTokenModal = (props: IProps) => {
         {renderRowInfor('Project Website:', projectWebSiteField?.value || '--')}
         <BreakLine /> */}
         <Text3>YOUR CONTACT INFO:</Text3>
-        {renderRowInfor('Twitter/Telegram:', submitFormParams?.twName || submitFormParams?.telegram)}
-        {/* {renderRowInfor('Telegram:', submitFormParams?.telegram)} */}
+        {renderRowInfor('Twitter:', submitFormParams?.twName)}
+        {renderRowInfor('Telegram:', submitFormParams?.telegram)}
         <RowButton>
           <CancelButton onClick={onClose}>Cancel</CancelButton>
           <SubmitButton onClick={onSuccess}>Submit</SubmitButton>

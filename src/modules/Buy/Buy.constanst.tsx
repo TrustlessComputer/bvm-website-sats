@@ -159,7 +159,7 @@ export const FormFieldsErrorMessage = {
   [FormFields.PROJECT_WEBSITE]: 'Project website name is required.',
   [FormFields.DESCRIPTION]: 'Bitcoin L2 description is required.',
   [FormFields.PROJECT_X]: 'Project X account is required.',
-  [FormFields.YOUR_X_ACC]: 'Your X/telegram account is required.',
+  [FormFields.YOUR_X_ACC]: 'Your X handle is required.',
   [FormFields.MIN_GAS_PRICE]: 'Min gas price is required.',
   [FormFields.BLOCK_GAS_LIMIT]: 'Gas limit is required.',
   [FormFields.YOUR_TELEGRAM]: 'Your telegram is required.',

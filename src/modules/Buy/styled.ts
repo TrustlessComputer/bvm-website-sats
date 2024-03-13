@@ -256,6 +256,25 @@ const FooterInfo2 = styled.div`
   )}
 `;
 
+const RowSection = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+`;
+
+const ContactLeftView = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
+const ContactRightView = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
 export {
   Container,
   LeftContainer,
@@ -270,4 +289,7 @@ export {
   FooterInfo2,
   RowActionInfor,
   BreakLine,
+  RowSection,
+  ContactLeftView,
+  ContactRightView,
 };
