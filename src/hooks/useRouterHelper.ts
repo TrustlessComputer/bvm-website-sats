@@ -4,6 +4,7 @@ import { useAppDispatch } from '@/state/hooks';
 import { useNavigate } from 'react-router-dom';
 
 const REQUIRED_LOGIN = 'REQUIRED_LOGIN';
+const REQUEST_CONTACT_US = 'REQUEST_CONTACT_US';
 
 const useRouteHelper = () => {
   const dispatch = useAppDispatch();
@@ -61,6 +62,12 @@ const useRouteHelper = () => {
     postMessage(ROUTE_PATH.PRICE, REQUIRED_LOGIN);
   };
 
+  const requestContactUs = () => {
+    navigate(ROUTE_PATH.BUY);
+    dispatch(setRoutePathSelected(ROUTE_PATH.BUY));
+    postMessage(ROUTE_PATH.PRICE, REQUEST_CONTACT_US);
+  };
+
   return {
     goHomePage,
     goNotFoundPage,
@@ -69,6 +76,7 @@ const useRouteHelper = () => {
     goBuildPage,
     postMessage,
     requiredLogin,
+    requestContactUs,
   };
 };
 

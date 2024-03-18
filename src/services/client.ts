@@ -208,6 +208,7 @@ export type SubmitFormParams = {
   twName: string;
   telegram: string;
   isContractUs: boolean;
+  subject?: string;
 };
 
 const submitContactVS2 = async (params: SubmitFormParams) => {

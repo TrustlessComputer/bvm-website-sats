@@ -25,6 +25,7 @@ import TokenPayingGasSection from './components2/TokenPayingGasSection';
 import WithdrawalPeriodSection from './components2/WithdrawalPeriodSection';
 import { useBuy } from './providers/Buy.hook';
 import * as S from './styled';
+import useRouteHelper from '@/hooks/useRouterHelper';
 
 type Props = {
   onSuccess?: () => void;
@@ -32,6 +33,7 @@ type Props = {
 
 const BuyPage = React.memo((props: Props) => {
   const { onSuccess } = props;
+  const { requestContactUs } = useRouteHelper();
   const {
     availableListData,
     isAvailableListFetching,
@@ -66,10 +68,15 @@ const BuyPage = React.memo((props: Props) => {
                 <Text size="14" align="center">
                   Have questions about Bitcoin L2?
                 </Text>
-                <Text size="12" align="center" className="discord">
-                  <a href={configs.TELEGRAM_TRUSTLESS_URL} target="_blank">
-                    Chat with us via Telegram
-                  </a>
+                <Text
+                  size="13"
+                  align="center"
+                  className="discord"
+                  onClick={() => {
+                    requestContactUs();
+                  }}
+                >
+                  Talk to our team
                 </Text>
               </div>
             </Row>

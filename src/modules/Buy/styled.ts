@@ -60,6 +60,9 @@ const LeftContainer = styled.div`
   .discord {
     color: #06c;
     margin-top: ${px2rem(4)};
+    :hover {
+      cursor: pointer;
+    }
   }
   ${MediaQueryBuilder(
     'lg',
