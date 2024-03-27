@@ -29,11 +29,11 @@ const Container = styled.div`
   }
   transition: all 0.2s ease-in-out;
   :hover {
-    /* .hover-show {
+    .hover-show {
       opacity: 1;
     }
     border-color: ${({ theme }) => theme.yellow['C']};
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -126,6 +126,17 @@ const BoxDappContainer = styled.div`
   grid-template-columns: repeat(2, 1fr);
 `;
 
+const BoxDappContainer1 = styled.div`
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 2rem;
+  padding: 0.2rem;
+  grid-template-columns: repeat(2, 1fr);
+`;
+
 const BoxDapp = styled.div`
   position: relative;
   flex-direction: row;
@@ -142,4 +153,4 @@ const BoxDapp = styled.div`
   }
 `;
 
-export { Container, Header, Divider, Body, Footer, RowInfo, BoxDapp, BoxDappContainer };
+export { Container, Header, Divider, Body, Footer, RowInfo, BoxDapp, BoxDappContainer, BoxDappContainer1 };

@@ -48,6 +48,8 @@ const ServiceItem = (props: props) => {
     );
   }, [item]);
 
+  // console.log('isAddToMetamask -- ', isAddToMetamask);
+
   const onCancelOrder = async () => {
     try {
       setLoading(true);
@@ -86,6 +88,7 @@ const ServiceItem = (props: props) => {
       } as any);
     } catch (e) {
       // todo handle error
+      console.log(' onAddChain ERROR: ', e);
     } finally {
       setAdding(false);
     }
@@ -217,7 +220,7 @@ const ServiceItem = (props: props) => {
           >
             Pre-Installed Dapps
           </Text>
-          <S.BoxDappContainer>
+          <S.BoxDappContainer1>
             <S.BoxDapp
               onClick={(event: any) => {
                 const link = item.isConstant
@@ -233,7 +236,22 @@ const ServiceItem = (props: props) => {
                 {'Trustless Bridge'}
               </Text>
             </S.BoxDapp>
-          </S.BoxDappContainer>
+
+            {isAddToMetamask && (
+              <Button
+                sizes="small"
+                variants="outline"
+                textColor="button_primary"
+                onClick={event => {
+                  if (event.stopPropagation) event.stopPropagation();
+                  onAddChain();
+                }}
+                className={cs('hover-show', adding ? 'force-show' : '')}
+              >
+                Add to Metamask
+              </Button>
+            )}
+          </S.BoxDappContainer1>
         </S.Footer>
       </S.Container>
       <OrderDetail show={showOrderDetail} onClose={() => setShowOrderDetail(false)} orderId={item.orderId} />
