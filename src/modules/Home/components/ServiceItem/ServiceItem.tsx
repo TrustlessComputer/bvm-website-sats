@@ -74,7 +74,7 @@ const ServiceItem = (props: props) => {
         chainId: Number(item.chainId),
         nativeCurrency: {
           name: item.chainName,
-          symbol: 'BVM',
+          symbol: item.ticker || 'BVM',
           decimals: 18,
         },
         explorers: [
